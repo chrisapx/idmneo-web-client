@@ -38,19 +38,21 @@ export class SettingsService {
   /**
    * Gets tenant identifier from subdomain.
    * The subdomain is the sole source of truth for tenant identity.
+   * Requires '.sandbox' in the hostname (e.g. fifund.sandbox.nalmart.com).
+   * Rejects hostnames without '.sandbox' (e.g. fifund.nalmart.com).
    */
   getSubdomainTenant(): string {
     const host = window.location.hostname;
     const parts = host.split('.');
 
-    // e.g. sandbox.neob.idmfh.com → sandbox
-    // e.g. sandbox.idmfh.com → sandbox
-    if (parts.length >= 2) {
+    // Require sandbox segment: e.g. fifund.sandbox.nalmart.com
+    // parts[0] = tenant, parts[1] must be 'sandbox'
+    if (parts.length >= 3 && parts[1] === 'sandbox') {
       return parts[0];
     }
 
-    // localhost or bare hostname — return as-is
-    return host;
+    // Reject hostnames without .sandbox (e.g. fifund.nalmart.com, localhost)
+    return '';
   }
 
 
@@ -187,7 +189,7 @@ export class SettingsService {
     // } else {
     //   return this.servers[0];
     // }
-    return 'https://core-api.fifund.idmfh.com';
+    return 'https://idmb-sandbox.nalmart.com';
   }
 
   /**

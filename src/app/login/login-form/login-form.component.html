@@ -24,8 +24,7 @@
         matSuffix
         *ngIf="loginForm.controls.password.value && !loading"
         mat-icon-button
-        (mousedown)="togglePasswordVisibility()"
-        (mouseup)="togglePasswordVisibility()"
+        (click)="togglePasswordVisibility()"
       >
         <fa-icon *ngIf="passwordInputType === 'password'" icon="eye"></fa-icon>
         <fa-icon *ngIf="passwordInputType === 'text'" icon="eye-slash"></fa-icon>
