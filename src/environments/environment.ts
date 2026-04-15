@@ -19,7 +19,7 @@ export const environment = {
   // For connecting to others servers running elsewhere update the base API URL
   baseApiUrls: loadedEnv.fineractApiUrls || '',
   // For connecting to server running elsewhere set the base API URL
-  baseApiUrl: loadedEnv.fineractApiUrl || 'https://core-api.fifund.idmfh.com',
+  baseApiUrl: loadedEnv.fineractApiUrl || 'https://idmb-gateway.nalmart.com/core',
   allowServerSwitch: loadedEnv.allowServerSwitch || 'false',
   apiProvider: loadedEnv.apiProvider || '/api',
   apiVersion: loadedEnv.apiVersion || '/v1',

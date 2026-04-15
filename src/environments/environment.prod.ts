@@ -13,7 +13,7 @@ export const environment = {
   fineractPlatformTenantIds: loadedEnv.fineractPlatformTenantIds || 'sandbox',
   // For connecting to others servers running elsewhere update the base API URL
   baseApiUrls: loadedEnv.fineractApiUrls || '',
-  baseApiUrl: loadedEnv.fineractApiUrl || 'https://core-api.fifund.idmfh.com',
+  baseApiUrl: loadedEnv.fineractApiUrl || 'https://idmb-gateway.nalmart.com/core',
   allowServerSwitch: loadedEnv.allowServerSwitch || 'true',
   apiProvider: loadedEnv.apiProvider || '/api',
   apiVersion: loadedEnv.apiVersion || '/v1',
