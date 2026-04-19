@@ -40,6 +40,8 @@ import { CollectionsModule } from './collections/collections.module';
 import { ProfileModule } from './profile/profile.module';
 import { TasksModule } from './tasks/tasks.module';
 import { ConfigurationWizardModule } from './configuration-wizard/configuration-wizard.module';
+import { HelpModule } from './help/help.module';
+import { SmsRelayerModule } from './sms-relayer/sms-relayer.module';
 import { PortalModule } from '@angular/cdk/portal';
 
 /** Main Routing Module */
@@ -120,6 +122,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     CollectionsModule,
     TasksModule,
     ConfigurationWizardModule,
+    HelpModule,
+    SmsRelayerModule,
     AppRoutingModule,
     NotFoundComponent,
     CallbackComponent,

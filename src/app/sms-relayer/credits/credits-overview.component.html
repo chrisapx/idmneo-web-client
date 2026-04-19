@@ -1,0 +1,117 @@
+<div class="cr-wrap">
+  <!-- Breadcrumb -->
+  <div class="cr-crumb">
+    <a routerLink="/organization">Organization</a>
+    <mat-icon>chevron_right</mat-icon>
+    <a routerLink="../dashboard">SMS Relayer</a>
+    <mat-icon>chevron_right</mat-icon>
+    <span>Credits</span>
+  </div>
+
+  <!-- Header -->
+  <div class="cr-header">
+    <div>
+      <h1>Credits &amp; usage</h1>
+      <p>Track your SMS balance, top-ups and usage history.</p>
+    </div>
+  </div>
+
+  <!-- KPI row -->
+  <div class="cr-kpi-grid" *ngIf="balance">
+    <div class="cr-kpi-card cr-kpi-primary">
+      <div class="cr-kpi-head">
+        <div class="cr-kpi-icon"><mat-icon>account_balance_wallet</mat-icon></div>
+        <span class="cr-kpi-label">Available balance</span>
+      </div>
+      <span class="cr-kpi-value">{{ balance.balance | number }}</span>
+      <span class="cr-kpi-sub">SMS credits</span>
+    </div>
+
+    <div class="cr-kpi-card">
+      <div class="cr-kpi-head">
+        <div class="cr-kpi-icon cr-icon-green"><mat-icon>shopping_cart</mat-icon></div>
+        <span class="cr-kpi-label">Purchased</span>
+      </div>
+      <span class="cr-kpi-value">{{ balance.smsPurchased | number }}</span>
+      <span class="cr-kpi-sub">Total purchased to date</span>
+    </div>
+
+    <div class="cr-kpi-card">
+      <div class="cr-kpi-head">
+        <div class="cr-kpi-icon cr-icon-yellow"><mat-icon>outbox</mat-icon></div>
+        <span class="cr-kpi-label">Used</span>
+      </div>
+      <span class="cr-kpi-value">{{ balance.smsUsed | number }}</span>
+      <span class="cr-kpi-sub">Total consumed</span>
+    </div>
+
+    <div class="cr-kpi-card cr-kpi-usage">
+      <div class="cr-kpi-head">
+        <div class="cr-kpi-icon cr-icon-blue"><mat-icon>analytics</mat-icon></div>
+        <span class="cr-kpi-label">Usage</span>
+      </div>
+      <span class="cr-kpi-value">{{ usagePercent() }}%</span>
+      <div class="cr-usage-bar">
+        <div class="cr-usage-fill" [style.width.%]="usagePercent()"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Transaction history -->
+  <div class="cr-card">
+    <div class="cr-card-head">
+      <div>
+        <h2>Transaction history</h2>
+        <span>Every top-up and spend on your SMS account.</span>
+      </div>
+    </div>
+
+    <div class="cr-table-wrap">
+      <table class="cr-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th class="cr-right">Amount</th>
+            <th class="cr-right">Balance after</th>
+            <th>By</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let tx of transactions">
+            <td class="cr-date">{{ tx.transactionDate | date:'MMM d, y h:mm a' }}</td>
+            <td>
+              <span class="cr-type-pill" [class]="'cr-type-' + tx.transactionType.toLowerCase()">
+                <span class="cr-dot"></span>
+                {{ tx.transactionType }}
+              </span>
+            </td>
+            <td class="cr-desc">{{ tx.description || '—' }}</td>
+            <td class="cr-right cr-num" [class.cr-positive]="tx.amount > 0" [class.cr-negative]="tx.amount < 0">
+              {{ tx.amount > 0 ? '+' : '' }}{{ tx.amount | number }}
+            </td>
+            <td class="cr-right cr-num cr-balance">{{ tx.balanceAfter | number }}</td>
+            <td class="cr-muted">{{ tx.initiatedBy || 'SYSTEM' }}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="cr-empty" *ngIf="transactions.length === 0">
+        <div class="cr-empty-icon"><mat-icon>receipt_long</mat-icon></div>
+        <h3>No transactions yet</h3>
+        <p>Top-ups and SMS charges will appear here.</p>
+      </div>
+    </div>
+
+    <mat-paginator
+      class="cr-paginator"
+      [length]="totalTransactions"
+      [pageSize]="pageSize"
+      [pageIndex]="pageIndex"
+      [pageSizeOptions]="[10, 25, 50]"
+      (page)="onPageChange($event)"
+      showFirstLastButtons>
+    </mat-paginator>
+  </div>
+</div>

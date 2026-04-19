@@ -1,0 +1,106 @@
+<div class="ml-wrap">
+  <!-- Breadcrumb -->
+  <div class="ml-crumb">
+    <a routerLink="/organization">Organization</a>
+    <mat-icon>chevron_right</mat-icon>
+    <a routerLink="../dashboard">SMS Relayer</a>
+    <mat-icon>chevron_right</mat-icon>
+    <span>Message History</span>
+  </div>
+
+  <!-- Header -->
+  <div class="ml-header">
+    <div>
+      <h1>Message history</h1>
+      <p>Search every SMS the system has sent — queued, delivered or failed.</p>
+    </div>
+    <a class="ml-btn-primary" routerLink="../send">
+      <mat-icon>send</mat-icon>
+      Send SMS
+    </a>
+  </div>
+
+  <!-- Filter bar -->
+  <div class="ml-filters">
+    <div class="ml-filter-group">
+      <span class="ml-filter-label">Status</span>
+      <div class="ml-chips">
+        <button class="ml-chip" [class.active]="filterStatus === ''" (click)="filterStatus = ''; applyFilters()">All</button>
+        <button class="ml-chip" *ngFor="let s of statusOptions; let i = index" [hidden]="!s"
+                [class.active]="filterStatus === s"
+                (click)="filterStatus = s; applyFilters()">
+          <span class="ml-chip-dot" [class]="'ml-st-' + s.toLowerCase()"></span>
+          {{ s }}
+        </button>
+      </div>
+    </div>
+
+    <div class="ml-search-bar">
+      <div class="ml-search-input">
+        <mat-icon>search</mat-icon>
+        <input type="text" [(ngModel)]="filterSearch" (keyup.enter)="applyFilters()" placeholder="Search message content…" />
+      </div>
+      <div class="ml-search-input">
+        <mat-icon>phone</mat-icon>
+        <input type="tel" [(ngModel)]="filterPhone" (keyup.enter)="applyFilters()" placeholder="Phone number" />
+      </div>
+      <button class="ml-btn-outline" (click)="applyFilters()">
+        <mat-icon>filter_alt</mat-icon>
+        Apply
+      </button>
+      <button class="ml-btn-text" (click)="clearFilters()" *ngIf="filterStatus || filterPhone || filterSearch">
+        Clear
+      </button>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="ml-card">
+    <div class="ml-table-wrap">
+      <table class="ml-table">
+        <thead>
+          <tr>
+            <th>Phone</th>
+            <th>Message</th>
+            <th>Provider</th>
+            <th>Status</th>
+            <th class="ml-right">Cost</th>
+            <th class="ml-right">Submitted</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let msg of messages" [routerLink]="[msg.id]" class="ml-row">
+            <td class="ml-phone">{{ msg.phoneNumber }}</td>
+            <td class="ml-msg-cell" [title]="msg.message">{{ msg.message | slice:0:80 }}{{ msg.message.length > 80 ? '…' : '' }}</td>
+            <td class="ml-muted">{{ msg.providerId || '—' }}</td>
+            <td>
+              <span class="ml-status-pill" [class]="'ml-st-' + msg.status.toLowerCase()">
+                <span class="ml-dot"></span>
+                {{ msg.status }}
+              </span>
+            </td>
+            <td class="ml-right ml-num">{{ msg.cost || '—' }}</td>
+            <td class="ml-right ml-date">{{ msg.submittedOn | date:'MMM d, y h:mm a' }}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="ml-empty" *ngIf="messages.length === 0">
+        <div class="ml-empty-icon"><mat-icon>inbox</mat-icon></div>
+        <h3>No messages found</h3>
+        <p *ngIf="filterStatus || filterPhone || filterSearch">Try adjusting your filters.</p>
+        <p *ngIf="!filterStatus && !filterPhone && !filterSearch">When messages are sent they'll appear here.</p>
+      </div>
+    </div>
+
+    <mat-paginator
+      class="ml-paginator"
+      [length]="totalElements"
+      [pageSize]="pageSize"
+      [pageIndex]="pageIndex"
+      [pageSizeOptions]="[10, 25, 50, 100]"
+      (page)="onPageChange($event)"
+      showFirstLastButtons>
+    </mat-paginator>
+  </div>
+</div>

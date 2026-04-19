@@ -1,0 +1,147 @@
+<div class="sd-wrap">
+  <!-- Breadcrumb -->
+  <div class="sd-crumb">
+    <a routerLink="/organization">Organization</a>
+    <mat-icon>chevron_right</mat-icon>
+    <span>SMS Relayer</span>
+  </div>
+
+  <!-- Header -->
+  <div class="sd-header">
+    <div>
+      <h1>SMS Relayer</h1>
+      <p>Monitor balance, module health and send messages to your customers.</p>
+    </div>
+    <div class="sd-actions">
+      <a class="sd-btn-outline" routerLink="../messages">
+        <mat-icon>history</mat-icon>
+        View history
+      </a>
+      <a class="sd-btn-primary" routerLink="../send">
+        <mat-icon>send</mat-icon>
+        Send SMS
+      </a>
+    </div>
+  </div>
+
+  <!-- KPI Cards -->
+  <div class="sd-kpi-grid" *ngIf="balance">
+    <div class="sd-kpi-card sd-kpi-primary">
+      <div class="sd-kpi-head">
+        <div class="sd-kpi-icon"><mat-icon>account_balance_wallet</mat-icon></div>
+        <span class="sd-kpi-label">Balance</span>
+      </div>
+      <span class="sd-kpi-value">{{ balance.balance | number }}</span>
+      <span class="sd-kpi-sub">SMS credits remaining</span>
+    </div>
+
+    <div class="sd-kpi-card">
+      <div class="sd-kpi-head">
+        <div class="sd-kpi-icon sd-icon-green"><mat-icon>shopping_cart</mat-icon></div>
+        <span class="sd-kpi-label">Purchased</span>
+      </div>
+      <span class="sd-kpi-value">{{ balance.smsPurchased | number }}</span>
+      <span class="sd-kpi-sub">Total credits bought</span>
+    </div>
+
+    <div class="sd-kpi-card">
+      <div class="sd-kpi-head">
+        <div class="sd-kpi-icon sd-icon-yellow"><mat-icon>outbox</mat-icon></div>
+        <span class="sd-kpi-label">Used</span>
+      </div>
+      <span class="sd-kpi-value">{{ balance.smsUsed | number }}</span>
+      <span class="sd-kpi-sub">Total credits consumed</span>
+    </div>
+
+    <div class="sd-kpi-card">
+      <div class="sd-kpi-head">
+        <div class="sd-kpi-icon sd-icon-blue"><mat-icon>bolt</mat-icon></div>
+        <span class="sd-kpi-label">Module</span>
+      </div>
+      <span class="sd-status-pill"
+            [class.sd-st-active]="moduleStatus === 'ACTIVE' || moduleStatus === 'TRIAL'"
+            [class.sd-st-suspended]="moduleStatus === 'SUSPENDED'">
+        <span class="sd-dot"></span>
+        {{ moduleStatus || '—' }}
+      </span>
+      <span class="sd-kpi-sub">Module status</span>
+    </div>
+  </div>
+
+  <!-- Quick links -->
+  <section class="sd-section">
+    <h2>Quick actions</h2>
+    <div class="sd-quick-links">
+      <a routerLink="../send" class="sd-link-card">
+        <div class="sd-link-icon"><mat-icon>send</mat-icon></div>
+        <div>
+          <strong>Send SMS</strong>
+          <span>Send a single message or bulk from spreadsheet</span>
+        </div>
+        <mat-icon class="sd-link-chev">chevron_right</mat-icon>
+      </a>
+      <a routerLink="../messages" class="sd-link-card">
+        <div class="sd-link-icon"><mat-icon>history</mat-icon></div>
+        <div>
+          <strong>Message history</strong>
+          <span>Search sent, delivered and failed SMS</span>
+        </div>
+        <mat-icon class="sd-link-chev">chevron_right</mat-icon>
+      </a>
+      <a routerLink="../credits" class="sd-link-card">
+        <div class="sd-link-icon"><mat-icon>account_balance_wallet</mat-icon></div>
+        <div>
+          <strong>Credits &amp; usage</strong>
+          <span>Top-ups, spend history and balance details</span>
+        </div>
+        <mat-icon class="sd-link-chev">chevron_right</mat-icon>
+      </a>
+    </div>
+  </section>
+
+  <!-- Recent Messages -->
+  <section class="sd-card" *ngIf="recentMessages.length > 0">
+    <div class="sd-card-head">
+      <div>
+        <h2>Recent messages</h2>
+        <span>Latest outgoing SMS across all channels</span>
+      </div>
+      <a routerLink="../messages" class="sd-see-all">View all →</a>
+    </div>
+    <div class="sd-table-wrap">
+      <table class="sd-table">
+        <thead>
+          <tr>
+            <th>Phone</th>
+            <th>Message</th>
+            <th>Status</th>
+            <th class="sd-right">Sent</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let msg of recentMessages">
+            <td class="sd-phone">{{ msg.phoneNumber }}</td>
+            <td class="sd-msg-cell" [title]="msg.message">{{ msg.message | slice:0:80 }}{{ msg.message.length > 80 ? '…' : '' }}</td>
+            <td>
+              <span class="sd-status-pill" [class]="'sd-st-' + msg.status.toLowerCase()">
+                <span class="sd-dot"></span> {{ msg.status }}
+              </span>
+            </td>
+            <td class="sd-date sd-right">{{ msg.submittedOn | date:'MMM d, h:mm a' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Empty state -->
+  <section class="sd-empty-card" *ngIf="recentMessages.length === 0">
+    <div class="sd-empty-icon"><mat-icon>sms</mat-icon></div>
+    <h3>No messages yet</h3>
+    <p>When you send messages they'll show up here.</p>
+    <a class="sd-btn-primary" routerLink="../send">
+      <mat-icon>send</mat-icon>
+      Send your first SMS
+    </a>
+  </section>
+</div>

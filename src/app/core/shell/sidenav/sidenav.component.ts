@@ -65,37 +65,21 @@ export class SidenavComponent implements OnInit, AfterViewInit {
     {
       key: 'reporting', label: 'Reporting', icon: 'bar_chart',
       children: [
-        { label: 'All Reports', path: '/reports' },
-        { label: 'Client Reports', path: '/reports/Client' },
-        { label: 'Loan Reports', path: '/reports/Loan' },
-        { label: 'Savings Reports', path: '/reports/Savings' },
-        { label: 'Accounting Reports', path: '/reports/Accounting' },
-        { label: 'Fund Reports', path: '/reports/Fund' },
+        { label: 'Overview', path: '/reports' },
+        { label: 'Customize', path: '/system/reports/create' },
       ]
     },
     {
       key: 'org', label: 'Organization', icon: 'corporate_fare',
       children: [
-        { label: 'Offices', path: '/organization/offices' },
-        { label: 'Employees', path: '/organization/employees' },
-        { label: 'Currencies', path: '/organization/currencies' },
-        { label: 'Holidays', path: '/organization/holidays' },
-        { label: 'SMS Campaigns', path: '/organization/sms-campaigns' },
+        { label: 'Settings', path: '/organization' },
         { label: 'Bulk Import', path: '/organization/bulk-import' },
-        { label: 'Fund Mapping', path: '/organization/fund-mapping' },
-        { label: 'Payment Types', path: '/organization/payment-types' },
-        { label: 'Password Preferences', path: '/organization/password-preferences' },
       ]
     },
     {
       key: 'more', label: 'More', icon: 'more_horiz',
       children: [
         { label: 'Users', path: '/appusers' },
-        { label: 'Groups', path: '/groups' },
-        { label: 'Centers', path: '/centers' },
-        { label: 'Templates', path: '/templates' },
-        { label: 'Approvals', path: '/checker-inbox-and-tasks/checker-inbox' },
-        { label: 'Audit Trails', path: '/products/audit-trails' },
       ]
     },
   ];
@@ -123,6 +107,10 @@ export class SidenavComponent implements OnInit, AfterViewInit {
     { label: 'Approvals', path: '/checker-inbox-and-tasks/checker-inbox', icon: 'task_alt' },
     { label: 'System', path: '/system', icon: 'terminal' },
     { label: 'SMS Campaigns', path: '/organization/sms-campaigns', icon: 'sms' },
+    { label: 'SMS Relayer', path: '/sms-relayer/dashboard', icon: 'send' },
+    { label: 'SMS Send', path: '/sms-relayer/send', icon: 'send' },
+    { label: 'SMS Messages', path: '/sms-relayer/messages', icon: 'history' },
+    { label: 'SMS Credits', path: '/sms-relayer/credits', icon: 'account_balance_wallet' },
     { label: 'Bulk Import', path: '/organization/bulk-import', icon: 'upload_file' },
     { label: 'Payment Types', path: '/organization/payment-types', icon: 'payment' },
     { label: 'Audit Trails', path: '/products/audit-trails', icon: 'history' },

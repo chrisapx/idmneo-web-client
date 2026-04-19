@@ -1,0 +1,345 @@
+<div class="ss-wrap">
+  <!-- Breadcrumb -->
+  <div class="ss-crumb">
+    <a routerLink="/organization">Organization</a>
+    <mat-icon>chevron_right</mat-icon>
+    <a routerLink="../dashboard">SMS Relayer</a>
+    <mat-icon>chevron_right</mat-icon>
+    <span>Send SMS</span>
+  </div>
+
+  <!-- Header -->
+  <div class="ss-header">
+    <div>
+      <h1>Send SMS</h1>
+      <p>Send a single message or upload a spreadsheet to send in bulk.</p>
+    </div>
+    <div class="ss-balance" *ngIf="balance > 0">
+      <mat-icon>account_balance_wallet</mat-icon>
+      <div>
+        <span class="ss-bal-label">Balance</span>
+        <span class="ss-bal-value">{{ balance | number }} credits</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stripe-style tab bar -->
+  <mat-tab-group class="ss-tabs" animationDuration="0">
+    <!-- ═══ Single Send ═══ -->
+    <mat-tab label="Single SMS">
+      <div class="ss-panel">
+        <div class="ss-grid">
+          <!-- Composer -->
+          <section class="ss-card">
+            <div class="ss-card-head">
+              <div class="ss-card-title">
+                <div class="ss-icon"><mat-icon>edit</mat-icon></div>
+                <div>
+                  <h2>Compose message</h2>
+                  <span>Enter a phone number and message body.</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="ss-banner" *ngIf="businessName">
+              <mat-icon>info</mat-icon>
+              All messages will be prefixed with <strong>{{ businessName }}:</strong>
+            </div>
+
+            <div class="ss-body">
+              <div class="ss-field">
+                <label>Phone number</label>
+                <input type="tel" class="ss-input" [(ngModel)]="phoneNumber" placeholder="+256700000000" />
+              </div>
+
+              <div class="ss-field">
+                <label>Message</label>
+                <textarea class="ss-input ss-textarea" [(ngModel)]="message" rows="5" placeholder="Type your message..."></textarea>
+
+                <div class="ss-char-info">
+                  <span>{{ messageCharCount }} chars</span>
+                  <span class="ss-dot-sep"></span>
+                  <span>{{ totalCharCount }} total</span>
+                  <span class="ss-dot-sep"></span>
+                  <span>{{ segmentCount }} segment{{ segmentCount !== 1 ? 's' : '' }}</span>
+                  <span class="ss-credit-cost" [class.ss-over]="creditCost > balance">
+                    <mat-icon>bolt</mat-icon>
+                    {{ creditCost }} credit{{ creditCost !== 1 ? 's' : '' }}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="ss-card-foot">
+              <span class="ss-insufficient" *ngIf="creditCost > balance">
+                <mat-icon>error_outline</mat-icon>
+                Insufficient credits
+              </span>
+              <button class="ss-btn-primary"
+                      (click)="send()"
+                      [disabled]="sending || !phoneNumber || !message || creditCost > balance">
+                <mat-icon *ngIf="!sending">send</mat-icon>
+                <mat-icon *ngIf="sending" class="ss-spin">autorenew</mat-icon>
+                {{ sending ? 'Sending…' : 'Send SMS' }}
+              </button>
+            </div>
+          </section>
+
+          <!-- Preview -->
+          <section class="ss-card ss-preview-card">
+            <div class="ss-card-head">
+              <div class="ss-card-title">
+                <div class="ss-icon"><mat-icon>smartphone</mat-icon></div>
+                <div>
+                  <h2>Preview SMS</h2>
+                  <span>How recipients will see your message.</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="ss-phone-stage">
+              <div class="ss-phone-frame">
+                <div class="ss-phone-side ss-phone-side-top"></div>
+                <div class="ss-phone-side ss-phone-side-mid"></div>
+                <div class="ss-phone-side ss-phone-side-bot"></div>
+                <div class="ss-phone-power"></div>
+
+                <div class="ss-phone-screen">
+                  <div class="ss-phone-statusbar">
+                    <span class="ss-status-time">{{ previewTime }}</span>
+                    <div class="ss-dynamic-island">
+                      <span class="ss-island-speaker"></span>
+                      <span class="ss-island-camera"></span>
+                    </div>
+                    <div class="ss-status-right">
+                      <span class="ss-battery-pct">100%</span>
+                      <span class="ss-battery-icon"></span>
+                    </div>
+                  </div>
+
+                  <div class="ss-phone-navbar">
+                    <mat-icon class="ss-nav-back">chevron_left</mat-icon>
+                    <div class="ss-nav-avatar"><mat-icon>person</mat-icon></div>
+                  </div>
+
+                  <div class="ss-phone-thread">
+                    <div class="ss-thread-stamp">Today {{ previewTime }}</div>
+                    <div class="ss-thread-bubble" *ngIf="message">{{ fullMessage }}</div>
+                    <div class="ss-thread-bubble ss-thread-bubble-empty" *ngIf="!message">
+                      Your message will appear here…
+                    </div>
+                  </div>
+
+                  <div class="ss-phone-compose">
+                    <mat-icon class="ss-compose-camera">photo_camera</mat-icon>
+                    <input type="text" class="ss-compose-input" placeholder="Your message" disabled>
+                    <span class="ss-compose-send">Send</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- Result -->
+        <div class="ss-result" *ngIf="lastResult">
+          <div class="ss-result-card"
+               [class.ss-success]="lastResult.status === 'SENT'"
+               [class.ss-fail]="lastResult.status === 'FAILED'">
+            <mat-icon *ngIf="lastResult.status === 'SENT'">check_circle</mat-icon>
+            <mat-icon *ngIf="lastResult.status === 'FAILED'">error</mat-icon>
+            <mat-icon *ngIf="lastResult.status !== 'SENT' && lastResult.status !== 'FAILED'">schedule</mat-icon>
+            <div>
+              <strong>{{ lastResult.status }}</strong>
+              <span *ngIf="lastResult.providerMessageId">Provider ID: {{ lastResult.providerMessageId }}</span>
+              <span *ngIf="lastResult.errorMessage" class="ss-error-msg">{{ lastResult.errorMessage }}</span>
+              <span class="ss-correlation">Correlation: {{ lastResult.correlationId }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+
+    <!-- ═══ Bulk Send ═══ -->
+    <mat-tab label="Bulk SMS">
+      <div class="ss-panel">
+        <!-- Download + upload row -->
+        <div class="ss-grid ss-grid-bulk">
+          <section class="ss-card">
+            <div class="ss-card-head">
+              <div class="ss-card-title">
+                <div class="ss-icon"><mat-icon>download</mat-icon></div>
+                <div>
+                  <h2>Step 1 · Download template</h2>
+                  <span>Excel template with columns: contact, message, scheduled, scheduledAt.</span>
+                </div>
+              </div>
+            </div>
+            <div class="ss-body">
+              <p class="ss-help">
+                Download the spreadsheet, fill in your contacts and messages, then upload it back.
+                Use <strong>yes</strong> / <strong>no</strong> in the scheduled column and an ISO date in scheduledAt.
+              </p>
+            </div>
+            <div class="ss-card-foot">
+              <button class="ss-btn-outline" (click)="downloadTemplate()">
+                <mat-icon>download</mat-icon>
+                Download template
+              </button>
+            </div>
+          </section>
+
+          <section class="ss-card">
+            <div class="ss-card-head">
+              <div class="ss-card-title">
+                <div class="ss-icon"><mat-icon>upload_file</mat-icon></div>
+                <div>
+                  <h2>Step 2 · Upload filled template</h2>
+                  <span>Accepted formats: .xls, .xlsx</span>
+                </div>
+              </div>
+            </div>
+            <div class="ss-body">
+              <label class="ss-drop">
+                <mat-icon>cloud_upload</mat-icon>
+                <strong>Click to choose file</strong>
+                <span>or drag and drop</span>
+                <input type="file" accept=".xlsx,.xls" (change)="onFileSelected($event)" hidden>
+              </label>
+              <div class="ss-banner ss-banner-info" *ngIf="businessName">
+                <mat-icon>info</mat-icon>
+                Messages will be prefixed with <strong>{{ businessName }}:</strong> ({{ prefixLength }} chars)
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- Preview uploaded data -->
+        <div *ngIf="bulkMessages.length > 0" class="ss-card ss-bulk-preview">
+          <div class="ss-card-head ss-card-head-inline">
+            <div class="ss-card-title">
+              <div class="ss-icon"><mat-icon>description</mat-icon></div>
+              <div>
+                <h2>{{ bulkFileName }}</h2>
+                <span>{{ validBulkRows }} valid message{{ validBulkRows !== 1 ? 's' : '' }} ready to send</span>
+              </div>
+            </div>
+            <div class="ss-bulk-meta">
+              <span class="ss-credit-cost ss-credit-pill" [class.ss-over]="totalBulkCredits > balance">
+                <mat-icon>bolt</mat-icon>
+                {{ totalBulkCredits }} credits required
+              </span>
+              <button class="ss-icon-btn" (click)="clearBulk()" title="Clear">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          <div class="ss-table-wrap">
+            <table class="ss-table">
+              <thead>
+                <tr>
+                  <th class="ss-col-num">#</th>
+                  <th>Contact</th>
+                  <th>Message</th>
+                  <th>Scheduled</th>
+                  <th>When</th>
+                  <th class="ss-right">Credits</th>
+                  <th class="ss-col-actions"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of bulkMessages; let i = index" [class.ss-invalid]="!row.contact || !row.message">
+                  <td class="ss-col-num">{{ i + 1 }}</td>
+                  <td class="ss-phone">{{ row.contact || '—' }}</td>
+                  <td class="ss-msg-cell" [title]="row.message">{{ row.message | slice:0:60 }}{{ row.message.length > 60 ? '…' : '' }}</td>
+                  <td>
+                    <span class="ss-status-pill" [class.ss-st-active]="row.scheduled">
+                      <span class="ss-dot"></span>
+                      {{ row.scheduled ? 'Yes' : 'No' }}
+                    </span>
+                  </td>
+                  <td class="ss-date">{{ row.scheduledAt || '—' }}</td>
+                  <td class="ss-right">{{ bulkSegments(row.message) }}</td>
+                  <td class="ss-col-actions">
+                    <button class="ss-icon-btn" (click)="removeRow(i)" title="Remove">
+                      <mat-icon>delete_outline</mat-icon>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <mat-progress-bar *ngIf="bulkSending" mode="indeterminate" class="ss-progress"></mat-progress-bar>
+
+          <div class="ss-card-foot">
+            <span class="ss-insufficient" *ngIf="totalBulkCredits > balance">
+              <mat-icon>error_outline</mat-icon>
+              Insufficient credits — need {{ totalBulkCredits }}, have {{ balance }}
+            </span>
+            <button class="ss-btn-primary"
+                    (click)="sendBulk()"
+                    [disabled]="bulkSending || validBulkRows === 0 || totalBulkCredits > balance">
+              <mat-icon *ngIf="!bulkSending">send</mat-icon>
+              <mat-icon *ngIf="bulkSending" class="ss-spin">autorenew</mat-icon>
+              {{ bulkSending ? 'Sending…' : 'Send ' + validBulkRows + ' messages' }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Bulk results -->
+        <div *ngIf="bulkResultRows.length > 0" class="ss-card ss-results-card">
+          <div class="ss-card-head ss-card-head-inline">
+            <div class="ss-card-title">
+              <div class="ss-icon ss-icon-result">
+                <mat-icon>assignment_turned_in</mat-icon>
+              </div>
+              <div>
+                <h2>Results</h2>
+                <span>{{ bulkResults?.totalSent || 0 }} sent, {{ bulkResults?.totalFailed || 0 }} failed</span>
+              </div>
+            </div>
+            <button class="ss-btn-outline" (click)="downloadResults()">
+              <mat-icon>download</mat-icon>
+              Download results
+            </button>
+          </div>
+
+          <div class="ss-table-wrap">
+            <table class="ss-table">
+              <thead>
+                <tr>
+                  <th class="ss-col-num">#</th>
+                  <th>Contact</th>
+                  <th>Message</th>
+                  <th>Status</th>
+                  <th>Provider ID</th>
+                  <th>Error</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of bulkResultRows; let i = index">
+                  <td class="ss-col-num">{{ i + 1 }}</td>
+                  <td class="ss-phone">{{ row.contact }}</td>
+                  <td class="ss-msg-cell" [title]="row.message">{{ row.message | slice:0:50 }}{{ row.message.length > 50 ? '...' : '' }}</td>
+                  <td>
+                    <span class="ss-status-pill"
+                          [class.ss-st-sent]="row.status === 'SENT' || row.status === 'DELIVERED'"
+                          [class.ss-st-failed]="row.status === 'FAILED'"
+                          [class.ss-st-pending]="row.status !== 'SENT' && row.status !== 'DELIVERED' && row.status !== 'FAILED'">
+                      <span class="ss-dot"></span>
+                      {{ row.status }}
+                    </span>
+                  </td>
+                  <td class="ss-muted">{{ row.providerMessageId || '—' }}</td>
+                  <td class="ss-error-cell">{{ row.errorMessage || '—' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>
