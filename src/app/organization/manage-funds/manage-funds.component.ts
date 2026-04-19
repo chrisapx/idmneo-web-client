@@ -34,7 +34,9 @@ import {
 } from '@angular/material/table';
 import { MatSort, MatSortHeader } from '@angular/material/sort';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { MatIcon } from '@angular/material/icon';
 import { ExternalIdentifierComponent } from '../../shared/external-identifier/external-identifier.component';
+import { FormsModule } from '@angular/forms';
 import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
 
 /**
@@ -60,10 +62,16 @@ import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
     MatHeaderRow,
     MatRowDef,
     MatRow,
-    MatPaginator
+    MatPaginator,
+    MatIcon,
+    FormsModule
   ]
 })
 export class ManageFundsComponent implements OnInit, AfterViewInit {
+  /** Filter chip value. */
+  filterValue = '';
+  /** Active filter chip. */
+  activeChip: string | null = null;
   /** Manage Funds data. */
   fundsData: any;
   /** New Fund form */

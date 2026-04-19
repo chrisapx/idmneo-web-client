@@ -1,12 +1,32 @@
-<div class="container">
-  <div #filter class="layout-row">
-    <mat-form-field class="flex-fill">
-      <mat-label>{{ 'labels.inputs.Filter' | translate }}</mat-label>
-      <input matInput (keyup)="applyFilter($event.target.value)" />
-    </mat-form-field>
+<div class="s-page">
+  <div class="s-head">
+    <h1>Global Configurations</h1>
   </div>
 
-  <div #configurationsTable class="mat-elevation-z8 m-b-10">
+  <div class="s-filters">
+    <div class="s-filter-left">
+      <div class="s-chip-wrap">
+        <button class="s-filter-chip" [class.applied]="filterValue" (click)="activeChip = activeChip === 'filter' ? null : 'filter'">
+          <mat-icon>{{ filterValue ? 'check' : 'add' }}</mat-icon>
+          Filter{{ filterValue ? ': ' + filterValue : '' }}
+          <mat-icon class="chip-x" *ngIf="filterValue" (click)="$event.stopPropagation(); filterValue = ''; applyFilter('')">close</mat-icon>
+        </button>
+        <div class="s-pop" *ngIf="activeChip === 'filter'">
+          <div class="s-pop-title">Filter</div>
+          <div class="s-pop-row">
+            <span class="s-pop-label">contains</span>
+            <input class="s-pop-input" [(ngModel)]="filterValue" placeholder="Type to filter..." (keydown.enter)="activeChip = null; applyFilter(filterValue)" />
+          </div>
+          <button class="s-pop-apply" (click)="activeChip = null; applyFilter(filterValue)">Apply</button>
+        </div>
+      </div>
+    </div>
+    <div class="s-filter-right">
+      <button class="s-action-chip" *ngIf="filterValue" (click)="filterValue = ''; applyFilter('')"><mat-icon>close</mat-icon> Clear</button>
+    </div>
+  </div>
+
+  <div #configurationsTable class="s-table">
     <table mat-table [dataSource]="dataSource" matSort>
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.name' | translate }}</th>
@@ -29,10 +49,9 @@
             name="{{ configuration.name }}"
             (click)="toggleStatus(configuration)"
           >
-            <div [className]="configuration.enabled ? 'enabled' : 'disabled'">
-              <span *ngIf="configuration.enabled">{{ 'labels.inputs.Enabled' | translate }}</span>
-              <span *ngIf="!configuration.enabled">{{ 'labels.inputs.Disabled' | translate }}</span>
-            </div>
+            <span class="s-pill-sm" [class.active]="configuration.enabled" [class.inactive]="!configuration.enabled">
+              {{ configuration.enabled ? 'Enabled' : 'Disabled' }}
+            </span>
           </mat-slide-toggle>
         </td>
       </ng-container>
@@ -55,8 +74,8 @@
       <ng-container matColumnDef="edit">
         <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.Actions' | translate }}</th>
         <td mat-cell *matCellDef="let configuration">
-          <button mat-button color="primary" [routerLink]="[configuration.id, 'edit']">
-            <fa-icon icon="edit"></fa-icon>
+          <button mat-icon-button [routerLink]="[configuration.id, 'edit']">
+            <mat-icon>edit</mat-icon>
           </button>
         </td>
       </ng-container>

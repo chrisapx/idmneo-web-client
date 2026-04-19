@@ -25,6 +25,8 @@ import { PopoverService } from '../../configuration-wizard/popover/popover.servi
 import { ConfigurationWizardService } from '../../configuration-wizard/configuration-wizard.service';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
+import { MatIcon } from '@angular/material/icon';
+import { MatButton } from '@angular/material/button';
 
 /**
  * Fixed Deposit Products component.
@@ -48,7 +50,9 @@ import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
     MatHeaderRow,
     MatRowDef,
     MatRow,
-    MatPaginator
+    MatPaginator,
+    MatIcon,
+    MatButton
   ]
 })
 export class FixedDepositProductsComponent implements OnInit, AfterViewInit {
@@ -61,6 +65,8 @@ export class FixedDepositProductsComponent implements OnInit, AfterViewInit {
   ];
   /** Data source for fixed deposit products table. */
   dataSource: MatTableDataSource<any>;
+  filterValue = '';
+  activeChip: string | null = null;
 
   /** Paginator for fixed deposit products table. */
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;

@@ -1,20 +1,7 @@
-.container {
-  .action-button {
-    margin-left: auto;
-  }
+@use 'assets/styles/stripe-page' as *;
 
-  .search-button {
-    min-width: 30px;
-    margin: 4px;
-  }
+.s-filters {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 8px; gap: 8px; flex-wrap: wrap;
 }
-
-table {
-  tr.select-row:hover {
-    cursor: pointer;
-  }
-
-  tr:nth-child(odd).td {
-    color: black;
-  }
-}
+.s-filter-left { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }

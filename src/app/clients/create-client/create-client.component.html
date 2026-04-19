@@ -1,70 +1,83 @@
-<div class="container">
-  <mat-stepper orientation="vertical" [linear]="false" class="mat-elevation-z8" labelPosition="bottom" #clientStepper>
-    <ng-template matStepperIcon="number">
-      <fa-icon icon="pencil-alt" size="sm"></fa-icon>
-    </ng-template>
+<!-- Stripe create client dialog -->
 
-    <ng-template matStepperIcon="edit">
-      <fa-icon icon="pencil-alt" size="sm"></fa-icon>
-    </ng-template>
+<!-- Loading skeleton -->
+<div class="s-dialog" *ngIf="!clientTemplate">
+  <div class="s-dialog-head">
+    <h2>Create client</h2>
+    <button mat-icon-button (click)="close()"><mat-icon>close</mat-icon></button>
+  </div>
+  <div class="s-skeleton-body">
+    <div class="sk-line w40"></div>
+    <div class="sk-block"></div>
+    <div class="sk-line w30"></div>
+    <div class="sk-block"></div>
+    <div class="sk-line w50"></div>
+    <div class="sk-block"></div>
+    <div class="sk-line w35"></div>
+  </div>
+</div>
 
-    <ng-template matStepperIcon="done">
-      <fa-icon icon="check" size="sm"></fa-icon>
-    </ng-template>
+<!-- Actual form -->
+<div class="s-dialog" *ngIf="clientTemplate">
+  <!-- Header -->
+  <div class="s-dialog-head">
+    <h2>Create client</h2>
+    <button mat-icon-button (click)="close()"><mat-icon>close</mat-icon></button>
+  </div>
 
-    <ng-template matStepperIcon="error">
-      <fa-icon icon="exclamation-triangle" size="lg"></fa-icon>
-    </ng-template>
+  <!-- Body -->
+  <div class="s-dialog-body">
+    <!-- Account information — expanded by default -->
+    <div class="s-sect open">
+      <div class="s-sect-toggle" (click)="sections.account = !sections.account">
+        <h3>Account information</h3>
+        <mat-icon>{{ sections.account !== false ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</mat-icon>
+      </div>
+      <div class="s-sect-content" *ngIf="sections.account !== false">
+        <mifosx-client-general-step
+          [clientTemplate]="clientTemplate"
+          (legalFormChangeEvent)="legalFormChange($event)"
+        ></mifosx-client-general-step>
+      </div>
+    </div>
 
-    <ng-template matStepperIcon="preview">
-      <fa-icon icon="eye" size="sm"></fa-icon>
-    </ng-template>
+    <!-- Family Members -->
+    <div class="s-sect">
+      <div class="s-sect-toggle" (click)="sections.family = !sections.family">
+        <h3>Family Members</h3>
+        <mat-icon>{{ sections.family ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</mat-icon>
+      </div>
+      <div class="s-sect-content" *ngIf="sections.family">
+        <mifosx-client-family-members-step #clientFamily [clientTemplate]="clientTemplate"></mifosx-client-family-members-step>
+      </div>
+    </div>
 
-    <mat-step [stepControl]="clientGeneralForm">
-      <ng-template matStepLabel>{{ 'labels.inputs.GENERAL' | translate }}</ng-template>
+    <!-- Address -->
+    <div class="s-sect" *ngIf="clientTemplate?.isAddressEnabled">
+      <div class="s-sect-toggle" (click)="sections.address = !sections.address">
+        <h3>Address</h3>
+        <mat-icon>{{ sections.address ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</mat-icon>
+      </div>
+      <div class="s-sect-content" *ngIf="sections.address">
+        <mifosx-client-address-step #clientAddress [clientTemplate]="clientTemplate" [clientAddressFieldConfig]="clientAddressFieldConfig"></mifosx-client-address-step>
+      </div>
+    </div>
 
-      <mifosx-client-general-step
-        [clientTemplate]="clientTemplate"
-        (legalFormChangeEvent)="legalFormChange($event)"
-      ></mifosx-client-general-step>
-    </mat-step>
+    <!-- Datatables -->
+    <div class="s-sect" *ngFor="let dt of datatables">
+      <div class="s-sect-toggle" (click)="sections[dt.registeredTableName] = !sections[dt.registeredTableName]">
+        <h3>{{ dt.registeredTableName }}</h3>
+        <mat-icon>{{ sections[dt.registeredTableName] ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</mat-icon>
+      </div>
+      <div class="s-sect-content" *ngIf="sections[dt.registeredTableName]">
+        <mifosx-client-datatable-step [datatableData]="dt" #dtclient></mifosx-client-datatable-step>
+      </div>
+    </div>
+  </div>
 
-    <mat-step>
-      <ng-template matStepLabel>{{ 'labels.inputs.FAMILY MEMBERS' | translate }}</ng-template>
-
-      <mifosx-client-family-members-step
-        #clientFamily
-        [clientTemplate]="clientTemplate"
-      ></mifosx-client-family-members-step>
-    </mat-step>
-
-    <mat-step *ngIf="clientTemplate.isAddressEnabled">
-      <ng-template matStepLabel>{{ 'labels.inputs.ADDRESS' | translate }}</ng-template>
-
-      <mifosx-client-address-step
-        #clientAddress
-        [clientTemplate]="clientTemplate"
-        [clientAddressFieldConfig]="clientAddressFieldConfig"
-      >
-      </mifosx-client-address-step>
-    </mat-step>
-
-    <mat-step *ngFor="let datatable of datatables">
-      <ng-template matStepLabel>{{ datatable.registeredTableName }}</ng-template>
-
-      <mifosx-client-datatable-step [datatableData]="datatable" #dtclient></mifosx-client-datatable-step>
-    </mat-step>
-
-    <mat-step *ngIf="areFormvalids()" completed>
-      <ng-template matStepLabel>{{ 'labels.inputs.PREVIEW' | translate }}</ng-template>
-
-      <mifosx-client-preview-step
-        [clientTemplate]="clientTemplate"
-        [clientAddressFieldConfig]="clientAddressFieldConfig"
-        [client]="client"
-        (submitEvent)="submit()"
-      >
-      </mifosx-client-preview-step>
-    </mat-step>
-  </mat-stepper>
+  <!-- Footer -->
+  <div class="s-dialog-foot">
+    <button class="s-btn-cancel" (click)="close()">Cancel</button>
+    <button class="s-btn-submit" (click)="submit()" [disabled]="!areFormvalids()">Add client</button>
+  </div>
 </div>

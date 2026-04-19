@@ -19,6 +19,8 @@ import {
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { MatTooltip } from '@angular/material/tooltip';
 import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
+import { MatIcon } from '@angular/material/icon';
+import { MatButton } from '@angular/material/button';
 
 /**
  * Floating Rates Component.
@@ -43,7 +45,9 @@ import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
     MatHeaderRow,
     MatRowDef,
     MatRow,
-    MatPaginator
+    MatPaginator,
+    MatIcon,
+    MatButton
   ]
 })
 export class FloatingRatesComponent implements OnInit {
@@ -58,6 +62,8 @@ export class FloatingRatesComponent implements OnInit {
   ];
   /** Data source for floating rates table. */
   dataSource: MatTableDataSource<any>;
+  filterValue = '';
+  activeChip: string | null = null;
 
   /** Paginator for floating rates table. */
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;

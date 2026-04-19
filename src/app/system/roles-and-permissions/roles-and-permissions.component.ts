@@ -26,6 +26,7 @@ import { ConfigurationWizardService } from '../../configuration-wizard/configura
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { MatTooltip } from '@angular/material/tooltip';
+import { MatIcon } from '@angular/material/icon';
 import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
 
 /**
@@ -38,6 +39,7 @@ import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
   imports: [
     ...STANDALONE_SHARED_IMPORTS,
     FaIconComponent,
+    MatIcon,
     MatTable,
     MatSort,
     MatColumnDef,
@@ -67,6 +69,8 @@ export class RolesAndPermissionsComponent implements OnInit, AfterViewInit {
   ];
   /** Data source for roles and permissions table. */
   dataSource: MatTableDataSource<any>;
+  filterValue = '';
+  activeChip: string | null = null;
 
   /** Paginator for roles and permissions table. */
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;

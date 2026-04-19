@@ -35,6 +35,7 @@ import { RunSelectedJobsPopoverComponent } from './run-selected-jobs-popover/run
 import { NgIf, NgClass } from '@angular/common';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { MatIcon } from '@angular/material/icon';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { MatTooltip } from '@angular/material/tooltip';
 import { DatetimeFormatPipe } from '../../../pipes/datetime-format.pipe';
@@ -51,6 +52,7 @@ import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
   imports: [
     ...STANDALONE_SHARED_IMPORTS,
     FaIconComponent,
+    MatIcon,
     MatTable,
     MatSort,
     MatColumnDef,
@@ -89,6 +91,8 @@ export class ManageSchedulerJobsComponent implements OnInit, AfterViewInit {
   ];
   /** Data source for manage scheduler jobs table. */
   dataSource: MatTableDataSource<any>;
+  filterValue = '';
+  activeChip: string | null = null;
   /** Initialize Selection */
   selection = new SelectionModel<any>(true, []);
   /** Scheduler Status */

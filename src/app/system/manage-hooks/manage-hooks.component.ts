@@ -18,6 +18,7 @@ import {
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { MatTooltip } from '@angular/material/tooltip';
+import { MatIcon } from '@angular/material/icon';
 import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
 
 /**
@@ -30,6 +31,7 @@ import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
   imports: [
     ...STANDALONE_SHARED_IMPORTS,
     FaIconComponent,
+    MatIcon,
     MatTable,
     MatSort,
     MatColumnDef,
@@ -57,6 +59,8 @@ export class ManageHooksComponent implements OnInit {
   ];
   /** Data source for manage hooks table. */
   dataSource: MatTableDataSource<any>;
+  filterValue = '';
+  activeChip: string | null = null;
 
   /** Paginator for manage hooks table. */
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;

@@ -1,15 +1,13 @@
 /** Angular Imports */
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { MatCheckbox } from '@angular/material/checkbox';
 
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort, MatSortHeader } from '@angular/material/sort';
-import { UntypedFormControl, ReactiveFormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 
 /** rxjs Imports */
 import { merge } from 'rxjs';
-import { tap, startWith, map, distinctUntilChanged, debounceTime } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 
 /** Custom Services */
 import { CentersService } from './centers.service';
@@ -17,6 +15,7 @@ import { CentersService } from './centers.service';
 /** Custom Data Source */
 import { CentersDataSource } from './centers.datasource';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { MatIcon } from '@angular/material/icon';
 import {
   MatTable,
   MatColumnDef,
@@ -29,21 +28,20 @@ import {
   MatRowDef,
   MatRow
 } from '@angular/material/table';
-import { NgClass, AsyncPipe } from '@angular/common';
+import { NgClass, NgFor, AsyncPipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { StatusLookupPipe } from '../pipes/status-lookup.pipe';
 import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
 
-/**
- * Centers component.
- */
 @Component({
   selector: 'mifosx-app-centers',
   templateUrl: './centers.component.html',
   styleUrls: ['./centers.component.scss'],
   imports: [
     ...STANDALONE_SHARED_IMPORTS,
-    MatCheckbox,
+    FormsModule,
     FaIconComponent,
+    MatIcon,
     MatTable,
     MatSort,
     MatColumnDef,
@@ -53,6 +51,7 @@ import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
     MatCellDef,
     MatCell,
     NgClass,
+    NgFor,
     MatHeaderRowDef,
     MatHeaderRow,
     MatRowDef,
@@ -63,33 +62,26 @@ import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
   ]
 })
 export class CentersComponent implements OnInit, AfterViewInit {
-  @ViewChild('showClosedCenters', { static: true }) showClosedCenters: MatCheckbox;
-
-  /** Name form control. */
-  name = new UntypedFormControl();
-  /** ExternalId form control. */
-  externalId = new UntypedFormControl();
   /** Columns to be displayed in centers table. */
-  displayedColumns = [
-    'name',
-    'accountNo',
-    'externalId',
-    'status',
-    'officeName'
-  ];
+  displayedColumns = ['name', 'accountNo', 'externalId', 'status', 'officeName'];
   /** Data source for centers table. */
   dataSource: CentersDataSource;
   /** Centers filter. */
   filterCentersBy = [
-    {
-      type: 'name',
-      value: ''
-    },
-    {
-      type: 'externalId',
-      value: ''
-    }
+    { type: 'name', value: '' },
+    { type: 'externalId', value: '' }
   ];
+
+  // Filter chip state
+  activeFilter: string | null = null;
+  statuses = ['Active', 'Pending', 'Closed'];
+  showClosed = false;
+
+  appliedFilters: { [key: string]: string | null } = {
+    name: null,
+    externalId: null,
+    status: null
+  };
 
   /** Paginator for centers table. */
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
@@ -102,32 +94,7 @@ export class CentersComponent implements OnInit, AfterViewInit {
     this.getCenters();
   }
 
-  /**
-   * Subscribes to all search filters:
-   * Name, ExternalId
-   * sort change and page change.
-   */
   ngAfterViewInit() {
-    this.name.valueChanges
-      .pipe(
-        debounceTime(500),
-        distinctUntilChanged(),
-        tap((filterValue) => {
-          this.applyFilter(filterValue, 'name');
-        })
-      )
-      .subscribe();
-
-    this.externalId.valueChanges
-      .pipe(
-        debounceTime(500),
-        distinctUntilChanged(),
-        tap((filterValue) => {
-          this.applyFilter(filterValue, 'externalId');
-        })
-      )
-      .subscribe();
-
     this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
 
     merge(this.sort.sortChange, this.paginator.page)
@@ -135,45 +102,62 @@ export class CentersComponent implements OnInit, AfterViewInit {
       .subscribe();
   }
 
-  /**
-   * Reloads page on changing show closed centers checkbox
-   */
-  changeShowClosedCenters() {
+  // --- Filter chip methods (matches Clients pattern) ---
+
+  openFilter(name: string) {
+    this.activeFilter = this.activeFilter === name ? null : name;
+  }
+
+  applyFilterValue(key: string, value: string) {
+    this.appliedFilters[key] = value || null;
+    this.activeFilter = null;
+    this.syncFiltersAndReload();
+  }
+
+  removeFilter(key: string) {
+    this.appliedFilters[key] = null;
+    this.syncFiltersAndReload();
+  }
+
+  clearAllFilters() {
+    Object.keys(this.appliedFilters).forEach(k => this.appliedFilters[k] = null);
+    this.syncFiltersAndReload();
+  }
+
+  get hasActiveFilters(): boolean {
+    return Object.values(this.appliedFilters).some(v => v !== null);
+  }
+
+  /** Push applied filters into the server-side filterBy array and reload. */
+  private syncFiltersAndReload() {
+    // Update name filter
+    const nameIdx = this.filterCentersBy.findIndex(f => f.type === 'name');
+    this.filterCentersBy[nameIdx].value = this.appliedFilters['name'] || '';
+
+    // Update externalId filter
+    const extIdx = this.filterCentersBy.findIndex(f => f.type === 'externalId');
+    this.filterCentersBy[extIdx].value = this.appliedFilters['externalId'] || '';
+
+    this.paginator.pageIndex = 0;
     this.loadCentersPage();
   }
 
-  /**
-   * Loads a page of centers.
-   */
   loadCentersPage() {
     if (!this.sort.direction) {
       delete this.sort.active;
     }
+    // Show closed = pass false for centerActive so all statuses come back
+    const showOnlyActive = !this.showClosed && !this.appliedFilters['status'];
     this.dataSource.getCenters(
       this.filterCentersBy,
       this.sort.active,
       this.sort.direction,
       this.paginator.pageIndex,
       this.paginator.pageSize,
-      !this.showClosedCenters.checked
+      showOnlyActive
     );
   }
 
-  /**
-   * Filters data in centers table based on passed value and poperty.
-   * @param {string} filterValue Value to filter data.
-   * @param {string} property Property to filter data by.
-   */
-  applyFilter(filterValue: string, property: string) {
-    this.paginator.pageIndex = 0;
-    const findIndex = this.filterCentersBy.findIndex((filter) => filter.type === property);
-    this.filterCentersBy[findIndex].value = filterValue;
-    this.loadCentersPage();
-  }
-
-  /**
-   * Initializes the data source for centers table and loads the first page.
-   */
   getCenters() {
     this.dataSource = new CentersDataSource(this.centersService);
     this.dataSource.getCenters(

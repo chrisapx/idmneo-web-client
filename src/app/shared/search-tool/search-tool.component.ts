@@ -1,96 +1,54 @@
-/** Angular Imports */
-import { Component } from '@angular/core';
-import { style, animate, transition, trigger } from '@angular/animations';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { UntypedFormControl, ReactiveFormsModule } from '@angular/forms';
-import { MatIconButton } from '@angular/material/button';
+import { UntypedFormControl } from '@angular/forms';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-import { MatTooltip } from '@angular/material/tooltip';
 import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
 
-/**
- * Search Tool Component
- */
 @Component({
   selector: 'mifosx-search-tool',
   templateUrl: './search-tool.component.html',
   styleUrls: ['./search-tool.component.scss'],
-  animations: [
-    trigger('fadeInOut', [
-      transition(':enter', [
-        style({ opacity: 0 }),
-        animate(500, style({ opacity: 1 }))]),
-      transition(':leave', [
-        animate(500, style({ opacity: 0 }))])
-
-    ])
-
-  ],
-  imports: [
-    ...STANDALONE_SHARED_IMPORTS,
-    MatIconButton,
-    FaIconComponent,
-    MatTooltip
-  ]
+  imports: [...STANDALONE_SHARED_IMPORTS, FaIconComponent]
 })
 export class SearchToolComponent {
-  /** Query Form Control */
   query = new UntypedFormControl('');
-  /** Resource Form Control */
-  resource = new UntypedFormControl('');
+  isFocused = false;
 
-  /** Sets the initial visibility of search input as hidden. Visible if true. */
-  searchVisible = false;
-  /** Resource Options */
-  resourceOptions: any[] = [
-    {
-      name: 'All',
-      value: 'clients,clientIdentifiers,groups,savings,shares,loans'
-    },
-    {
-      name: 'Clients',
-      value: 'clients,clientIdentifiers'
-    },
-    {
-      name: 'Groups',
-      value: 'groups'
-    },
-    {
-      name: 'Savings',
-      value: 'savings'
-    },
-    {
-      name: 'Shares',
-      value: 'shares'
-    },
-    {
-      name: 'Loans',
-      value: 'loans'
-    }
+  @ViewChild('searchInput') searchInput: ElementRef<HTMLInputElement>;
+
+  suggestedFilters = [
+    { prefix: 'client:', example: 'client:John', description: 'search clients by name', resource: 'clients,clientIdentifiers' },
+    { prefix: 'loan:', example: 'loan:000001', description: 'search loan accounts', resource: 'loans' },
+    { prefix: 'savings:', example: 'savings:000002', description: 'search savings accounts', resource: 'savings' },
+    { prefix: 'group:', example: 'group:Main', description: 'search groups by name', resource: 'groups' },
+    { prefix: 'share:', example: 'share:000003', description: 'search share accounts', resource: 'shares' },
   ];
 
-  /**
-   * @param {Router} router Router
-   */
-  constructor(private router: Router) {
-    this.resource.patchValue('clients,clientIdentifiers,groups,savings,shares,loans');
+  constructor(private router: Router) {}
+
+  onBlur() {
+    setTimeout(() => this.isFocused = false, 200);
   }
 
-  /**
-   * Toggles the visibility of search input with fadeInOut animation.
-   */
-  toggleSearchVisibility() {
-    this.searchVisible = !this.searchVisible;
+  applyFilter(filter: any) {
+    this.query.setValue(filter.prefix);
+    this.isFocused = false;
+    this.searchInput?.nativeElement?.focus();
   }
 
-  /**
-   * Searches server for query and resource.
-   */
   search() {
-    const queryParams: any = {
-      query: this.query.value,
-      resource: this.resource.value
-    };
-    this.router.navigate(['/search'], { queryParams: queryParams });
+    let queryText = this.query.value || '';
+    let resource = 'clients,clientIdentifiers,groups,savings,shares,loans';
+
+    for (const f of this.suggestedFilters) {
+      if (queryText.startsWith(f.prefix)) {
+        resource = f.resource;
+        queryText = queryText.substring(f.prefix.length).trim();
+        break;
+      }
+    }
+
+    this.isFocused = false;
+    this.router.navigate(['/search'], { queryParams: { query: queryText, resource } });
   }
 }

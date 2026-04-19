@@ -1,66 +1,94 @@
-<mat-card class="container">
-  <div class="layout-column layout-gt-sm-row align-gt-sm-start-center">
-    <div class="search-box m-r-30">
-      <mat-form-field class="search-box">
-        <input matInput placeholder="Search by Name" [formControl]="name" />
-      </mat-form-field>
-      <mat-checkbox #showClosedGroups labelPosition="after" (change)="changeShowClosedGroups()" class="m-r-10">{{
-        'labels.inputs.Show Closed Groups' | translate
-      }}</mat-checkbox>
-    </div>
-    <div class="action-button gap-25px">
-      <button mat-raised-button color="primary" [routerLink]="['../', 'organization', 'bulk-import', 'Groups']">
-        <fa-icon icon="download" class="m-r-20"></fa-icon>{{ 'labels.buttons.Import Group' | translate }}
+<div class="s-page">
+  <div class="s-head">
+    <h1>Groups</h1>
+    <div class="s-head-actions">
+      <button mat-stroked-button class="s-outline-btn" [routerLink]="['../', 'organization', 'bulk-import', 'Groups']">
+        <mat-icon>download</mat-icon> Import
       </button>
-      <button mat-raised-button color="primary" [routerLink]="['create']" *mifosxHasPermission="'CREATE_GROUP'">
-        <fa-icon icon="plus" class="m-r-20"></fa-icon>{{ 'labels.buttons.Create Group' | translate }}
+      <button mat-flat-button class="s-primary-btn" [routerLink]="['create']" *mifosxHasPermission="'CREATE_GROUP'">
+        <mat-icon>add</mat-icon> Add group
       </button>
     </div>
   </div>
 
-  <table mat-table [dataSource]="dataSource" matSort class="bordered-table">
-    <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.name' | translate }}</th>
-      <td mat-cell *matCellDef="let group">{{ group.name }}</td>
-    </ng-container>
+  <!-- Filter chips row -->
+  <div class="s-filters">
+    <div class="s-filter-left">
 
-    <ng-container matColumnDef="accountNo">
-      <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.Account' | translate }} #</th>
-      <td mat-cell *matCellDef="let group">{{ group.accountNo }}</td>
-    </ng-container>
-
-    <ng-container matColumnDef="externalId">
-      <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.External Id' | translate }}</th>
-      <td mat-cell *matCellDef="let group">{{ group.externalId }}</td>
-    </ng-container>
-
-    <ng-container matColumnDef="status">
-      <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.Status' | translate }}</th>
-      <td mat-cell *matCellDef="let row">
-        <div [ngClass]="row.status.code | statusLookup">
-          <fa-icon icon="stop"></fa-icon>
+      <!-- Name filter (text input) -->
+      <div class="s-chip-wrap">
+        <button class="s-filter-chip" [class.applied]="appliedFilters['name']" (click)="openFilter('name')">
+          <mat-icon>{{ appliedFilters['name'] ? 'check' : 'add' }}</mat-icon>
+          Name{{ appliedFilters['name'] ? ': ' + appliedFilters['name'] : '' }}
+          <mat-icon class="chip-x" *ngIf="appliedFilters['name']" (click)="$event.stopPropagation(); removeFilter('name')">close</mat-icon>
+        </button>
+        <div class="s-pop" *ngIf="activeFilter === 'name'">
+          <div class="s-pop-title">Filter by: name</div>
+          <div class="s-pop-row">
+            <span class="s-pop-label">contains</span>
+            <input class="s-pop-input" [(ngModel)]="appliedFilters['name']" placeholder="e.g. Group A" (keydown.enter)="applyFilterValue('name', appliedFilters['name'])" />
+          </div>
+          <button class="s-pop-apply" (click)="applyFilterValue('name', appliedFilters['name'])">Apply</button>
         </div>
-      </td>
-    </ng-container>
+      </div>
 
-    <ng-container matColumnDef="officeName">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.Office Name' | translate }}</th>
-      <td mat-cell *matCellDef="let group">{{ group.officeName }}</td>
-    </ng-container>
+      <!-- Status filter (dropdown) -->
+      <div class="s-chip-wrap">
+        <button class="s-filter-chip" [class.applied]="appliedFilters['status']" (click)="openFilter('status')">
+          <mat-icon>{{ appliedFilters['status'] ? 'check' : 'add' }}</mat-icon>
+          Status{{ appliedFilters['status'] ? ': ' + appliedFilters['status'] : '' }}
+          <mat-icon class="chip-x" *ngIf="appliedFilters['status']" (click)="$event.stopPropagation(); removeFilter('status')">close</mat-icon>
+        </button>
+        <div class="s-pop" *ngIf="activeFilter === 'status'">
+          <div class="s-pop-title">Filter by: status</div>
+          <div class="s-pop-options">
+            <div class="s-pop-option" *ngFor="let s of statuses" (click)="applyFilterValue('status', s)"
+                 [class.selected]="appliedFilters['status'] === s">
+              <mat-icon *ngIf="appliedFilters['status'] === s">check</mat-icon>
+              {{ s }}
+            </div>
+          </div>
+        </div>
+      </div>
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr
-      mat-row
-      *matRowDef="let row; columns: displayedColumns"
-      [routerLink]="[row.id, 'general']"
-      class="select-row"
-    ></tr>
-  </table>
+    </div>
 
-  <mat-paginator
-    [length]="dataSource?.records$ | async"
-    [pageSize]="10"
-    [pageSizeOptions]="[10, 25, 50, 100]"
-    showFirstLastButtons
-  ></mat-paginator>
-</mat-card>
+    <div class="s-filter-right">
+      <button class="s-action-chip" *ngIf="hasActiveFilters" (click)="clearAllFilters()"><mat-icon>close</mat-icon> Clear</button>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="s-table">
+    <table mat-table [dataSource]="dataSource" matSort>
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Group</th>
+        <td mat-cell *matCellDef="let group">
+          <div class="s-name"><span class="s-av">{{ (group.name || '?')[0] }}</span> {{ group.name }}</div>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="accountNo">
+        <th mat-header-cell *matHeaderCellDef>Account #</th>
+        <td mat-cell *matCellDef="let group">{{ group.accountNo }}</td>
+      </ng-container>
+      <ng-container matColumnDef="externalId">
+        <th mat-header-cell *matHeaderCellDef>External ID</th>
+        <td mat-cell *matCellDef="let group">{{ group.externalId }}</td>
+      </ng-container>
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Status</th>
+        <td mat-cell *matCellDef="let row">
+          <span class="s-pill" [ngClass]="row.status.code | statusLookup">{{ row.status.value }}</span>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="officeName">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Office</th>
+        <td mat-cell *matCellDef="let group">{{ group.officeName }}</td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns" [routerLink]="[row.id, 'general']" class="s-row"></tr>
+    </table>
+
+    <mat-paginator [length]="dataSource?.records$ | async" [pageSize]="10" [pageSizeOptions]="[10, 25, 50, 100]" showFirstLastButtons></mat-paginator>
+  </div>
+</div>

@@ -25,6 +25,8 @@ import { startWith, map } from 'rxjs/operators';
 import { PopoverService } from '../../configuration-wizard/popover/popover.service';
 import { ConfigurationWizardService } from '../../configuration-wizard/configuration-wizard.service';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { MatIcon } from '@angular/material/icon';
+import { MatButton } from '@angular/material/button';
 import { MatAutocompleteTrigger, MatAutocomplete, MatOption } from '@angular/material/autocomplete';
 import { NgFor, AsyncPipe } from '@angular/common';
 import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
@@ -39,6 +41,8 @@ import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
   imports: [
     ...STANDALONE_SHARED_IMPORTS,
     FaIconComponent,
+    MatIcon,
+    MatButton,
     MatAutocompleteTrigger,
     MatAutocomplete,
     MatTable,
@@ -58,6 +62,8 @@ import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
   ]
 })
 export class ClosingEntriesComponent implements OnInit, AfterViewInit {
+  /** Active filter chip. */
+  activeChip: string | null = null;
   /** Columns to be displayed in closing entries table. */
   displayedColumns: string[] = [
     'officeName',

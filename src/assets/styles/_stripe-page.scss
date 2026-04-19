@@ -1,0 +1,310 @@
+// Reusable Stripe page layout for list/table pages
+// Usage: @use 'assets/styles/stripe-page' as *;
+
+$sp-dark: #1A1F36;
+$sp-text: #3C4257;
+$sp-grey: #697386;
+$sp-border: #E3E8EE;
+$sp-bg: #F7F8FA;
+$sp-white: #fff;
+$sp-purple: #635BFF;
+
+.s-page { padding-top: 12px; }
+
+.s-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px; flex-wrap: wrap; gap: 8px;
+  h1 { font-size: 28px; font-weight: 700; color: $sp-dark; margin: 0; letter-spacing: -0.5px; }
+}
+.s-head-actions { display: flex; gap: 8px; }
+
+.s-primary-btn {
+  background: $sp-purple !important; color: #fff !important;
+  border-radius: 20px !important; height: 34px !important;
+  font-size: 13px !important; font-weight: 600 !important;
+  text-transform: none !important; padding: 0 16px !important;
+  letter-spacing: 0 !important; box-shadow: none !important;
+  mat-icon { font-size: 16px; width: 16px; height: 16px; margin-right: 4px; }
+  &:hover { background: darken($sp-purple, 6%) !important; }
+}
+
+.s-outline-btn {
+  border: 1px solid $sp-border !important; border-radius: 20px !important;
+  height: 34px !important; font-size: 13px !important; font-weight: 500 !important;
+  text-transform: none !important; padding: 0 16px !important;
+  color: $sp-text !important; background: $sp-white !important;
+  letter-spacing: 0 !important; box-shadow: none !important;
+  mat-icon { font-size: 16px; width: 16px; height: 16px; margin-right: 4px; color: $sp-grey; }
+  &:hover { background: $sp-bg !important; }
+}
+
+// Filters
+.s-filter-row {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 10px; flex-wrap: wrap;
+}
+
+.s-chip-search {
+  display: flex; align-items: center; gap: 6px;
+  height: 34px; padding: 0 10px;
+  border: 1px solid $sp-border; border-radius: 8px; background: $sp-white;
+  min-width: 200px; max-width: 360px; flex: 1;
+  transition: border-color 0.15s;
+  &:focus-within { border-color: $sp-purple; box-shadow: 0 0 0 2px rgba($sp-purple, 0.08); }
+  mat-icon { font-size: 16px; width: 16px; height: 16px; color: $sp-grey; flex-shrink: 0; }
+  input { flex: 1; border: none; outline: none; background: transparent; font-size: 13px; color: $sp-dark; height: 100%;
+    &::placeholder { color: $sp-grey; }
+  }
+}
+
+.s-select-wrap {
+  max-width: 180px; min-width: 140px;
+
+  ::ng-deep .mat-mdc-select {
+    .mat-mdc-select-trigger { font-size: 13px; color: $sp-grey; }
+    .mat-mdc-select-value-text { font-size: 13px; color: $sp-dark; }
+    .mat-mdc-select-arrow { color: $sp-grey; }
+  }
+}
+
+.s-check { font-size: 13px !important; flex-shrink: 0; }
+
+// Search button — sits next to search field
+.s-search-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 34px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 6px;
+  background: $sp-purple;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  flex-shrink: 0;
+  white-space: nowrap;
+  &:hover { background: darken($sp-purple, 6%); }
+  mat-icon { font-size: 16px; width: 16px; height: 16px; }
+}
+
+// Filter chip button (dashed border)
+.s-filter-chip {
+  display: inline-flex; align-items: center; gap: 2px;
+  height: 28px; padding: 0 10px;
+  border: 1px dashed $sp-border; border-radius: 16px;
+  background: $sp-white; color: $sp-text;
+  font-size: 13px; font-weight: 500; cursor: pointer;
+  white-space: nowrap;
+  mat-icon { font-size: 14px; width: 14px; height: 14px; color: $sp-grey; }
+  &:hover { background: $sp-bg; border-color: darken($sp-border, 10%); }
+  &.applied {
+    border-color: $sp-purple; color: $sp-purple; border-style: solid;
+    background: rgba($sp-purple, 0.04);
+    mat-icon:first-child { color: $sp-purple; }
+  }
+}
+
+// Action chip (solid border)
+.s-action-chip {
+  display: inline-flex; align-items: center; gap: 3px;
+  height: 28px; padding: 0 10px;
+  border: 1px solid $sp-border; border-radius: 6px;
+  background: $sp-white; color: $sp-text;
+  font-size: 13px; font-weight: 500; cursor: pointer;
+  white-space: nowrap;
+  mat-icon { font-size: 14px; width: 14px; height: 14px; color: $sp-grey; }
+  &:hover { background: $sp-bg; }
+}
+
+// Native field pattern (label above input)
+.s-field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  min-width: 140px;
+
+  &.s-field-sm { flex: 0 0 auto; min-width: 120px; max-width: 180px; }
+
+  label, .s-field-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: $sp-grey;
+  }
+
+  input, select, textarea {
+    height: 34px;
+    padding: 0 10px;
+    border: 1px solid $sp-border;
+    border-radius: 6px;
+    background: $sp-white;
+    font-size: 13px;
+    color: $sp-dark;
+    outline: none;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    -webkit-appearance: none;
+
+    &::placeholder { color: $sp-grey; }
+    &:focus {
+      border-color: $sp-purple;
+      box-shadow: 0 0 0 3px rgba($sp-purple, 0.08);
+    }
+  }
+
+  select {
+    cursor: pointer;
+    background: $sp-white url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23697386' d='M6 8L1 3h10z'/%3E%3C/svg%3E") no-repeat right 10px center;
+    padding-right: 28px;
+  }
+
+  textarea {
+    height: auto;
+    min-height: 60px;
+    padding: 8px 10px;
+    resize: vertical;
+  }
+}
+
+// Table card
+.s-table {
+  background: $sp-white; border: 1px solid $sp-border; border-radius: 8px;
+  overflow-x: auto;
+}
+
+::ng-deep .s-table {
+  .mat-mdc-table { width: 100%; min-width: 600px; background: transparent; }
+  .mat-mdc-header-row { height: 36px; background: $sp-bg; }
+  .mat-mdc-header-cell {
+    font-size: 11px; font-weight: 600; color: $sp-grey;
+    text-transform: uppercase; letter-spacing: 0.4px;
+    border-bottom: 1px solid $sp-border; padding: 0 14px;
+  }
+  .mat-mdc-row { height: 44px; &:hover { background: $sp-bg; } }
+  .mat-mdc-cell {
+    font-size: 13px; color: $sp-text;
+    border-bottom: 1px solid lighten($sp-border, 2%); padding: 0 14px;
+  }
+  .mat-mdc-row:last-child .mat-mdc-cell { border-bottom: none; }
+  .mat-mdc-paginator { background: transparent; border-top: 1px solid $sp-border; font-size: 13px; }
+}
+
+.s-row { cursor: pointer; }
+.s-num { text-align: right !important; font-variant-numeric: tabular-nums; }
+
+// Avatars
+.s-name { display: flex; align-items: center; gap: 8px; font-weight: 500; color: $sp-dark; }
+.s-av {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: lighten($sp-purple, 28%); color: $sp-purple;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; text-transform: uppercase; flex-shrink: 0;
+}
+
+// Status pills
+.s-pill {
+  display: inline-block; font-size: 12px; font-weight: 600;
+  padding: 2px 10px; border-radius: 12px;
+  background: lighten($sp-border, 3%); color: $sp-grey;
+}
+
+.s-pill-sm {
+  display: inline-block; font-size: 11px; font-weight: 600;
+  padding: 2px 8px; border-radius: 10px;
+  background: lighten($sp-border, 3%); color: $sp-grey;
+  &.active { background: #DCFCE7; color: #166534; }
+  &.inactive { background: lighten($sp-border, 3%); color: $sp-grey; }
+}
+
+.s-bool {
+  font-size: 12px; font-weight: 500; color: $sp-grey;
+  &.yes { color: $sp-purple; font-weight: 600; }
+}
+
+// Empty state
+.s-empty {
+  display: flex; flex-direction: column; align-items: center; padding: 48px 20px; color: $sp-grey;
+  mat-icon { font-size: 40px; width: 40px; height: 40px; opacity: 0.25; margin-bottom: 10px; }
+  p { font-size: 15px; font-weight: 600; color: $sp-dark; margin: 0 0 4px; }
+  span { font-size: 13px; }
+}
+
+// Filter chips layout
+.s-filters {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 4px; gap: 8px; flex-wrap: wrap;
+}
+.s-filter-left { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.s-filter-right { display: flex; align-items: center; gap: 6px; }
+
+.s-chip-wrap { position: relative; }
+
+.s-filter-chip {
+  display: inline-flex; align-items: center; gap: 2px;
+  height: 28px; padding: 0 10px;
+  border: 1px dashed $sp-border; border-radius: 16px;
+  background: $sp-white; color: $sp-text;
+  font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap;
+  mat-icon { font-size: 14px; width: 14px; height: 14px; color: $sp-grey; }
+  .chip-x {
+    font-size: 12px !important; width: 12px !important; height: 12px !important;
+    margin-left: 2px; color: $sp-grey !important;
+    &:hover { color: $sp-dark !important; }
+  }
+  &:hover { background: $sp-bg; border-color: darken($sp-border, 10%); }
+  &.applied { border-color: $sp-purple; color: $sp-purple; border-style: solid; background: rgba($sp-purple, 0.04);
+    mat-icon:first-child { color: $sp-purple; }
+  }
+}
+
+.s-action-chip {
+  display: inline-flex; align-items: center; gap: 3px;
+  height: 28px; padding: 0 10px;
+  border: 1px solid $sp-border; border-radius: 6px;
+  background: $sp-white; color: $sp-text;
+  font-size: 13px; font-weight: 500; cursor: pointer;
+  white-space: nowrap;
+  mat-icon { font-size: 14px; width: 14px; height: 14px; color: $sp-grey; }
+  &:hover { background: $sp-bg; }
+}
+
+// Filter popover
+.s-pop {
+  position: absolute; top: 34px; left: 0; width: 260px;
+  background: $sp-white; border: 1px solid $sp-border; border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12); padding: 14px; z-index: 500;
+}
+.s-pop-title { font-size: 13px; font-weight: 600; color: $sp-dark; margin-bottom: 8px; }
+.s-pop-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.s-pop-label { font-size: 13px; color: $sp-grey; flex-shrink: 0; }
+.s-pop-input {
+  flex: 1; height: 32px; padding: 0 8px;
+  border: 1px solid $sp-border; border-radius: 6px;
+  font-size: 13px; color: $sp-dark; outline: none;
+  &:focus { border-color: $sp-purple; box-shadow: 0 0 0 2px rgba($sp-purple, 0.1); }
+}
+.s-pop-apply {
+  width: 100%; height: 34px; background: $sp-purple; color: #fff;
+  border: none; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer;
+  &:hover { background: darken($sp-purple, 6%); }
+}
+.s-pop-options {
+  display: flex; flex-direction: column; gap: 2px;
+  max-height: 240px; overflow-y: auto; margin: 0 -14px; padding: 0;
+}
+.s-pop-option {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 16px; font-size: 14px; color: $sp-text; cursor: pointer;
+  mat-icon { font-size: 18px; width: 18px; height: 18px; color: $sp-purple; }
+  &:hover { background: $sp-bg; }
+  &.selected { background: rgba($sp-purple, 0.06); color: $sp-purple; font-weight: 600; }
+}
+
+@media (max-width: 768px) {
+  .s-head { flex-direction: column; align-items: flex-start; }
+  .s-filter-row { flex-direction: column; }
+  .s-chip-search { max-width: 100%; min-width: 0; }
+}

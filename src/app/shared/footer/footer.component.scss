@@ -1,52 +1,58 @@
-@use 'assets/styles/helper';
-@use 'assets/styles/colours' as *;
+// Stripe-style footer bar
+$s-grey: #697386;
+$s-border: #E3E8EE;
+$s-dark: #1A1F36;
 
-#footer {
+.s-footer {
+  display: flex;
   align-items: center;
-  min-width: 400px;
-
-  .content-wrapper {
-    max-width: 100%;
-    min-width: 90%;
-    padding-left: 5%;
-    padding-right: 5%;
-
-    .versions {
-      width: 100%;
-      color: $status-inactive;
-    }
-
-    .footer-content {
-      margin: 0;
-    }
-  }
-
-  .divider {
-    margin: 2.5rem 1rem 0.5rem;
-    width: 4rem;
-  }
-
-  .business-date {
-    color: $status-approved;
-  }
-
-  table {
-    border: none;
-
-    tr:nth-child(even) {
-      background-color: transparent;
-    }
-  }
+  height: 40px;
+  padding: 0 24px;
+  border-top: 1px solid $s-border;
+  background: #fff;
 }
 
-.main-page {
-  max-width: 70%;
-  min-width: 50%;
-  padding-left: 30%;
+.s-footer-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
-.copy-label {
-  min-width: 100%;
-  text-align: center;
-  font-size: large;
+.s-footer-text {
+  font-size: 11px;
+  color: $s-grey;
+}
+
+.s-footer-sep {
+  color: $s-grey;
+  font-size: 11px;
+}
+
+.s-footer-spacer {
+  flex: 1;
+}
+
+.s-footer-icons {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.s-footer-btn {
+  width: 28px !important;
+  height: 28px !important;
+  line-height: 28px !important;
+  padding: 0 !important;
+  color: $s-grey !important;
+  text-decoration: none;
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+
+  &:hover {
+    color: $s-dark !important;
+  }
 }

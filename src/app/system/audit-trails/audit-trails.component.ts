@@ -17,6 +17,7 @@ import { merge } from 'rxjs';
 import { tap, debounceTime, distinctUntilChanged, startWith, map } from 'rxjs/operators';
 import { Dates } from 'app/core/utils/dates';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { MatIcon } from '@angular/material/icon';
 import { NgFor, NgIf, AsyncPipe } from '@angular/common';
 import { MatOption, MatAutocompleteTrigger, MatAutocomplete } from '@angular/material/autocomplete';
 import { MatProgressBar } from '@angular/material/progress-bar';
@@ -45,6 +46,7 @@ import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
   imports: [
     ...STANDALONE_SHARED_IMPORTS,
     FaIconComponent,
+    MatIcon,
     MatAutocompleteTrigger,
     MatAutocomplete,
     MatProgressBar,

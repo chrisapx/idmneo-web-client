@@ -17,6 +17,7 @@ import {
 } from '@angular/material/table';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { MatIcon } from '@angular/material/icon';
 import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
 
 /**
@@ -29,6 +30,7 @@ import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
   imports: [
     ...STANDALONE_SHARED_IMPORTS,
     FaIconComponent,
+    MatIcon,
     MatTable,
     MatSort,
     MatColumnDef,
@@ -51,6 +53,8 @@ export class AccountNumberPreferencesComponent implements OnInit {
   displayedColumns: string[] = ['accountType'];
   /** Data source for account number preferences table. */
   dataSource: MatTableDataSource<any>;
+  filterValue = '';
+  activeChip: string | null = null;
 
   /** Paginator for account number preferences table. */
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;

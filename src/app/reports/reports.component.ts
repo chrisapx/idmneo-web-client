@@ -16,6 +16,7 @@ import {
   MatRow
 } from '@angular/material/table';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { MatIcon } from '@angular/material/icon';
 import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
 
 /**
@@ -27,6 +28,7 @@ import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
   styleUrls: ['./reports.component.scss'],
   imports: [
     ...STANDALONE_SHARED_IMPORTS,
+    MatIcon,
     MatTable,
     MatSort,
     MatColumnDef,
@@ -55,6 +57,8 @@ export class ReportsComponent implements OnInit {
   ];
   /** Data source for reports table. */
   dataSource = new MatTableDataSource();
+  filterValue = '';
+  activeChip: string | null = null;
 
   /** Paginator for reports table. */
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;

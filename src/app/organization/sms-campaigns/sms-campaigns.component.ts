@@ -21,8 +21,11 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { of } from 'rxjs';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { MatTooltip } from '@angular/material/tooltip';
+import { MatIcon } from '@angular/material/icon';
 import { TitleCasePipe } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { StatusLookupPipe } from '../../pipes/status-lookup.pipe';
+import { FormsModule } from '@angular/forms';
 import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
 
 /**
@@ -50,10 +53,17 @@ import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
     MatRow,
     MatPaginator,
     TitleCasePipe,
-    StatusLookupPipe
+    StatusLookupPipe,
+    MatIcon,
+    NgClass,
+    FormsModule
   ]
 })
 export class SmsCampaignsComponent implements OnInit {
+  /** Filter chip value. */
+  filterValue = '';
+  /** Active filter chip. */
+  activeChip: string | null = null;
   /** SMS Campaigns data. */
   smsCampaignsData: any;
   /** Columns to be displayed in sms campaigns table. */

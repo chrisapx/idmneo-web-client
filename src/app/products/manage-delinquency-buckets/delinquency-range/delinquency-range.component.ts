@@ -17,6 +17,8 @@ import {
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
+import { MatIcon } from '@angular/material/icon';
+import { MatButton } from '@angular/material/button';
 
 @Component({
   selector: 'mifosx-delinquency-range',
@@ -37,7 +39,9 @@ import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
     MatHeaderRow,
     MatRowDef,
     MatRow,
-    MatPaginator
+    MatPaginator,
+    MatIcon,
+    MatButton
   ]
 })
 export class DelinquencyRangeComponent implements OnInit {
@@ -50,6 +54,8 @@ export class DelinquencyRangeComponent implements OnInit {
   ];
   /** Data source for delinquency range table. */
   dataSource: MatTableDataSource<any>;
+  filterValue = '';
+  activeChip: string | null = null;
 
   /** Paginator for delinquency range table. */
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;

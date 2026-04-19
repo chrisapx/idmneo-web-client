@@ -15,23 +15,11 @@ import { CaptureImageDialogComponent } from './custom-dialogs/capture-image-dial
 
 /** Custom Services */
 import { ClientsService } from '../clients.service';
-import {
-  MatCard,
-  MatCardHeader,
-  MatCardTitleGroup,
-  MatCardMdImage,
-  MatCardTitle,
-  MatCardSubtitle,
-  MatCardContent
-} from '@angular/material/card';
-import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
-import { NgClass, NgIf, NgFor } from '@angular/common';
-import { EntityNameComponent } from '../../shared/entity-name/entity-name.component';
+import { NgClass, NgIf, NgFor, UpperCasePipe } from '@angular/common';
 import { MatMenuTrigger, MatMenu, MatMenuItem } from '@angular/material/menu';
 import { MatIcon } from '@angular/material/icon';
-import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-import { AccountNumberComponent } from '../../shared/account-number/account-number.component';
+import { MatDivider } from '@angular/material/divider';
 import { ExternalIdentifierComponent } from '../../shared/external-identifier/external-identifier.component';
 import { MatTabNav, MatTabLink, MatTabNavPanel } from '@angular/material/tabs';
 import { StatusLookupPipe } from '../../pipes/status-lookup.pipe';
@@ -44,19 +32,14 @@ import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
   styleUrls: ['./clients-view.component.scss'],
   imports: [
     ...STANDALONE_SHARED_IMPORTS,
-    MatCardHeader,
-    MatCardTitleGroup,
-    MatCardMdImage,
     MatTooltip,
-    MatCardTitle,
     NgClass,
-    EntityNameComponent,
-    MatIconButton,
+    NgIf,
+    NgFor,
+    UpperCasePipe,
     MatMenuTrigger,
     MatIcon,
-    FaIconComponent,
-    MatCardSubtitle,
-    AccountNumberComponent,
+    MatDivider,
     ExternalIdentifierComponent,
     MatMenu,
     MatMenuItem,

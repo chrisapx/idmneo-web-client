@@ -1,16 +1,7 @@
-table {
-  width: 100%;
+@use 'assets/styles/stripe-page' as *;
 
-  .select-row:hover {
-    cursor: pointer;
-  }
+.s-filters {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 8px; gap: 8px; flex-wrap: wrap;
 }
-
-// TODO: CONFIGURE THESE CLASSES GLOBALLY
-.system-defined {
-  color: #32cd32;
-}
-
-.not-system-defined {
-  color: #f44366;
-}
+.s-filter-left { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }

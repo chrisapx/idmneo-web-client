@@ -7,8 +7,8 @@ import { LoansService } from 'app/loans/loans.service';
 import { SavingsService } from 'app/savings/savings.service';
 import { DeleteDialogComponent } from 'app/shared/delete-dialog/delete-dialog.component';
 import { FormDialogComponent } from 'app/shared/form-dialog/form-dialog.component';
-import { CdkTextareaAutosize } from '@angular/cdk/text-field';
-import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { MatIcon } from '@angular/material/icon';
+import { MatTooltip } from '@angular/material/tooltip';
 import { DateFormatPipe } from '../../../pipes/date-format.pipe';
 import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
 
@@ -18,8 +18,8 @@ import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
   styleUrls: ['./entity-notes-tab.component.scss'],
   imports: [
     ...STANDALONE_SHARED_IMPORTS,
-    CdkTextareaAutosize,
-    FaIconComponent,
+    MatIcon,
+    MatTooltip,
     DateFormatPipe
   ]
 })

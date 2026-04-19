@@ -16,7 +16,10 @@ import {
   MatRow
 } from '@angular/material/table';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { MatIcon } from '@angular/material/icon';
+import { MatButton } from '@angular/material/button';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { FormsModule } from '@angular/forms';
 import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
 
 /**
@@ -29,6 +32,8 @@ import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
   imports: [
     ...STANDALONE_SHARED_IMPORTS,
     FaIconComponent,
+    MatIcon,
+    MatButton,
     MatTable,
     MatSort,
     MatColumnDef,
@@ -41,10 +46,15 @@ import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
     MatHeaderRow,
     MatRowDef,
     MatRow,
-    MatPaginator
+    MatPaginator,
+    FormsModule
   ]
 })
 export class AccountingRulesComponent implements OnInit {
+  /** Filter chip value. */
+  filterValue = '';
+  /** Active filter chip. */
+  activeChip: string | null = null;
   /** Accounting rule data. */
   accountingRuleData: any;
   /** Columns to be displayed in accounting rules table. */

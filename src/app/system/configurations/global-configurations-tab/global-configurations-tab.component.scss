@@ -1,3 +1,7 @@
-table {
-  width: 100%;
+@use 'assets/styles/stripe-page' as *;
+
+.s-filters {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 8px; gap: 8px; flex-wrap: wrap;
 }
+.s-filter-left { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }

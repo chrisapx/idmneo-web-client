@@ -1,56 +1,52 @@
-<div class="tab-container mat-typography">
-  <h3>{{ 'labels.heading.Notes' | translate }}</h3>
+<div class="nt-page">
+  <div class="nt-head">
+    <h2>Notes</h2>
+  </div>
 
-  <div class="add-note-section">
-    <form
-      #formRef="ngForm"
-      [formGroup]="noteForm"
-      class="layout-row align-start-baseline gap-10px"
-      (ngSubmit)="addNote()"
-    >
-      <mat-form-field class="flex-85-minus-20px">
-        <textarea
-          required
-          formControlName="note"
-          matInput
-          placeholder="{{ 'labels.text.Write a note' | translate }} ..."
-          cdkTextareaAutosize
-          cdkAutosizeMinRows="2"
-        ></textarea>
-      </mat-form-field>
-      <button mat-raised-button class="flex-1" color="primary" [disabled]="!noteForm.valid">
-        <fa-icon icon="plus" class="m-r-10"></fa-icon>{{ 'labels.buttons.Add' | translate }}
-      </button>
+  <!-- Add note composer -->
+  <div class="nt-composer">
+    <form #formRef="ngForm" [formGroup]="noteForm" (ngSubmit)="addNote()">
+      <textarea
+        required
+        formControlName="note"
+        placeholder="Write a note..."
+        class="nt-textarea"
+        rows="3"
+      ></textarea>
+      <div class="nt-composer-foot">
+        <button type="submit" class="nt-btn-primary" [disabled]="!noteForm.valid">
+          <mat-icon>add</mat-icon> Add note
+        </button>
+      </div>
     </form>
   </div>
 
-  <div class="notes-container">
-    <div *ngIf="entityNotes && entityNotes.length > 0; else emptyState">
-      <div class="note-card" *ngFor="let entityNote of entityNotes; let i = index">
-        <div class="note-content">
-          {{ entityNote.note }}
+  <!-- Notes list -->
+  <div class="nt-list" *ngIf="entityNotes && entityNotes.length > 0">
+    <div class="nt-card" *ngFor="let entityNote of entityNotes; let i = index">
+      <div class="nt-content">{{ entityNote.note }}</div>
+      <div class="nt-foot">
+        <div class="nt-meta">
+          <span class="nt-by">{{ entityNote.createdByUsername }}</span>
+          <span class="nt-sep">·</span>
+          <span class="nt-date">{{ entityNote.createdOn | dateFormat }}</span>
         </div>
-
-        <div class="note-footer">
-          <div class="note-meta">
-            <div class="created-by">Created by {{ entityNote.createdByUsername }}</div>
-            <div class="created-date">
-              {{ entityNote.createdOn | dateFormat }}
-            </div>
-          </div>
-
-          <div class="note-actions">
-            <button class="edit-btn" (click)="editNote(entityNote.id, entityNote.note, i)" title="Edit note">
-              Edit
-            </button>
-            <button class="delete-btn" (click)="deleteNote(entityNote.id, i)" title="Delete note">Delete</button>
-          </div>
+        <div class="nt-actions">
+          <button class="nt-icon-btn" (click)="editNote(entityNote.id, entityNote.note, i)" matTooltip="Edit">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button class="nt-icon-btn danger" (click)="deleteNote(entityNote.id, i)" matTooltip="Delete">
+            <mat-icon>delete</mat-icon>
+          </button>
         </div>
       </div>
     </div>
+  </div>
 
-    <ng-template #emptyState>
-      <div class="empty-state">No notes available</div>
-    </ng-template>
+  <!-- Empty -->
+  <div class="nt-empty" *ngIf="!entityNotes || entityNotes.length === 0">
+    <mat-icon>sticky_note_2</mat-icon>
+    <p>No notes yet</p>
+    <span>Add a note above to get started.</span>
   </div>
 </div>

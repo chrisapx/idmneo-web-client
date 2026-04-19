@@ -1,54 +1,195 @@
-table {
-  width: 100%;
+@use 'assets/styles/stripe-page' as *;
 
-  .select-row:hover {
-    cursor: pointer;
+$ca-dark: #1A1F36;
+$ca-text: #3C4257;
+$ca-grey: #697386;
+$ca-border: #E3E8EE;
+$ca-bg: #F7F8FA;
+$ca-white: #fff;
+$ca-purple: #635BFF;
+
+// Toggle group override
+::ng-deep .ca-toggle {
+  &.mat-button-toggle-group {
+    border: 1px solid $ca-border !important;
+    border-radius: 6px !important;
+    overflow: hidden;
+    box-shadow: none !important;
+  }
+  .mat-button-toggle {
+    height: 30px !important;
+    .mat-button-toggle-button {
+      height: 30px !important;
+      padding: 0 8px !important;
+      font-size: 13px !important;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .mat-pseudo-checkbox { display: none !important; }
+    mat-icon {
+      font-size: 16px !important; width: 16px !important; height: 16px !important;
+    }
+    &.mat-button-toggle-checked {
+      background: rgba($ca-purple, 0.08) !important;
+      color: $ca-purple !important;
+      mat-icon { color: $ca-purple !important; }
+    }
+    &:not(.mat-button-toggle-checked) {
+      background: $ca-white !important;
+      color: $ca-grey !important;
+      mat-icon { color: $ca-grey !important; }
+    }
   }
 }
 
-.gl-account-tree {
-  ul,
-  li {
-    margin-top: 0;
-    margin-bottom: 0;
-    list-style-type: none;
-  }
+// Tree view
+.ca-tree-actions { margin-bottom: 12px; }
 
-  li {
+.ca-tree-layout {
+  display: flex; gap: 16px; flex-wrap: wrap;
+}
+
+.ca-tree-panel {
+  flex: 1; min-width: 300px;
+  background: $ca-white;
+  border: 1px solid $ca-border;
+  border-radius: 8px;
+  padding: 0;
+  overflow: auto;
+}
+
+// Detail side panel
+.ca-detail-panel {
+  flex: 0 0 340px; min-width: 280px;
+}
+
+.ca-detail-card {
+  background: $ca-white;
+  border: 1px solid $ca-border;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.ca-detail-header {
+  padding: 14px 16px;
+  border-bottom: 1px solid $ca-border;
+  background: $ca-bg;
+  font-size: 13px;
+  font-weight: 700;
+  color: $ca-dark;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.ca-detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 10px 16px;
+  border-bottom: 1px solid lighten($ca-border, 2%);
+  &:last-child { border-bottom: none; }
+}
+
+.ca-detail-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: $ca-grey;
+  flex-shrink: 0;
+}
+
+.ca-detail-value {
+  font-size: 13px;
+  font-weight: 500;
+  color: $ca-dark;
+  text-align: right;
+}
+
+// Stripe-style tree
+::ng-deep .ca-tree-panel {
+  .gl-account-tree {
+    background: transparent;
+    padding: 0;
+
+    ul, li {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .mat-tree-node,
+    .mat-nested-tree-node > li > .mat-tree-node {
+      min-height: 34px;
+      padding: 0 10px;
+      border-bottom: 1px solid lighten($ca-border, 2%);
+      transition: background 0.1s;
+
+      &:hover { background: $ca-bg; }
+    }
+
+    // Chevron icon
+    .ca-chevron {
+      font-size: 16px !important;
+      width: 16px !important;
+      height: 16px !important;
+      color: $ca-grey !important;
+      cursor: pointer;
+      flex-shrink: 0;
+      margin-right: 4px;
+      transition: color 0.1s;
+      &:hover { color: $ca-dark !important; }
+    }
+
+    // Spacer for leaf nodes (aligns with chevron)
+    .ca-chevron-spacer {
+      display: inline-block;
+      width: 20px;
+      flex-shrink: 0;
+    }
+
+    // Text labels
     span {
       cursor: pointer;
-    }
-  }
-
-  .gl-account-tree-invisible {
-    display: none;
-  }
-}
-
-.content {
-  div {
-    margin: 1rem 0;
-    word-wrap: break-word;
-
-    &.header {
+      font-size: 13px;
       font-weight: 500;
+      color: $ca-text;
+      transition: color 0.1s;
+
+      &:hover { color: $ca-purple; }
+    }
+
+    // GL code
+    .m-r-10 {
+      font-size: 12px;
+      font-weight: 600;
+      color: $ca-grey;
+      margin-right: 6px !important;
+    }
+
+    // Nested children indentation
+    .gl-account-tree-invisible { display: none; }
+
+    ul {
+      padding-left: 20px;
+      border-left: 1px solid lighten($ca-border, 2%);
+      margin-left: 26px;
+    }
+
+    // Top-level category nodes (ASSET, EQUITY, etc.)
+    > .mat-tree-node,
+    > .mat-nested-tree-node > li > .mat-tree-node {
+      font-weight: 600;
+
+      span {
+        font-weight: 600;
+        color: $ca-dark;
+        text-transform: uppercase;
+        font-size: 12px;
+        letter-spacing: 0.3px;
+      }
     }
   }
 }
 
-// TODO: CONFIGURE THESE CLASSES GLOBALLY
-.enabled {
-  color: #32cd32;
-}
-
-.disabled {
-  color: #f44366;
-}
-
-.manual-entries-allowed {
-  color: #32cd32;
-}
-
-.manual-entries-not-allowed {
-  color: #f44366;
-}
+.enabled { color: #3ECF8E; }
+.disabled { color: #FF5A65; }
+.manual-entries-allowed { color: #3ECF8E; }
+.manual-entries-not-allowed { color: #FF5A65; }

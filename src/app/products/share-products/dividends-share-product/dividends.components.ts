@@ -15,9 +15,12 @@ import {
   MatRowDef,
   MatRow
 } from '@angular/material/table';
+import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { HasPermissionDirective } from '../../../directives/has-permission/has-permission.directive';
 import { MatButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
@@ -32,6 +35,8 @@ import { DateFormatPipe } from '../../../pipes/date-format.pipe';
   templateUrl: './dividends.component.html',
   styleUrls: ['./dividends.component.scss'],
   imports: [
+    CommonModule,
+    FormsModule,
     HasPermissionDirective,
     MatButton,
     RouterLink,
@@ -53,7 +58,8 @@ import { DateFormatPipe } from '../../../pipes/date-format.pipe';
     MatRow,
     MatPaginator,
     DateFormatPipe,
-    NgxTranslatePipe
+    NgxTranslatePipe,
+    MatIcon
   ]
 })
 export class ShareProductsDividendsComponent implements OnInit {
@@ -69,6 +75,8 @@ export class ShareProductsDividendsComponent implements OnInit {
   ];
   /** Data source for accounting rules table. */
   dataSource: MatTableDataSource<any>;
+  filterValue = '';
+  activeChip: string | null = null;
 
   /** Paginator for dividends table. */
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;

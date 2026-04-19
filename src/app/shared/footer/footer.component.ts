@@ -13,6 +13,10 @@ import { environment } from '../../../environments/environment';
 import { Subscription } from 'rxjs';
 import { NgIf, NgClass, DatePipe } from '@angular/common';
 import { MatDivider } from '@angular/material/divider';
+import { MatIcon } from '@angular/material/icon';
+import { MatIconButton } from '@angular/material/button';
+import { MatTooltip } from '@angular/material/tooltip';
+import { RouterLink } from '@angular/router';
 import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
 
 /**
@@ -26,6 +30,10 @@ import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
     ...STANDALONE_SHARED_IMPORTS,
     NgClass,
     MatDivider,
+    MatIcon,
+    MatIconButton,
+    MatTooltip,
+    RouterLink,
     DatePipe
   ]
 })

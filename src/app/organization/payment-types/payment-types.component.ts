@@ -25,6 +25,8 @@ import { OrganizationService } from '../organization.service';
 import { DeleteDialogComponent } from '../../shared/delete-dialog/delete-dialog.component';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { MatTooltip } from '@angular/material/tooltip';
+import { MatIcon } from '@angular/material/icon';
+import { FormsModule } from '@angular/forms';
 import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
 
 /**
@@ -50,10 +52,16 @@ import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
     MatHeaderRow,
     MatRowDef,
     MatRow,
-    MatPaginator
+    MatPaginator,
+    MatIcon,
+    FormsModule
   ]
 })
 export class PaymentTypesComponent implements OnInit {
+  /** Filter chip value. */
+  filterValue = '';
+  /** Active filter chip. */
+  activeChip: string | null = null;
   /** Payment Types data. */
   paymentTypesData: any;
   /** Columns to be displayed in payment types table. */

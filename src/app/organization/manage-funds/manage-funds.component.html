@@ -1,21 +1,40 @@
-<div class="container m-b-20 layout-row align-end gap-20px">
-  <div #fundFormRef class="in-block">
-    <button mat-raised-button color="primary" [routerLink]="['create']" *mifosxHasPermission="'CREATE_FUND'">
-      <fa-icon icon="plus" class="m-r-10"></fa-icon>
-      {{ 'labels.buttons.Create Fund' | translate }}
-    </button>
-  </div>
-</div>
-
-<div class="container">
-  <div #filter class="layout-row gap-20px">
-    <mat-form-field class="flex-fill">
-      <mat-label>{{ 'labels.inputs.Filter' | translate }}</mat-label>
-      <input matInput (keyup)="applyFilter($event.target.value)" />
-    </mat-form-field>
+<div class="s-page">
+  <div class="s-head">
+    <h1>Manage Funds</h1>
+    <div class="s-head-actions">
+      <div #fundFormRef>
+        <button mat-flat-button class="s-primary-btn" [routerLink]="['create']" *mifosxHasPermission="'CREATE_FUND'">
+          <mat-icon>add</mat-icon> Add Fund
+        </button>
+      </div>
+    </div>
   </div>
 
-  <div #chargesTable class="mat-elevation-z8 table-container">
+  <!-- Filter chips row -->
+  <div class="s-filters">
+    <div class="s-filter-left">
+      <div class="s-chip-wrap" #filter>
+        <button class="s-filter-chip" [class.applied]="filterValue" (click)="activeChip = activeChip === 'filter' ? null : 'filter'">
+          <mat-icon>{{ filterValue ? 'check' : 'add' }}</mat-icon>
+          Filter{{ filterValue ? ': ' + filterValue : '' }}
+          <mat-icon class="chip-x" *ngIf="filterValue" (click)="$event.stopPropagation(); filterValue = ''; applyFilter('')">close</mat-icon>
+        </button>
+        <div class="s-pop" *ngIf="activeChip === 'filter'">
+          <div class="s-pop-title">Filter</div>
+          <div class="s-pop-row">
+            <span class="s-pop-label">contains</span>
+            <input class="s-pop-input" [(ngModel)]="filterValue" placeholder="Type to filter..." (keydown.enter)="activeChip = null; applyFilter(filterValue)" />
+          </div>
+          <button class="s-pop-apply" (click)="activeChip = null; applyFilter(filterValue)">Apply</button>
+        </div>
+      </div>
+    </div>
+    <div class="s-filter-right">
+      <button class="s-action-chip" *ngIf="filterValue" (click)="filterValue = ''; applyFilter('')"><mat-icon>close</mat-icon> Clear</button>
+    </div>
+  </div>
+
+  <div #chargesTable class="s-table">
     <table mat-table [dataSource]="dataSource" matSort>
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.name' | translate }}</th>
@@ -30,7 +49,7 @@
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns" [routerLink]="[row.id]" class="select-row"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns" [routerLink]="[row.id]" class="s-row"></tr>
     </table>
 
     <mat-paginator [pageSizeOptions]="[10, 25, 50, 100]" showFirstLastButtons></mat-paginator>

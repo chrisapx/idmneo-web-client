@@ -1,0 +1,72 @@
+// ===========================
+// Global Skeleton Loader
+// ===========================
+// Usage: @use 'assets/styles/skeleton' as *;
+// Then use .sk-table in your HTML for a table skeleton,
+// or individual .sk-* classes for custom layouts.
+
+$sk-bg: #F7F8FA;
+$sk-shine: #ECEEF1;
+$sk-border: #E3E8EE;
+$sk-white: #fff;
+
+@keyframes sk-shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+@mixin sk-pulse {
+  background: linear-gradient(90deg, $sk-bg 25%, $sk-shine 50%, $sk-bg 75%);
+  background-size: 800px 100%;
+  animation: sk-shimmer 1.4s infinite ease-in-out;
+}
+
+// Full table skeleton (5 rows)
+.sk-table {
+  background: $sk-white;
+  border: 1px solid $sk-border;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.sk-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border-bottom: 1px solid lighten($sk-border, 2%);
+  &:last-child { border-bottom: none; }
+}
+
+.sk-avatar {
+  width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+  @include sk-pulse;
+}
+
+.sk-lines {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sk-line {
+  height: 10px; border-radius: 4px;
+  @include sk-pulse;
+}
+
+.sk-w80 { width: 80%; }
+.sk-w60 { width: 60%; }
+.sk-w40 { width: 40%; }
+.sk-w30 { width: 30%; }
+.sk-w20 { width: 20%; }
+
+.sk-pill {
+  width: 52px; height: 18px; border-radius: 10px; flex-shrink: 0;
+  @include sk-pulse;
+}
+
+.sk-block {
+  border-radius: 6px;
+  @include sk-pulse;
+}

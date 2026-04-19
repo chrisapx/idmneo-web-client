@@ -1,7 +1,3 @@
-table {
-  width: 100%;
+@use 'assets/styles/stripe-tab' as *;
 
-  .select-row:hover {
-    cursor: pointer;
-  }
-}
+:host { display: block; @include stripe-tab; }

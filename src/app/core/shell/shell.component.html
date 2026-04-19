@@ -1,34 +1,36 @@
-<!-- Application Shell -->
-<mat-sidenav-container id="mifosx-shell-container" autosize>
-  <!-- Sidenav -->
+<mat-sidenav-container id="mifosx-shell-container">
   <mat-sidenav
     #sidenav
     class="sidebar-panel"
-    [ngClass]="{
-      'sidebar-full': !sidenavCollapsed,
-      'sidebar-compact': sidenavCollapsed
-    }"
-    [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
-    [mode]="(isHandset$ | async) ? 'over' : 'side'"
-    [opened]="(isHandset$ | async) === false"
+    [ngClass]="{ 'sidebar-full': !sidenavCollapsed, 'sidebar-compact': sidenavCollapsed }"
+    role="navigation"
+    mode="side"
+    [opened]="true"
+    [disableClose]="true"
   >
     <mifosx-sidenav [sidenavCollapsed]="sidenavCollapsed"></mifosx-sidenav>
   </mat-sidenav>
 
-  <!-- Content -->
-  <mat-sidenav-content class="sidenav">
-    <!-- Toolbar -->
-    <mifosx-toolbar [sidenav]="sidenav" (collapse)="toggleCollapse($event)"></mifosx-toolbar>
-    <!-- Progress Bar -->
-    <div *ngIf="progressBarMode !== 'none'">
-      <div class="loading"></div>
+  <mat-sidenav-content class="sidenav-content">
+    <!-- Collapse/expand hover trigger on left edge -->
+    <div class="collapse-edge" (click)="toggleCollapse(!sidenavCollapsed)">
+      <div class="collapse-pill">
+        <mat-icon>{{ sidenavCollapsed ? 'chevron_right' : 'chevron_left' }}</mat-icon>
+        <span>{{ sidenavCollapsed ? 'Expand' : 'Collapse' }}</span>
+      </div>
     </div>
 
-    <!-- Breadcrumb -->
-    <mifosx-breadcrumb></mifosx-breadcrumb>
-    <!-- Content -->
-    <mifosx-content></mifosx-content>
-    <!-- Footer -->
-    <mifosx-footer [styleClass]="'main-page'"></mifosx-footer>
+    <div class="fixed-header">
+      <mifosx-toolbar [sidenav]="sidenav"></mifosx-toolbar>
+    </div>
+
+
+    <div class="page-wrapper">
+      <mifosx-content></mifosx-content>
+    </div>
+
+    <div class="fixed-footer">
+      <mifosx-footer [styleClass]="'main-page'"></mifosx-footer>
+    </div>
   </mat-sidenav-content>
 </mat-sidenav-container>

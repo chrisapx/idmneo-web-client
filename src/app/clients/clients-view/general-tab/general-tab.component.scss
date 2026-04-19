@@ -1,50 +1,281 @@
-.tab-container {
-  padding: 1%;
-  margin: 1%;
+$s-dark: #1A1F36;
+$s-text: #3C4257;
+$s-grey: #697386;
+$s-border: #E3E8EE;
+$s-bg: #F7F8FA;
+$s-white: #fff;
+$s-purple: #635BFF;
+$s-green: #3ECF8E;
+$s-yellow: #F59E0B;
+$s-red: #FF5A65;
+
+.gt-page {
+  padding: 8px 0 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+// ===== SUMMARY STATS ROW =====
+.gt-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  background: $s-white;
+  border: 1px solid $s-border;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.gt-stat {
+  padding: 16px 20px;
+  border-right: 1px solid $s-border;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  &:last-child { border-right: none; }
+}
+
+.gt-stat-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: $s-grey;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.gt-stat-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: $s-dark;
+  letter-spacing: -0.3px;
+}
+
+// ===== CARD =====
+.gt-card {
+  background: $s-white;
+  border: 1px solid $s-border;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.gt-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  border-bottom: 1px solid $s-border;
 
   h3 {
-    margin: 1% auto;
+    font-size: 14px;
+    font-weight: 700;
+    color: $s-dark;
+    margin: 0;
   }
+}
 
-  .performance-history-container {
-    border: 1px solid;
-    padding: 1%;
-  }
+.gt-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 12px;
+  font-weight: 600;
+  color: $s-purple;
+  text-decoration: none;
+  cursor: pointer;
+  &:hover { text-decoration: underline; }
+  mat-icon { font-size: 13px !important; width: 13px !important; height: 13px !important; }
+}
 
-  table {
+.gt-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 12px;
+  border: 1px solid $s-border;
+  border-radius: 14px;
+  background: $s-white;
+  color: $s-text;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  &:hover { background: $s-bg; }
+}
+
+.gt-card-body {
+  // table sits flush
+}
+
+// ===== TABLE =====
+::ng-deep .gt-card-body {
+  .gt-table.mat-mdc-table {
     width: 100%;
+    background: transparent;
+  }
 
-    td:hover {
-      cursor: pointer;
-    }
+  .mat-mdc-header-row {
+    height: 36px;
+    background: $s-bg;
+  }
 
-    .account-action-button {
-      min-width: 26px;
-      padding: 0 6px;
-      margin: 4px;
-      line-height: 25px;
-    }
+  .mat-mdc-header-cell {
+    font-size: 11px;
+    font-weight: 600;
+    color: $s-grey;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    border-bottom: 1px solid $s-border;
+    padding: 0 16px;
+  }
 
-    .select-row:hover {
-      cursor: pointer;
-    }
+  .mat-mdc-row {
+    height: 48px;
+    cursor: pointer;
+    &:hover { background: $s-bg; }
+  }
+
+  .mat-mdc-cell {
+    font-size: 14px;
+    color: $s-text;
+    border-bottom: 1px solid lighten($s-border, 2%);
+    padding: 0 16px;
+  }
+
+  .mat-mdc-row:last-child .mat-mdc-cell {
+    border-bottom: none;
+  }
+
+  // Right-align numbers
+  .gt-num {
+    text-align: right !important;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .gt-actions-col {
+    width: 1%;
+    white-space: nowrap;
+    text-align: right !important;
   }
 }
 
-.heading-content {
-  display: flex; /* Use flexbox for alignment */
-  align-items: center; /* Align items vertically */
-  justify-content: space-between; /* Space out title and buttons */
-  margin-bottom: 1%;
-  margin-top: 1%;
-}
-
-.heading-name {
-  margin: 0; /* Reset margin to avoid misalignment */
-}
-
-.layout-row.align-flex-end {
+// Cell with status dot + text
+.gt-cell-name {
   display: flex;
-  align-items: center; /* Ensure buttons are vertically aligned */
-  gap: 0.5rem; /* Add spacing between buttons if needed */
+  align-items: center;
+  gap: 8px;
+}
+
+.gt-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: $s-grey;
+  flex-shrink: 0;
+}
+
+::ng-deep .gt-dot {
+  &.status-active,
+  &.clientStatusType-active,
+  &.savingsAccountStatusType-active,
+  &.loanStatusType-active { background: $s-green; }
+
+  &.status-active-overdue,
+  &.loanStatusType-overpaid { background: $s-red; }
+
+  &.status-pending,
+  &.clientStatusType-pending,
+  &.loanStatusType-submitted-and-pending-approval,
+  &.savingsAccountStatusType-submitted-and-pending-approval { background: $s-yellow; }
+
+  &.status-closed,
+  &.clientStatusType-closed,
+  &.loanStatusType-closed,
+  &.savingsAccountStatusType-closed { background: $s-grey; }
+}
+
+// Soft pill (for type column)
+.gt-pill-soft {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: lighten($s-border, 3%);
+  color: $s-grey;
+  text-transform: capitalize;
+}
+
+// Icon action button
+.gt-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid $s-border;
+  border-radius: 6px;
+  background: $s-white;
+  color: $s-grey;
+  cursor: pointer;
+  margin-left: 4px;
+  transition: all 0.12s;
+
+  &:hover {
+    background: $s-bg;
+    color: $s-purple;
+    border-color: $s-purple;
+  }
+
+  mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+  }
+}
+
+// Page-level empty state
+.gt-empty-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 20px;
+  background: $s-white;
+  border: 1px solid $s-border;
+  border-radius: 8px;
+  color: $s-grey;
+  gap: 6px;
+
+  mat-icon {
+    font-size: 40px;
+    width: 40px;
+    height: 40px;
+    opacity: 0.25;
+    margin-bottom: 6px;
+  }
+
+  p {
+    font-size: 15px;
+    font-weight: 600;
+    color: $s-dark;
+    margin: 0;
+  }
+
+  span {
+    font-size: 13px;
+  }
+}
+
+// Responsive
+@media (max-width: 600px) {
+  .gt-stats {
+    grid-template-columns: 1fr;
+  }
+  .gt-stat {
+    border-right: none;
+    border-bottom: 1px solid $s-border;
+    &:last-child { border-bottom: none; }
+  }
 }

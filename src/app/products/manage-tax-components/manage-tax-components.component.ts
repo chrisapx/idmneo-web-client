@@ -23,6 +23,8 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { DateFormatPipe } from '../../pipes/date-format.pipe';
 import { FormatNumberPipe } from '../../pipes/format-number.pipe';
 import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
+import { MatIcon } from '@angular/material/icon';
+import { MatButton } from '@angular/material/button';
 
 /**
  * Manage Tax Components component.
@@ -48,7 +50,9 @@ import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
     MatRow,
     MatPaginator,
     DateFormatPipe,
-    FormatNumberPipe
+    FormatNumberPipe,
+    MatIcon,
+    MatButton
   ]
 })
 export class ManageTaxComponentsComponent implements OnInit {
@@ -63,6 +67,8 @@ export class ManageTaxComponentsComponent implements OnInit {
   ];
   /** Data source for tax component table. */
   dataSource: MatTableDataSource<any>;
+  filterValue = '';
+  activeChip: string | null = null;
 
   /** Paginator for tax component table. */
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;

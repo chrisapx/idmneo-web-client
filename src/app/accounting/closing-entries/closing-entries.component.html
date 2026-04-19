@@ -1,28 +1,47 @@
-<div class="container m-b-20 layout-row align-end gap-20px">
-  <div #buttonCreateClosure>
-    <button mat-raised-button color="primary" [routerLink]="['create']" *mifosxHasPermission="'CREATE_GLCLOSURE'">
-      <fa-icon icon="plus" class="m-r-10"></fa-icon>
-      {{ 'labels.buttons.Create Closure' | translate }}
-    </button>
+<div class="s-page">
+  <div class="s-head">
+    <h1>Closing Entries</h1>
+    <div class="s-head-actions">
+      <div #buttonCreateClosure>
+        <button mat-flat-button class="s-primary-btn" [routerLink]="['create']" *mifosxHasPermission="'CREATE_GLCLOSURE'">
+          <mat-icon>add</mat-icon> Create Closure
+        </button>
+      </div>
+    </div>
   </div>
-</div>
 
-<div #filter class="container layout-row">
-  <mat-form-field class="flex-fill">
-    <mat-label>{{ 'labels.inputs.Office Name' | translate }}</mat-label>
-    <input matInput [formControl]="officeName" [matAutocomplete]="officeNameAutocomplete" />
-  </mat-form-field>
-</div>
+  <!-- Filter chips row -->
+  <div class="s-filters">
+    <div class="s-filter-left">
+      <div class="s-chip-wrap" #filter>
+        <button class="s-filter-chip" [class.applied]="officeName.value" (click)="activeChip = activeChip === 'filter' ? null : 'filter'">
+          <mat-icon>{{ officeName.value ? 'check' : 'add' }}</mat-icon>
+          Office{{ officeName.value ? ': ' + officeName.value : '' }}
+          <mat-icon class="chip-x" *ngIf="officeName.value" (click)="$event.stopPropagation(); officeName.setValue('')">close</mat-icon>
+        </button>
+        <div class="s-pop" *ngIf="activeChip === 'filter'">
+          <div class="s-pop-title">Filter by office</div>
+          <div class="s-pop-row">
+            <span class="s-pop-label">name</span>
+            <input class="s-pop-input" [formControl]="officeName" [matAutocomplete]="officeNameAutocomplete" placeholder="Type office name..." (keydown.enter)="activeChip = null" />
+          </div>
+          <button class="s-pop-apply" (click)="activeChip = null">Apply</button>
+        </div>
+      </div>
+    </div>
+    <div class="s-filter-right">
+      <button class="s-action-chip" *ngIf="officeName.value" (click)="officeName.setValue('')"><mat-icon>close</mat-icon> Clear</button>
+    </div>
+  </div>
 
-<!-- Autocomplete data -->
-<mat-autocomplete autoActiveFirstOption #officeNameAutocomplete="matAutocomplete">
-  <mat-option *ngFor="let office of filteredOfficeData | async" [value]="office.name">
-    {{ office.name }}
-  </mat-option>
-</mat-autocomplete>
+  <!-- Autocomplete data -->
+  <mat-autocomplete autoActiveFirstOption #officeNameAutocomplete="matAutocomplete">
+    <mat-option *ngFor="let office of filteredOfficeData | async" [value]="office.name">
+      {{ office.name }}
+    </mat-option>
+  </mat-autocomplete>
 
-<div class="container">
-  <div #closuresTable class="mat-elevation-z8">
+  <div #closuresTable class="s-table">
     <table mat-table [dataSource]="dataSource" matSort>
       <ng-container matColumnDef="officeName">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.Office' | translate }}</th>
@@ -45,12 +64,7 @@
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr
-        mat-row
-        *matRowDef="let row; columns: displayedColumns"
-        [routerLink]="['view', row.id]"
-        class="select-row"
-      ></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns" [routerLink]="['view', row.id]" class="s-row"></tr>
     </table>
 
     <mat-paginator [pageSizeOptions]="[10, 25, 50, 100]" showFirstLastButtons></mat-paginator>

@@ -1,200 +1,171 @@
-/* Hidden elements */
-.hidden-mat-list {
-  display: none;
+$s-dark: #1A1F36;
+$s-text: #3C4257;
+$s-grey: #697386;
+$s-border: #E3E8EE;
+$s-bg: #F7F8FA;
+$s-white: #fff;
+$s-purple: #635BFF;
+$s-red: #FF5A65;
+
+.nt-page { padding: 8px 0 24px; }
+
+.nt-head {
+  margin-bottom: 12px;
+  h2 {
+    font-size: 16px;
+    font-weight: 700;
+    color: $s-dark;
+    margin: 0;
+  }
 }
 
-.tab-container {
-  padding: 2rem;
-}
-
-.tab-container h3 {
-  margin-bottom: 20px;
-  color: #333;
-  font-weight: 500;
-}
-
-.add-note-section {
-  margin-bottom: 10px;
-  padding-bottom: 10px;
-}
-
-.layout-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-}
-
-.layout-row.align-start-baseline {
-  align-items: baseline;
-}
-
-.layout-row.gap-10px {
-  gap: 10px;
-}
-
-.flex-85-minus-20px {
-  flex: 1;
-  min-width: 300px;
-}
-
-.flex-1 {
-  flex: none;
-  white-space: nowrap;
-}
-
-.note-card {
-  background: white;
-  border: 1px solid #e0e0e0;
-  border-radius: 0.2rem;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  box-shadow: 0 2px 4px rgb(0 0 0 / 8%);
-  transition: all 0.2s ease;
-}
-
-.note-card:hover {
-  box-shadow: 0 4px 8px rgb(0 0 0 / 12%);
-  border-color: #d0d0d0;
-}
-
-.note-content {
-  color: #333;
-  font-size: 14px;
-  line-height: 1rem;
-  margin: 0;
-  margin-bottom: 16px;
-  padding: 0.5rem;
-  word-wrap: break-word;
-  white-space: normal;
-  text-indent: 0;
-  text-align: left;
-}
-
-.note-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: 0.65rem;
-  border-top: 1px solid #f0f0f0;
-}
-
-.note-meta {
-  color: #666;
-  font-size: 12px;
-}
-
-.created-by {
-  font-weight: 500;
-  color: #007acc;
-  margin-bottom: 2px;
-}
-
-.created-date {
-  color: #888;
-}
-
-.note-actions {
-  display: flex;
-  gap: 8px;
-}
-
-.edit-btn,
-.delete-btn {
-  border: 1px solid #dee2e6;
-  padding: 8px 14px;
-  border-radius: 4px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  background: none;
-  outline: none;
-}
-
-.edit-btn {
-  color: #6c757d;
-  background-color: #daedff;
-}
-
-.delete-btn {
-  color: #dc3545;
-  background-color: #ffcfcf;
-}
-
-.edit-btn:disabled,
-.delete-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.edit-btn:hover:not(:disabled) {
-  background-color: #a8d4ff;
-  color: #495057;
-  border-color: #adb5bd;
-}
-
-.delete-btn:hover:not(:disabled) {
-  background-color: #f5c6cb;
-  color: #721c24;
-  border-color: #ff9ca5;
-}
-
-.empty-state {
-  text-align: center;
-  padding: 40px 20px;
-  color: #666;
-  font-style: italic;
-  background: #fafafa;
+// Composer
+.nt-composer {
+  background: $s-white;
+  border: 1px solid $s-border;
   border-radius: 8px;
-  border: 1px dashed #ddd;
+  padding: 12px;
+  margin-bottom: 16px;
 }
 
-.m-r-10 {
-  margin-right: 10px;
+.nt-textarea {
+  width: 100%;
+  min-height: 60px;
+  padding: 8px 10px;
+  border: 1px solid $s-border;
+  border-radius: 6px;
+  background: $s-white;
+  font-family: inherit;
+  font-size: 14px;
+  color: $s-dark;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+
+  &:focus {
+    border-color: $s-purple;
+    box-shadow: 0 0 0 3px rgba($s-purple, 0.08);
+  }
+
+  &::placeholder { color: $s-grey; }
 }
 
-@media (width <= 768px) {
-  .tab-container {
-    padding: 16px;
-  }
+.nt-composer-foot {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
 
-  .layout-row {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 15px;
-  }
+.nt-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 32px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 6px;
+  background: $s-purple;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  &:hover:not(:disabled) { background: darken($s-purple, 6%); }
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+  mat-icon { font-size: 16px; width: 16px; height: 16px; }
+}
 
-  .flex-85-minus-20px,
-  .flex-1 {
-    width: 100%;
-  }
+// Notes list
+.nt-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
 
-  .note-card {
-    padding: 16px;
-    margin-bottom: 12px;
-  }
+.nt-card {
+  background: $s-white;
+  border: 1px solid $s-border;
+  border-radius: 8px;
+  padding: 14px 16px;
+}
 
-  .note-content {
-    font-size: 13px;
-    margin-bottom: 12px;
-  }
+.nt-content {
+  font-size: 14px;
+  color: $s-text;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  margin-bottom: 12px;
+}
 
-  .note-footer {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-  }
+.nt-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 10px;
+  border-top: 1px solid lighten($s-border, 2%);
+}
 
-  .edit-btn,
-  .delete-btn {
-    padding: 5px 10px;
-    font-size: 11px;
-  }
+.nt-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: $s-grey;
+}
 
-  .note-meta {
-    width: 100%;
-  }
+.nt-by { font-weight: 600; color: $s-text; }
+.nt-sep { color: $s-border; }
+.nt-date { color: $s-grey; }
 
-  .note-actions {
-    align-self: flex-end;
+.nt-actions { display: flex; gap: 4px; }
+
+.nt-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid $s-border;
+  border-radius: 6px;
+  background: $s-white;
+  color: $s-grey;
+  cursor: pointer;
+  transition: all 0.12s;
+  &:hover {
+    background: $s-bg;
+    color: $s-purple;
+    border-color: $s-purple;
   }
+  &.danger:hover {
+    color: $s-red;
+    border-color: $s-red;
+  }
+  mat-icon {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+  }
+}
+
+// Empty
+.nt-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 64px 20px;
+  background: $s-white;
+  border: 1px solid $s-border;
+  border-radius: 8px;
+  color: $s-grey;
+  gap: 6px;
+
+  mat-icon {
+    font-size: 40px;
+    width: 40px;
+    height: 40px;
+    opacity: 0.25;
+    margin-bottom: 6px;
+  }
+  p { font-size: 15px; font-weight: 600; color: $s-dark; margin: 0; }
+  span { font-size: 13px; }
 }

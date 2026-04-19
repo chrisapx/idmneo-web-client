@@ -18,16 +18,13 @@ import { DelinquencyPausePeriod } from '../models/loan-account.model';
 import { TranslateService } from '@ngx-translate/core';
 import { LoanTransaction } from 'app/products/loan-products/models/loan-account.model';
 import { OptionData } from 'app/shared/models/option-data.model';
-import { MatCardHeader, MatCardTitleGroup, MatCardTitle } from '@angular/material/card';
-import { SvgIconComponent } from '../../shared/svg-icon/svg-icon.component';
 import { MatTooltip } from '@angular/material/tooltip';
-import { NgClass, CurrencyPipe } from '@angular/common';
+import { NgClass, CurrencyPipe, NgIf, NgFor } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { LongTextComponent } from '../../shared/long-text/long-text.component';
-import { AccountNumberComponent } from '../../shared/account-number/account-number.component';
-import { MatIconButton } from '@angular/material/button';
 import { MatMenuTrigger, MatMenu, MatMenuItem } from '@angular/material/menu';
 import { MatIcon } from '@angular/material/icon';
-import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { MatDivider } from '@angular/material/divider';
 import { MatTabNav, MatTabLink, MatTabNavPanel } from '@angular/material/tabs';
 import { StatusLookupPipe } from '../../pipes/status-lookup.pipe';
 import { DateFormatPipe } from '../../pipes/date-format.pipe';
@@ -41,22 +38,19 @@ import { LoanProducts } from 'app/products/loan-products/loan-products';
   styleUrls: ['./loans-view.component.scss'],
   imports: [
     ...STANDALONE_SHARED_IMPORTS,
-    MatCardHeader,
-    MatCardTitleGroup,
-    SvgIconComponent,
     MatTooltip,
-    MatCardTitle,
     NgClass,
+    NgIf,
+    NgFor,
     LongTextComponent,
-    AccountNumberComponent,
-    MatIconButton,
     MatMenuTrigger,
     MatIcon,
-    FaIconComponent,
+    MatDivider,
     MatMenu,
     MatMenuItem,
     MatTabNav,
     MatTabLink,
+    RouterLink,
     RouterLinkActive,
     MatTabNavPanel,
     RouterOutlet,

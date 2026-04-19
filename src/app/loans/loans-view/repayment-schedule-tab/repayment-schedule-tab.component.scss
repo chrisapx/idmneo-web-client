@@ -1,60 +1,114 @@
 @use 'assets/styles/helper';
 @use 'assets/styles/colours' as *;
 
-table {
-  width: 100%;
-  margin: 2% 0%;
-}
-
-.table-row {
-  font-size: small;
-}
+$s-dark: #1A1F36;
+$s-text: #3C4257;
+$s-grey: #697386;
+$s-border: #E3E8EE;
+$s-bg: #F7F8FA;
+$s-white: #fff;
+$s-purple: #635BFF;
+$s-red: #FF5A65;
+$s-green: #3ECF8E;
 
 .container {
-  padding-bottom: 2%;
-  width: 98%;
-}
-
-.check {
-  padding-left: 15px;
-}
-
-.amount-changed {
-  color: $status-approved;
-}
-
-.additional {
-  color: $status-approved;
-}
-
-.downpayment {
-  color: $status-downpayment;
-}
-
-.paid {
-  color: $status-paid;
-}
-
-.current {
-  color: $status-active;
-}
-
-.overdued {
-  color: $status-matured;
-}
-
-#repaymentSchedule,
-#repaymentScheduleEdit {
-  width: 100%;
-}
-
-.mat-header-cell {
-  color: rgba($color: #000, $alpha: 54%);
-  font-size: 12px;
-  font-weight: 500;
-}
-
-div.container {
-  overflow: auto;
+  padding: 16px 0 24px;
   max-width: 100%;
 }
+
+// Action bar above table
+.layout-row {
+  margin-bottom: 12px !important;
+}
+
+::ng-deep .container {
+  // Stripe-style action button
+  button[mat-raised-button] {
+    background: $s-white !important;
+    color: $s-text !important;
+    border: 1px solid $s-border !important;
+    border-radius: 6px !important;
+    height: 32px !important;
+    padding: 0 14px !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    box-shadow: none !important;
+    text-transform: none !important;
+
+    &:hover { background: $s-bg !important; }
+
+    fa-icon {
+      font-size: 12px !important;
+      margin-right: 6px !important;
+      color: $s-grey;
+    }
+  }
+}
+
+// Wrap the table in a Stripe card
+::ng-deep #repaymentSchedule,
+::ng-deep #repaymentScheduleEdit {
+  width: 100%;
+  background: $s-white;
+  border: 1px solid $s-border;
+  border-radius: 8px;
+  overflow: hidden;
+  font-variant-numeric: tabular-nums;
+
+  .mat-mdc-header-row {
+    height: 36px;
+    background: $s-bg;
+  }
+
+  .mat-mdc-header-cell {
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    color: $s-grey !important;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    border-bottom: 1px solid $s-border;
+    padding: 0 12px;
+  }
+
+  .mat-mdc-row {
+    height: 40px;
+  }
+
+  .mat-mdc-cell {
+    font-size: 12px;
+    color: $s-text;
+    border-bottom: 1px solid lighten($s-border, 2%);
+    padding: 0 12px;
+  }
+
+  .mat-mdc-footer-row {
+    background: $s-bg;
+    height: 40px;
+  }
+
+  .mat-mdc-footer-cell {
+    font-size: 12px;
+    font-weight: 700;
+    color: $s-dark;
+    padding: 0 12px;
+    border-top: 1px solid $s-border;
+  }
+
+  .r-amount {
+    text-align: right !important;
+  }
+
+  .center {
+    text-align: center !important;
+  }
+}
+
+// Status row colors
+.table-row { font-size: 12px; }
+
+.amount-changed { color: $s-purple; font-weight: 600; }
+.additional { color: $s-green; }
+.downpayment { color: $s-purple; }
+.paid { color: $s-green; }
+.current { color: $s-purple; font-weight: 600; }
+.overdued { color: $s-red; font-weight: 600; }

@@ -1,7 +1,1 @@
-table {
-  width: 100%;
-
-  .select-row:hover {
-    cursor: pointer;
-  }
-}
+@use 'assets/styles/stripe-page' as *;

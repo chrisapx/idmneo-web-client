@@ -9,6 +9,7 @@ import { map } from 'rxjs/operators';
 /** Custom Services */
 import { ProgressBarService } from '../progress-bar/progress-bar.service';
 import { MatSidenavContainer, MatSidenav, MatSidenavContent } from '@angular/material/sidenav';
+import { MatIcon } from '@angular/material/icon';
 import { NgClass, NgIf, AsyncPipe } from '@angular/common';
 import { SidenavComponent } from './sidenav/sidenav.component';
 import { ToolbarComponent } from './toolbar/toolbar.component';
@@ -28,6 +29,7 @@ import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
     ...STANDALONE_SHARED_IMPORTS,
     MatSidenavContainer,
     MatSidenav,
+    MatIcon,
     NgClass,
     SidenavComponent,
     MatSidenavContent,
@@ -44,7 +46,7 @@ export class ShellComponent implements OnInit, OnDestroy {
     .observe(Breakpoints.Handset)
     .pipe(map((result) => result.matches));
   /** Sets the initial state of sidenav as collapsed. Not collapsed if false. */
-  sidenavCollapsed = true;
+  sidenavCollapsed = false;
   /** Progress bar mode. */
   progressBarMode: string;
   /** Subscription to progress bar. */

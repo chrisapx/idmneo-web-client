@@ -24,6 +24,7 @@ import { SystemService } from '../../system.service';
 import { PopoverService } from '../../../configuration-wizard/popover/popover.service';
 import { ConfigurationWizardService } from '../../../configuration-wizard/configuration-wizard.service';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatSlideToggle } from '@angular/material/slide-toggle';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
@@ -45,6 +46,7 @@ import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
     MatCellDef,
     MatCell,
     FaIconComponent,
+    MatIcon,
     MatTooltip,
     MatSlideToggle,
     FormsModule,
@@ -70,6 +72,8 @@ export class GlobalConfigurationsTabComponent implements OnInit, AfterViewInit {
   ];
   /** Data source for configurations table. */
   dataSource: MatTableDataSource<any>;
+  filterValue = '';
+  activeChip: string | null = null;
 
   /** Paginator for configurations table. */
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;

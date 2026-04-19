@@ -12,6 +12,7 @@ import { ExternalAssetOwnerService } from 'app/loans/services/external-asset-own
 import { SettingsService } from 'app/settings/settings.service';
 import { CancelDialogComponent } from 'app/shared/cancel-dialog/cancel-dialog.component';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { MatIcon } from '@angular/material/icon';
 import { NgIf, NgFor, NgClass } from '@angular/common';
 import {
   MatAccordion,
@@ -50,10 +51,13 @@ import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
     MatTooltip,
     MatPaginator,
     DateFormatPipe,
-    FormatNumberPipe
+    FormatNumberPipe,
+    MatIcon
   ]
 })
 export class InvestorsComponent implements OnInit {
+  /** Active filter chip. */
+  activeChip: string | null = null;
   /** Minimum transaction date allowed. */
   minDate = new Date(2000, 0, 1);
   /** Maximum transaction date allowed. */

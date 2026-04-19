@@ -1,33 +1,50 @@
-table {
-  width: 100%;
-  box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
-  border: 1px solid var(--border-color, #ddd);
-  border-radius: 8px;
-  transition:
-    background-color 0.3s ease,
-    border-color 0.3s ease;
+@use 'assets/styles/stripe-page' as *;
 
-  .select-row:hover {
-    cursor: pointer;
+$je-dark: #1A1F36;
+$je-grey: #697386;
+$je-border: #E3E8EE;
+$je-white: #fff;
+$je-purple: #635BFF;
+$je-green: #3ECF8E;
+$je-red: #FF5A65;
+
+// GL account selector inside popover
+::ng-deep .s-pop mifosx-gl-account-selector {
+  width: 100%;
+  .mat-mdc-form-field {
+    width: 100%;
+    .mat-mdc-text-field-wrapper {
+      border: 1px solid $je-border !important;
+      border-radius: 6px !important;
+      background: $je-white !important;
+      height: 34px !important;
+      padding: 0 10px !important;
+    }
+    .mdc-text-field--filled:not(.mdc-text-field--disabled) { background: $je-white !important; }
+    .mdc-line-ripple { display: none !important; }
+    .mat-mdc-form-field-subscript-wrapper { display: none !important; }
+    &.mat-focused .mat-mdc-text-field-wrapper {
+      border-color: $je-purple !important;
+      box-shadow: 0 0 0 3px rgba($je-purple, 0.08) !important;
+    }
+    input { font-size: 13px !important; }
+    .mat-mdc-floating-label { font-size: 13px !important; color: $je-grey !important; }
   }
 }
 
-.filter-container {
-  margin-bottom: 1rem;
-  padding: 1.5rem;
-  box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
-  border: 1px solid var(--border-color, #ddd);
-  border-radius: 8px;
-  transition:
-    background-color 0.3s ease,
-    border-color 0.3s ease;
+// Applied filter badges
+.s-applied-row {
+  display: flex; gap: 6px; margin-bottom: 6px; flex-wrap: wrap;
+}
+.s-applied-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px; border-radius: 14px;
+  background: rgba($je-purple, 0.08); color: $je-purple;
+  font-size: 12px; font-weight: 600; cursor: pointer;
+  mat-icon { font-size: 12px; width: 12px; height: 12px; }
+  &:hover { background: rgba($je-purple, 0.14); }
 }
 
-.table-container {
-  box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
-  border: 1px solid var(--border-color, #ddd);
-  border-radius: 8px;
-  transition:
-    background-color 0.3s ease,
-    border-color 0.3s ease;
-}
+// Debit/Credit
+.je-debit { color: $je-red; font-weight: 600; font-variant-numeric: tabular-nums; }
+.je-credit { color: $je-green; font-weight: 600; font-variant-numeric: tabular-nums; }

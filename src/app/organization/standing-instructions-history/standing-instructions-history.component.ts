@@ -26,6 +26,8 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { MatTooltip } from '@angular/material/tooltip';
 import { FormatNumberPipe } from '../../pipes/format-number.pipe';
 import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
+import { MatIcon } from '@angular/material/icon';
+import { MatButton, MatIconButton } from '@angular/material/button';
 
 /**
  * View Standing Instructions History Component.
@@ -51,7 +53,10 @@ import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
     MatRowDef,
     MatRow,
     MatPaginator,
-    FormatNumberPipe
+    FormatNumberPipe,
+    MatIcon,
+    MatButton,
+    MatIconButton
   ]
 })
 export class StandingInstructionsHistoryComponent implements OnInit {

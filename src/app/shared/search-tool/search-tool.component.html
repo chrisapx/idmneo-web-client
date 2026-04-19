@@ -1,23 +1,16 @@
-<div class="flex-100 layout-row">
-  <div *ngIf="searchVisible" class="search-bar flex-90 layout-row hide-lt-sm" [@fadeInOut]>
-    <mat-form-field class="search flex-45">
-      <mat-label>{{ 'labels.text.Search' | translate }}</mat-label>
-      <input matInput type="text" [formControl]="query" (keydown.enter)="search()" />
-    </mat-form-field>
+<div class="s-search-bar" [class.focused]="isFocused">
+  <fa-icon icon="search" class="s-search-icon"></fa-icon>
+  <input #searchInput type="text" [formControl]="query" placeholder="Search"
+         (focus)="isFocused = true" (blur)="onBlur()" (keydown.enter)="search()" class="s-search-input" />
+</div>
 
-    <mat-form-field class="resource flex-50">
-      <mat-label>{{ 'labels.inputs.Resource' | translate }}</mat-label>
-      <mat-select [formControl]="resource">
-        <mat-option *ngFor="let option of resourceOptions" [value]="option.value">
-          {{ 'labels.text.' + option.name | translate }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+<!-- Suggested filters dropdown (shows on focus, like Stripe) -->
+<div class="s-suggestions" *ngIf="isFocused && !query.value">
+  <div class="s-suggestions-title">Suggested filters</div>
+  <div class="s-suggestion" *ngFor="let filter of suggestedFilters" (mousedown)="applyFilter(filter)">
+    <span class="s-filter-badge">{{ filter.prefix }}</span>
+    <span class="s-filter-example">{{ filter.example }}</span>
+    <span class="s-filter-desc">{{ filter.description }}</span>
   </div>
-
-  <div class="search-icon flex-10">
-    <button mat-icon-button (click)="toggleSearchVisibility()" class="hide-lt-sm">
-      <fa-icon icon="search" size="lg" matTooltip="{{ 'labels.text.Search' | translate }}"></fa-icon>
-    </button>
-  </div>
+  <div class="s-suggestion-link" (mousedown)="isFocused = false">View more filters</div>
 </div>

@@ -20,7 +20,10 @@ import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 /** Custom Services */
 import { AccountingService } from '../accounting.service';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { MatIcon } from '@angular/material/icon';
+import { MatButton } from '@angular/material/button';
 import { MatCheckbox } from '@angular/material/checkbox';
+import { FormsModule } from '@angular/forms';
 import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
 
 /**
@@ -33,6 +36,8 @@ import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
   imports: [
     ...STANDALONE_SHARED_IMPORTS,
     FaIconComponent,
+    MatIcon,
+    MatButton,
     MatTable,
     MatSort,
     MatColumnDef,
@@ -46,10 +51,15 @@ import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
     MatHeaderRow,
     MatRowDef,
     MatRow,
-    MatPaginator
+    MatPaginator,
+    FormsModule
   ]
 })
 export class ProvisioningEntriesComponent implements OnInit {
+  /** Filter chip value. */
+  filterValue = '';
+  /** Active filter chip. */
+  activeChip: string | null = null;
   /** Provisioning entry data. */
   provisioningEntryData: any;
   /** Columns to be displayed in provisioning entries table. */

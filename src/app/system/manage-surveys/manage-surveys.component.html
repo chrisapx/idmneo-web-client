@@ -1,19 +1,37 @@
-<div class="container m-b-20 layout-row align-end gap-20px">
-  <button mat-raised-button color="primary" [routerLink]="['create']">
-    <fa-icon icon="plus" class="m-r-10"></fa-icon>
-    {{ 'labels.buttons.Create Surveys' | translate }}
-  </button>
-</div>
-
-<div class="container">
-  <div class="layout-row">
-    <mat-form-field class="flex-fill">
-      <mat-label>{{ 'labels.inputs.Filter' | translate }}</mat-label>
-      <input matInput (keyup)="applyFilter($event.target.value)" />
-    </mat-form-field>
+<div class="s-page">
+  <div class="s-head">
+    <h1>Surveys</h1>
+    <div class="s-head-actions">
+      <button mat-flat-button class="s-primary-btn" [routerLink]="['create']">
+        <mat-icon>add</mat-icon> Add Survey
+      </button>
+    </div>
   </div>
 
-  <div class="mat-elevation-z8">
+  <div class="s-filters">
+    <div class="s-filter-left">
+      <div class="s-chip-wrap">
+        <button class="s-filter-chip" [class.applied]="filterValue" (click)="activeChip = activeChip === 'filter' ? null : 'filter'">
+          <mat-icon>{{ filterValue ? 'check' : 'add' }}</mat-icon>
+          Filter{{ filterValue ? ': ' + filterValue : '' }}
+          <mat-icon class="chip-x" *ngIf="filterValue" (click)="$event.stopPropagation(); filterValue = ''; applyFilter('')">close</mat-icon>
+        </button>
+        <div class="s-pop" *ngIf="activeChip === 'filter'">
+          <div class="s-pop-title">Filter</div>
+          <div class="s-pop-row">
+            <span class="s-pop-label">contains</span>
+            <input class="s-pop-input" [(ngModel)]="filterValue" placeholder="Type to filter..." (keydown.enter)="activeChip = null; applyFilter(filterValue)" />
+          </div>
+          <button class="s-pop-apply" (click)="activeChip = null; applyFilter(filterValue)">Apply</button>
+        </div>
+      </div>
+    </div>
+    <div class="s-filter-right">
+      <button class="s-action-chip" *ngIf="filterValue" (click)="filterValue = ''; applyFilter('')"><mat-icon>close</mat-icon> Clear</button>
+    </div>
+  </div>
+
+  <div class="s-table">
     <table mat-table [dataSource]="dataSource" matSort>
       <ng-container matColumnDef="key">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.Key' | translate }}</th>
@@ -38,18 +56,9 @@
       <ng-container matColumnDef="status">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.Status' | translate }}</th>
         <td mat-cell *matCellDef="let survey">
-          <div [className]="isActive(survey.validFrom, survey.validTo) ? 'enabled' : 'disabled'">
-            <fa-icon
-              matTooltip="{{
-                !isActive(survey.validFrom, survey.validTo)
-                  ? ('labels.inputs.Disabled' | translate)
-                  : ('labels.inputs.Enabled' | translate)
-              }}"
-              matTooltipPosition="right"
-              icon="circle"
-              size="lg"
-            ></fa-icon>
-          </div>
+          <span class="s-pill-sm" [class.active]="isActive(survey.validFrom, survey.validTo)" [class.inactive]="!isActive(survey.validFrom, survey.validTo)">
+            {{ isActive(survey.validFrom, survey.validTo) ? 'Enabled' : 'Disabled' }}
+          </span>
         </td>
       </ng-container>
 
@@ -59,24 +68,24 @@
           <button
             mat-button
             *ngIf="!isActive(survey.validFrom, survey.validTo)"
-            color="accent"
+            class="s-outline-btn"
             (click)="activate(survey); $event.stopPropagation()"
           >
-            <fa-icon icon="lock-open" class="m-r-10"></fa-icon>{{ 'labels.buttons.Activate' | translate }}
+            {{ 'labels.buttons.Activate' | translate }}
           </button>
           <button
             mat-button
             *ngIf="isActive(survey.validFrom, survey.validTo)"
-            color="warn"
+            class="s-outline-btn"
             (click)="deactivate(survey); $event.stopPropagation()"
           >
-            <fa-icon icon="lock" class="m-r-10"></fa-icon>{{ 'labels.buttons.Deactivate' | translate }}
+            {{ 'labels.buttons.Deactivate' | translate }}
           </button>
         </td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let survey; columns: displayedColumns" [routerLink]="[survey.id]" class="select-row"></tr>
+      <tr mat-row *matRowDef="let survey; columns: displayedColumns" [routerLink]="[survey.id]" class="s-row"></tr>
     </table>
 
     <mat-paginator [pageSizeOptions]="[10, 25, 50, 100]" showFirstLastButtons></mat-paginator>

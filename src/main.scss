@@ -17,6 +17,7 @@
 
 /* You can add global styles to this file, and also import other style files */
 @use 'assets/styles/helper';
+@use 'assets/styles/skeleton';
 
 .scrollbar-styling {
   scrollbar-width: thin;
@@ -628,4 +629,370 @@ mifosx-notifications-page td {
 .client-Name {
   position: absolute;
   left: 490px;
+}
+
+// =============================================
+// GLOBAL STRIPE OVERRIDES
+// Fixes ALL buttons, cards, tables across the app
+// =============================================
+
+// Kill the big blue Angular Material buttons everywhere
+.mat-mdc-raised-button.mat-primary,
+.mat-mdc-raised-button[color="primary"],
+button[mat-raised-button][color="primary"] {
+  background: #635BFF !important;
+  color: #fff !important;
+  border-radius: 6px !important;
+  height: 32px !important;
+  padding: 0 14px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  box-shadow: none !important;
+  min-width: auto !important;
+
+  &:hover {
+    background: #4b44e0 !important;
+  }
+
+  fa-icon {
+    font-size: 12px !important;
+    margin-right: 6px !important;
+  }
+}
+
+// Also fix warn buttons
+.mat-mdc-raised-button.mat-warn,
+.mat-mdc-raised-button[color="warn"],
+button[mat-raised-button][color="warn"] {
+  background: #FF5A65 !important;
+  color: #fff !important;
+  border-radius: 6px !important;
+  height: 32px !important;
+  padding: 0 14px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+  box-shadow: none !important;
+  min-width: auto !important;
+}
+
+// Fix mat-button (flat/basic) to be Stripe outline
+.mat-mdc-button[color="primary"],
+button[mat-button][color="primary"] {
+  color: #635BFF !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  min-width: auto !important;
+}
+
+// Kill ALL mat-card shadows and make them Stripe cards
+.mat-mdc-card,
+mat-card {
+  border-radius: 8px !important;
+  box-shadow: none !important;
+  border: 1px solid #E3E8EE !important;
+  background: #fff !important;
+}
+
+// Kill the colored card headers (like the old client/loan headers)
+.mat-mdc-card-header,
+.mat-card-header {
+  background: transparent !important;
+}
+
+// Fix all mat-table backgrounds
+.mat-mdc-table {
+  background: transparent !important;
+}
+
+// Fix mat-form-field globally — make them cleaner
+.mat-mdc-form-field {
+  --mdc-filled-text-field-container-color: #fff;
+  --mdc-filled-text-field-active-indicator-color: #E3E8EE;
+  --mdc-filled-text-field-hover-active-indicator-color: #C0C8D2;
+  --mdc-filled-text-field-focus-active-indicator-color: #635BFF;
+  --mdc-filled-text-field-label-text-color: #697386;
+  --mdc-filled-text-field-focus-label-text-color: #635BFF;
+  --mdc-filled-text-field-input-text-color: #1A1F36;
+
+  .mat-mdc-text-field-wrapper {
+    border-radius: 6px !important;
+  }
+}
+
+// Status dots — replace fa-stop with colored dot
+.fa-stop {
+  font-size: 0 !important;
+  width: 8px !important;
+  height: 8px !important;
+  border-radius: 50% !important;
+  display: inline-block !important;
+  margin-right: 6px !important;
+  vertical-align: middle !important;
+}
+
+// Fix all action buttons inside tables
+.account-action-button {
+  width: 28px !important;
+  height: 28px !important;
+  min-width: 28px !important;
+  padding: 0 !important;
+  margin: 0 2px !important;
+  line-height: 28px !important;
+  border-radius: 6px !important;
+  box-shadow: none !important;
+  border: 1px solid #E3E8EE !important;
+  background: #fff !important;
+  color: #697386 !important;
+
+  &:hover {
+    color: #635BFF !important;
+    border-color: #635BFF !important;
+    background: #F7F8FA !important;
+  }
+
+  fa-icon, .fa {
+    font-size: 12px !important;
+  }
+}
+
+// Fix heading-content sections (used in general tabs)
+.heading-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 16px 0 8px;
+}
+
+// Fix tab-container padding globally
+.tab-container {
+  padding: 8px 0 16px !important;
+  margin: 0 !important;
+}
+
+// Kill old card color backgrounds (blue/purple account headers)
+.account-card {
+  background: transparent !important;
+  color: inherit !important;
+}
+
+.account-card-title {
+  color: inherit !important;
+}
+
+// =============================================
+// GLOBAL TABLE SCROLL — never truncate, always scroll
+// =============================================
+.mat-mdc-table,
+table[mat-table],
+table.mat-mdc-table {
+  min-width: 700px;
+}
+
+// Wrap every table in a scroll container
+.mat-mdc-card-content,
+.tab-container,
+.container,
+.table-container,
+.s-table,
+.gt-card,
+.lgt-card,
+div[class$="-table"] {
+  overflow-x: auto !important;
+}
+
+// =============================================
+// GLOBAL PAGE PADDING FIX — tighter everywhere
+// =============================================
+.container {
+  padding: 8px 0 16px !important;
+  margin: 0 !important;
+}
+
+// Kill ALL extra padding/margin from old layout classes
+.m-t-20 { margin-top: 12px !important; }
+.m-b-20 { margin-bottom: 12px !important; }
+.p-24, .p-20 { padding: 8px 0 !important; }
+
+// =============================================
+// GLOBAL FILTER STYLING — Stripe search inputs everywhere
+// =============================================
+
+// Make all mat-form-field search inputs look like Stripe
+.search-box .mat-mdc-form-field,
+.filter-box .mat-mdc-form-field,
+.filter-container .mat-mdc-form-field {
+  .mat-mdc-text-field-wrapper {
+    border: 1px solid #E3E8EE !important;
+    border-radius: 8px !important;
+    background: #fff !important;
+    height: 36px !important;
+    padding: 0 12px !important;
+  }
+
+  .mdc-text-field--filled:not(.mdc-text-field--disabled) {
+    background: #fff !important;
+  }
+
+  .mdc-line-ripple { display: none !important; }
+
+  &.mat-focused .mat-mdc-text-field-wrapper {
+    border-color: #635BFF !important;
+    box-shadow: 0 0 0 3px rgba(99, 91, 255, 0.08) !important;
+  }
+
+  .mat-mdc-form-field-subscript-wrapper {
+    display: none !important;
+  }
+
+  input {
+    font-size: 14px !important;
+  }
+}
+
+// Fix filter container backgrounds
+.filter-container {
+  background: #fff !important;
+  border: 1px solid #E3E8EE !important;
+  border-radius: 8px !important;
+  padding: 12px 16px !important;
+  box-shadow: none !important;
+  margin-bottom: 12px !important;
+}
+
+// Make all action-button containers flex properly
+.action-button {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  margin-left: auto;
+  gap: 8px !important;
+}
+
+// Fix the f-right button alignment
+.f-right {
+  margin-left: auto !important;
+}
+
+// Make all checkboxes in filters compact
+.filter-box mat-checkbox,
+.search-box mat-checkbox {
+  font-size: 13px !important;
+}
+
+// =============================================
+// GLOBAL MAT-CARD PADDING FIX
+// =============================================
+.mat-mdc-card {
+  padding: 8px 0 !important;
+}
+
+.mat-mdc-card-content {
+  padding: 0 !important;
+}
+
+.mat-mdc-card-header {
+  padding: 0 !important;
+}
+
+// =============================================
+// GLOBAL LAYOUT ROW with search — Stripe style
+// =============================================
+.layout-column.layout-gt-sm-row,
+.layout-gt-sm-row {
+  gap: 12px !important;
+  margin-bottom: 12px !important;
+  flex-wrap: nowrap !important;
+
+  @media (max-width: 768px) {
+    flex-wrap: wrap !important;
+  }
+}
+
+// =============================================
+// FIX BORDERED-TABLE wrapper
+// =============================================
+.bordered-table {
+  border: 1px solid #E3E8EE !important;
+  border-radius: 8px !important;
+  overflow: hidden;
+
+  th, td {
+    border-bottom: 1px solid #F0F2F5 !important;
+  }
+}
+
+// Fix select-row globally
+.select-row:hover {
+  background: #F7F8FA !important;
+  cursor: pointer;
+}
+
+// =============================================
+// NAVIGATION TABS (mat-tab-nav-bar) — Stripe everywhere
+// =============================================
+.navigation-tabs,
+nav[mat-tab-nav-bar] {
+  background: transparent !important;
+  border-bottom: 1px solid #E3E8EE !important;
+
+  .mat-mdc-tab-link {
+    min-width: auto !important;
+    padding: 0 14px !important;
+    height: 40px !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    color: #697386 !important;
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+    opacity: 1 !important;
+
+    .mdc-tab__text-label {
+      color: inherit !important;
+    }
+
+    &:hover .mdc-tab__text-label {
+      color: #1A1F36 !important;
+    }
+
+    &.mdc-tab--active .mdc-tab__text-label {
+      color: #635BFF !important;
+      font-weight: 600 !important;
+    }
+  }
+
+  .mdc-tab-indicator .mdc-tab-indicator__content--underline {
+    border-color: #635BFF !important;
+    border-top-width: 2px !important;
+  }
+
+  .mat-mdc-tab-link-container,
+  .mat-mdc-tab-header {
+    border-bottom: none !important;
+  }
+}
+
+// =============================================
+// GLOBAL MAT-PAGINATOR — Stripe style
+// =============================================
+.mat-mdc-paginator {
+  background: transparent !important;
+  font-size: 13px !important;
+  border-top: 1px solid #E3E8EE !important;
+}
+
+// =============================================
+// FIX PROGRESS BAR — slim, purple
+// =============================================
+mat-progress-bar,
+.mat-mdc-progress-bar {
+  height: 2px !important;
+
+  .mdc-linear-progress__bar-inner {
+    border-color: #635BFF !important;
+  }
 }

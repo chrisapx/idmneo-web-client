@@ -1,16 +1,62 @@
-.table-container {
-  border-radius: 10px;
-  overflow: hidden;
+@use 'assets/styles/stripe-page' as *;
+
+$s-dark: #1A1F36;
+$s-text: #3C4257;
+$s-grey: #697386;
+$s-border: #E3E8EE;
+$s-bg: #F7F8FA;
+$s-white: #fff;
+$s-purple: #635BFF;
+
+.s-filters {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 8px; gap: 8px; flex-wrap: wrap;
+}
+.s-filter-left { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.s-filter-right { display: flex; align-items: center; gap: 8px; }
+
+.s-chip-wrap { position: relative; }
+
+.s-filter-chip {
+  display: inline-flex; align-items: center; gap: 2px;
+  height: 28px; padding: 0 10px;
+  border: 1px dashed $s-border; border-radius: 16px;
+  background: $s-white; color: $s-text;
+  font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap;
+  mat-icon { font-size: 14px; width: 14px; height: 14px; color: $s-grey; }
+  .chip-x { font-size: 12px !important; width: 12px !important; height: 12px !important; margin-left: 2px; color: $s-grey !important; &:hover { color: $s-dark !important; } }
+  &:hover { background: $s-bg; border-color: darken($s-border, 10%); }
+  &.applied { border-color: $s-purple; color: $s-purple; border-style: solid; background: rgba($s-purple, 0.04);
+    mat-icon:first-child { color: $s-purple; }
+  }
 }
 
-table {
-  width: 100%;
+.s-action-chip {
+  display: inline-flex; align-items: center; gap: 3px;
+  height: 28px; padding: 0 10px;
+  border: 1px solid $s-border; border-radius: 6px;
+  background: $s-white; color: $s-text;
+  font-size: 13px; font-weight: 500; cursor: pointer;
+  mat-icon { font-size: 14px; width: 14px; height: 14px; color: $s-grey; }
+  &:hover { background: $s-bg; }
 }
 
-.true {
-  color: #32cd32;
+.s-pop {
+  position: absolute; top: 34px; left: 0; width: 260px;
+  background: $s-white; border: 1px solid $s-border; border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12); padding: 14px; z-index: 500;
 }
-
-.false {
-  color: #f44366;
+.s-pop-title { font-size: 13px; font-weight: 600; color: $s-dark; margin-bottom: 8px; }
+.s-pop-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.s-pop-label { font-size: 13px; color: $s-grey; flex-shrink: 0; }
+.s-pop-input {
+  flex: 1; height: 32px; padding: 0 8px;
+  border: 1px solid $s-border; border-radius: 6px;
+  font-size: 13px; color: $s-dark; outline: none;
+  &:focus { border-color: $s-purple; box-shadow: 0 0 0 2px rgba($s-purple, 0.1); }
+}
+.s-pop-apply {
+  width: 100%; height: 34px; background: $s-purple; color: #fff;
+  border: none; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer;
+  &:hover { background: darken($s-purple, 6%); }
 }

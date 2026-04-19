@@ -1,7 +1,7 @@
 // src/app/shared/standalone-shared.module.ts
 
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { NgIf, NgFor } from '@angular/common';
 
@@ -20,6 +20,7 @@ import { HasPermissionDirective } from './directives/has-permission/has-permissi
 
 export const STANDALONE_SHARED_IMPORTS = [
   CommonModule,
+  FormsModule,
   ReactiveFormsModule,
   RouterLink,
   NgIf,

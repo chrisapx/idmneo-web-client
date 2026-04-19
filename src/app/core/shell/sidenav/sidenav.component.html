@@ -1,67 +1,129 @@
-<div
-  [ngClass]="{
-    'sidebar-full': !sidenavCollapsed,
-    'sidebar-compact': sidenavCollapsed
-  }"
->
-  <div class="navigation-panel layout-column">
-    <!-- TODO: Allow customization by organization -->
-    <div class="app-brand" [routerLink]="['/home']">
-      <img src="assets/images/IDM Neo.png" alt="app-logo" class="app-logo" />
-      <span #logo class="app-logo-text text-muted" style="font-size:20px; font-weight:700; color:rgb(105, 105, 105)">{{ 'APP_NAME' | translate }}</span>
+<div class="s-sidebar" [ngClass]="{ 'compact': sidenavCollapsed }">
+
+  <!-- Brand — click opens dropdown -->
+  <div class="s-brand" (click)="showBrandMenu = !showBrandMenu">
+    <div class="s-brand-letter">{{ (tenantIdentifier || 'N')[0] | uppercase }}</div>
+    <span class="s-brand-name" *ngIf="!sidenavCollapsed">{{ tenantIdentifier || 'New business' }}</span>
+    <mat-icon class="s-brand-chevron" *ngIf="!sidenavCollapsed">{{ showBrandMenu ? 'expand_less' : 'expand_more' }}</mat-icon>
+  </div>
+
+  <!-- Brand dropdown -->
+  <div class="s-brand-dropdown" *ngIf="showBrandMenu && !sidenavCollapsed">
+    <div class="s-bd-header">
+      <div class="s-bd-avatar">{{ (tenantIdentifier || 'NB').substring(0,2) | uppercase }}</div>
+      <div class="s-bd-name">{{ tenantIdentifier || 'New business' }}</div>
+    </div>
+    <a class="s-bd-item" [routerLink]="['/organization']" (click)="showBrandMenu = false">
+      <mat-icon>settings</mat-icon> Settings
+    </a>
+    <a class="s-bd-item" [routerLink]="['/profile']" (click)="showBrandMenu = false">
+      <mat-icon>person</mat-icon> {{ username }}
+    </a>
+    <a class="s-bd-item" (click)="logout(); showBrandMenu = false">
+      <mat-icon>logout</mat-icon> Sign out
+    </a>
+  </div>
+
+  <!-- Search (only in expanded mode) -->
+  <div class="s-search" *ngIf="!sidenavCollapsed">
+    <mat-icon>search</mat-icon>
+    <input placeholder="Search" [(ngModel)]="sidebarSearch" />
+  </div>
+
+  <!-- Search results -->
+  <div class="s-search-results" *ngIf="sidebarSearch && filteredNavItems.length > 0 && !sidenavCollapsed">
+    <a class="s-search-item" *ngFor="let item of filteredNavItems" [routerLink]="item.path" (click)="sidebarSearch = ''">
+      <mat-icon>{{ item.icon }}</mat-icon> {{ item.label }}
+    </a>
+  </div>
+
+  <!-- === EXPANDED MODE === -->
+  <ng-container *ngIf="!sidenavCollapsed && !sidebarSearch">
+    <!-- Primary nav -->
+    <nav class="s-nav">
+      <a class="s-nav-item" routerLink="/home" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <mat-icon>home</mat-icon><span>Home</span>
+      </a>
+      <a class="s-nav-item" routerLink="/clients" routerLinkActive="active">
+        <mat-icon>people</mat-icon><span>Customers</span>
+      </a>
+      <a class="s-nav-item" routerLink="/products" routerLinkActive="active">
+        <mat-icon>inventory_2</mat-icon><span>Product catalog</span>
+      </a>
+    </nav>
+
+    <!-- Shortcuts -->
+    <div class="s-section">
+      <div class="s-section-label">Shortcuts</div>
+      <a class="s-nav-item" routerLink="/navigation" routerLinkActive="active"><mat-icon>explore</mat-icon><span>Navigation</span></a>
     </div>
 
-    <div class="app-user">
-      <div class="app-user-photo">
-        <!-- TODO: Decision to be taken on providing this feature -->
-        <img src="assets/images/user_placeholder.png" alt="app-user-photo" />
-      </div>
-      <span class="app-user-name mb-05"> {{ tenantIdentifier }} / {{ username }} </span>
-      <div #userPanel class="app-user-controls">
-        <button class="xs-button" mat-icon-button matTooltip="{{ 'tooltips.Sign Out' | translate }}" (click)="logout()">
-          <fa-icon icon="sign-out-alt"></fa-icon>
-        </button>
+    <!-- Products -->
+    <div class="s-section">
+      <div class="s-section-label">Products</div>
+      <div class="s-group" *ngFor="let g of sidebarGroups">
+        <a class="s-nav-item" (click)="toggleSection(g.key)">
+          <mat-icon>{{ g.icon }}</mat-icon><span>{{ g.label }}</span>
+          <mat-icon class="s-chevron">{{ expandedSections[g.key] ? 'expand_less' : 'expand_more' }}</mat-icon>
+        </a>
+        <div class="s-sub" [class.s-sub-open]="expandedSections[g.key]">
+          <a class="s-sub-item" *ngFor="let sub of g.children" [routerLink]="sub.path" routerLinkActive="active" (click)="$event.stopPropagation()">{{ sub.label }}</a>
+        </div>
       </div>
     </div>
+  </ng-container>
+
+  <!-- === COMPACT MODE: icons with mat-menu flyouts === -->
+  <ng-container *ngIf="sidenavCollapsed && !sidebarSearch">
+    <nav class="s-nav">
+      <a class="s-nav-item" routerLink="/home" routerLinkActive="active" matTooltip="Home" matTooltipPosition="right"><mat-icon>home</mat-icon></a>
+      <a class="s-nav-item" routerLink="/clients" routerLinkActive="active" matTooltip="Customers" matTooltipPosition="right"><mat-icon>people</mat-icon></a>
+      <a class="s-nav-item" routerLink="/products" routerLinkActive="active" matTooltip="Product catalog" matTooltipPosition="right"><mat-icon>inventory_2</mat-icon></a>
+    </nav>
+
+    <mat-divider></mat-divider>
+
+    <a class="s-nav-item" routerLink="/navigation" routerLinkActive="active" matTooltip="Navigation" matTooltipPosition="right"><mat-icon>explore</mat-icon></a>
+
+    <mat-divider></mat-divider>
+
+    <!-- All groups as hover-triggered flyout menus -->
+    <ng-container *ngFor="let g of sidebarGroups">
+      <a class="s-nav-item" [matMenuTriggerFor]="groupMenu" #groupTrig="matMenuTrigger"
+         (mouseenter)="groupTrig.openMenu()" (mouseleave)="scheduleClose(groupTrig)">
+        <mat-icon>{{ g.icon }}</mat-icon>
+      </a>
+      <mat-menu #groupMenu="matMenu" class="s-flyout-menu">
+        <div (mouseenter)="cancelClose()" (mouseleave)="groupTrig.closeMenu()">
+          <div class="s-flyout-title" mat-menu-item disabled>{{ g.label }}</div>
+          <button mat-menu-item *ngFor="let sub of g.children" [routerLink]="sub.path">{{ sub.label }}</button>
+        </div>
+      </mat-menu>
+    </ng-container>
+  </ng-container>
+
+  <!-- Bottom -->
+  <div class="s-bottom">
+    <mat-divider *ngIf="!sidenavCollapsed"></mat-divider>
+    <!-- Expanded: simple link -->
+    <a class="s-nav-item" routerLink="/system" routerLinkActive="active" *ngIf="!sidenavCollapsed">
+      <mat-icon>terminal</mat-icon><span>Developers</span>
+    </a>
+    <!-- Compact: hover-triggered dev menu -->
+    <ng-container *ngIf="sidenavCollapsed">
+      <a class="s-nav-item" [matMenuTriggerFor]="devMenu" #devTrig="matMenuTrigger"
+         (mouseenter)="devTrig.openMenu()" (mouseleave)="scheduleClose(devTrig)">
+        <mat-icon>terminal</mat-icon>
+      </a>
+      <mat-menu #devMenu="matMenu" class="s-flyout-menu">
+        <div (mouseenter)="cancelClose()" (mouseleave)="devTrig.closeMenu()">
+          <div class="s-flyout-title" mat-menu-item disabled>Developers</div>
+          <button mat-menu-item routerLink="/system">System</button>
+          <button mat-menu-item routerLink="/system/scheduler-jobs">Scheduler Jobs</button>
+          <button mat-menu-item routerLink="/system/codes">Codes</button>
+          <button mat-menu-item routerLink="/system/data-tables">Data Tables</button>
+        </div>
+      </mat-menu>
+    </ng-container>
   </div>
 </div>
-
-<ng-template #templateLogo let-popover="popover">
-  <h2>{{ 'labels.text.Home' | translate }}</h2>
-  <p class="mw300">{{ 'labels.text.Welcome page logo from anywhere' | translate }}</p>
-  <div class="layout-row align-end gap-2px responsive-column">
-    <button mat-raised-button color="warn" (click)="popover.close(); configurationWizardService.closeConfigWizard()">
-      {{ 'labels.buttons.Close' | translate }}
-    </button>
-    <button mat-raised-button color="primary" (click)="popover.close(); previousStep()">
-      {{ 'labels.buttons.Back' | translate }}
-    </button>
-    <button
-      mat-raised-button
-      color="primary"
-      (click)="popover.close(); showPopover(templateUserPanel, userPanel, 'bottom', true)"
-    >
-      {{ 'labels.buttons.Next' | translate }}
-    </button>
-  </div>
-</ng-template>
-
-<ng-template #templateUserPanel let-popover="popover">
-  <h2>{{ 'labels.menus.User Panel' | translate }}</h2>
-  <p class="mw300">{{ 'labels.text.Section Buttons' | translate }}</p>
-  <div class="layout-row align-end gap-2px responsive-column">
-    <button mat-raised-button color="warn" (click)="popover.close(); configurationWizardService.closeConfigWizard()">
-      {{ 'labels.buttons.Close' | translate }}
-    </button>
-    <button
-      mat-raised-button
-      color="primary"
-      (click)="popover.close(); showPopover(templateLogo, logo, 'bottom', true)"
-    >
-      {{ 'labels.buttons.Back' | translate }}
-    </button>
-    <button mat-raised-button color="primary" (click)="popover.close(); nextStep()">
-      {{ 'labels.buttons.Next' | translate }}
-    </button>
-  </div>
-</ng-template>

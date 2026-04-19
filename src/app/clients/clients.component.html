@@ -1,97 +1,200 @@
-<mat-card class="container">
-  <div class="layout-column layout-gt-sm-row align-gt-sm-start-center">
-    <div class="search-box m-r-30">
-      <mat-form-field class="search-box">
-        <input
-          matInput
-          placeholder="Search by client name, external Id, mobile"
-          class="search-box"
-          (keydown.enter)="search($event.target.value)"
-        />
-      </mat-form-field>
-    </div>
-    <div class="filter-box" *ngIf="existsClientsToFilter">
-      <mat-checkbox #showClosedAccounts labelPosition="after" class="m-r-10"
-        >{{ 'labels.inputs.Show Closed Accounts' | translate }}
-      </mat-checkbox>
-    </div>
-    <div class="action-button gap-25px">
-      <button
-        mat-raised-button
-        color="primary"
-        [routerLink]="['../', 'organization', 'bulk-import', 'Clients']"
-        *mifosxHasPermission="'CREATE_CLIENT'"
-      >
-        <fa-icon icon="download" class="m-r-20"></fa-icon>{{ 'labels.buttons.Import Client' | translate }}
+<div class="s-page">
+  <!-- Title -->
+  <div class="s-head">
+    <h1>Clients</h1>
+    <div class="s-head-actions">
+      <button mat-stroked-button class="s-outline-btn" [routerLink]="['../', 'organization', 'bulk-import', 'Clients']" *mifosxHasPermission="'CREATE_CLIENT'">
+        <mat-icon>download</mat-icon> Import Client
       </button>
-      <button mat-raised-button color="primary" [routerLink]="['create']" *mifosxHasPermission="'CREATE_CLIENT'">
-        <fa-icon icon="plus" class="m-r-20"></fa-icon>{{ 'labels.buttons.Create Client' | translate }}
+      <button mat-flat-button class="s-primary-btn" (click)="openCreateClient()" *mifosxHasPermission="'CREATE_CLIENT'">
+        <mat-icon>add</mat-icon> Add client <span class="s-btn-badge">N</span>
       </button>
     </div>
   </div>
 
-  <div [hidden]="!existsClientsToFilter" class="client-list">
-    <div *ngIf="isLoading">
-      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  <!-- Tabs: All | Active Clients -->
+  <div class="s-seg-tabs">
+    <div class="s-seg" [class.active]="activeTab === 'all'" (click)="setTab('all')">All</div>
+    <div class="s-seg" [class.active]="activeTab === 'active'" (click)="setTab('active')">Active clients</div>
+  </div>
+
+  <!-- Search bar -->
+  <div class="cl-search-wrap">
+    <div class="cl-search-bar" [class.cl-search-focused]="searchFocused">
+      <mat-icon>search</mat-icon>
+      <input
+        placeholder="Search clients by name..."
+        [(ngModel)]="searchQuery"
+        (input)="onSearchInput()"
+        (focus)="searchFocused = true"
+        (blur)="onSearchBlur()"
+        (keydown.enter)="applySearch()"
+        (keydown.escape)="clearSearch()"
+      />
+      <mat-icon class="cl-search-clear" *ngIf="searchQuery" (mousedown)="$event.preventDefault(); clearSearch()">close</mat-icon>
     </div>
-    <table mat-table [dataSource]="dataSource" matSort (matSortChange)="sortChanged($event)" class="bordered-table">
-      <!-- Name Column -->
-      <ng-container matColumnDef="displayName">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.name' | translate }}</th>
-        <td mat-cell *matCellDef="let row" [routerLink]="[row.id, 'general']">{{ row.displayName }}</td>
-      </ng-container>
+    <!-- Suggestions dropdown -->
+    <div class="cl-suggestions" *ngIf="searchFocused && suggestions.length > 0 && searchQuery">
+      <a class="cl-suggestion" *ngFor="let s of suggestions" (mousedown)="goToClient(s)">
+        <span class="cl-sug-avatar">{{ (s.displayName || '?')[0] }}</span>
+        <div class="cl-sug-info">
+          <span class="cl-sug-name">{{ s.displayName }}</span>
+          <span class="cl-sug-meta">{{ s.accountNumber }} · {{ s.officeName }}</span>
+        </div>
+        <span class="cl-sug-status s-pill-sm" [ngClass]="s.status?.code | statusLookup">{{ s.status?.value }}</span>
+      </a>
+    </div>
+  </div>
 
-      <!-- Account no Column -->
-      <ng-container matColumnDef="accountNumber">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.Account No' | translate }}</th>
-        <td mat-cell *matCellDef="let row">
-          <mifosx-account-number display="left" accountNo="{{ row.accountNumber }}"></mifosx-account-number>
-        </td>
-      </ng-container>
+  <!-- Filter chips row -->
+  <div class="s-filters">
+    <div class="s-filter-left">
 
-      <!-- External ID Column -->
-      <ng-container matColumnDef="externalId">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.External Id' | translate }}</th>
-        <td mat-cell *matCellDef="let row">
-          <mifosx-external-identifier display="left" externalId="{{ row.externalId }}"></mifosx-external-identifier>
-        </td>
-      </ng-container>
-
-      <!-- Status Column -->
-      <ng-container matColumnDef="status">
-        <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.Status' | translate }}</th>
-        <td mat-cell *matCellDef="let row">
-          <div [ngClass]="row.status.code | statusLookup">
-            <fa-icon icon="stop"></fa-icon>
-            <span class="m-l-10 status">
-              {{ row.status.value | translate }}
-            </span>
+      <!-- Status filter (dropdown) -->
+      <div class="s-chip-wrap">
+        <button class="s-filter-chip" [class.applied]="appliedFilters['status']" (click)="openFilter('status')">
+          <mat-icon>{{ appliedFilters['status'] ? 'check' : 'add' }}</mat-icon>
+          Status{{ appliedFilters['status'] ? ': ' + appliedFilters['status'] : '' }}
+          <mat-icon class="chip-x" *ngIf="appliedFilters['status']" (click)="$event.stopPropagation(); removeFilter('status')">close</mat-icon>
+        </button>
+        <div class="s-pop" *ngIf="activeFilter === 'status'">
+          <div class="s-pop-title">Filter by: status</div>
+          <div class="s-pop-options">
+            <div class="s-pop-option" *ngFor="let s of statuses" (click)="applyFilterValue('status', s)"
+                 [class.selected]="appliedFilters['status'] === s">
+              <mat-icon *ngIf="appliedFilters['status'] === s">check</mat-icon>
+              {{ s }}
+            </div>
           </div>
-        </td>
-      </ng-container>
+        </div>
+      </div>
 
-      <ng-container matColumnDef="officeName">
-        <th mat-header-cell *matHeaderCellDef>{{ 'labels.inputs.Office Name' | translate }}</th>
-        <td mat-cell *matCellDef="let row">{{ row.officeName }}</td>
-      </ng-container>
+      <!-- Office filter (dropdown from API) -->
+      <div class="s-chip-wrap">
+        <button class="s-filter-chip" [class.applied]="appliedFilters['office']" (click)="openFilter('office')">
+          <mat-icon>{{ appliedFilters['office'] ? 'check' : 'add' }}</mat-icon>
+          Office{{ appliedFilters['office'] ? ': ' + appliedFilters['office'] : '' }}
+          <mat-icon class="chip-x" *ngIf="appliedFilters['office']" (click)="$event.stopPropagation(); removeFilter('office')">close</mat-icon>
+        </button>
+        <div class="s-pop" *ngIf="activeFilter === 'office'">
+          <div class="s-pop-title">Filter by: office</div>
+          <div class="s-pop-options">
+            <div class="s-pop-option" *ngFor="let o of offices" (click)="applyFilterValue('office', o.name)"
+                 [class.selected]="appliedFilters['office'] === o.name">
+              <mat-icon *ngIf="appliedFilters['office'] === o.name">check</mat-icon>
+              {{ o.name }}
+            </div>
+          </div>
+        </div>
+      </div>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns" class="select-row"></tr>
-    </table>
+      <!-- More filters -->
+      <div class="s-chip-wrap">
+        <button class="s-filter-chip" (click)="toggleMoreFilters()">
+          <mat-icon>add</mat-icon> More filters
+        </button>
+        <div class="s-pop" *ngIf="showMoreFilters">
+          <div class="s-pop-title">More filters</div>
+          <div class="s-pop-options">
+            <div class="s-pop-option" (click)="showMoreFilters = false; openFilter('accountNo')">
+              <mat-icon>add_circle_outline</mat-icon> Account No
+            </div>
+            <div class="s-pop-option" (click)="showMoreFilters = false; openFilter('externalId')">
+              <mat-icon>add_circle_outline</mat-icon> External ID
+            </div>
+          </div>
+        </div>
+        <!-- Account No filter (text) -->
+        <div class="s-pop" *ngIf="activeFilter === 'accountNo'">
+          <div class="s-pop-title">Filter by: account number</div>
+          <div class="s-pop-row">
+            <span class="s-pop-label">contains</span>
+            <input class="s-pop-input" [(ngModel)]="appliedFilters['accountNo']" placeholder="e.g. 000001" (keydown.enter)="applyFilterValue('accountNo', appliedFilters['accountNo'])" />
+          </div>
+          <button class="s-pop-apply" (click)="applyFilterValue('accountNo', appliedFilters['accountNo'])">Apply</button>
+        </div>
+        <!-- External ID filter (text) -->
+        <div class="s-pop" *ngIf="activeFilter === 'externalId'">
+          <div class="s-pop-title">Filter by: external ID</div>
+          <div class="s-pop-row">
+            <span class="s-pop-label">contains</span>
+            <input class="s-pop-input" [(ngModel)]="appliedFilters['externalId']" placeholder="e.g. EXT-001" (keydown.enter)="applyFilterValue('externalId', appliedFilters['externalId'])" />
+          </div>
+          <button class="s-pop-apply" (click)="applyFilterValue('externalId', appliedFilters['externalId'])">Apply</button>
+        </div>
+      </div>
+    </div>
 
-    <mat-paginator
-      [pageSize]="pageSize"
-      [pageSizeOptions]="[5, 50, 100]"
-      [length]="totalRows"
-      (page)="pageChanged($event)"
-      showFirstLastButtons
-    ></mat-paginator>
-  </div>
-
-  <div class="alert" [hidden]="!notExistsClientsToFilter">
-    <div class="message">
-      <i class="fa fa-exclamation-circle alert-check"></i>
-      {{ 'labels.text.No client was found' | translate }}
+    <div class="s-filter-right">
+      <button class="s-action-chip" *ngIf="hasActiveFilters" (click)="clearAllFilters()"><mat-icon>close</mat-icon> Clear</button>
+      <button class="s-action-chip" *ngIf="existsClientsToFilter"><mat-icon>download</mat-icon> Export</button>
     </div>
   </div>
-</mat-card>
+
+  <!-- Applied filter badges -->
+  <div class="s-applied-row" *ngIf="hasActiveFilters">
+    <span class="s-applied-badge" *ngIf="appliedFilters['accountNo']" (click)="removeFilter('accountNo')">
+      Account No: {{ appliedFilters['accountNo'] }} <mat-icon>close</mat-icon>
+    </span>
+    <span class="s-applied-badge" *ngIf="appliedFilters['externalId']" (click)="removeFilter('externalId')">
+      External ID: {{ appliedFilters['externalId'] }} <mat-icon>close</mat-icon>
+    </span>
+  </div>
+
+  <!-- Skeleton loading -->
+  <div class="sk-table" *ngIf="isLoading">
+    <div class="sk-row" *ngFor="let i of [1,2,3,4,5]">
+      <div class="sk-avatar"></div>
+      <div class="sk-lines"><div class="sk-line sk-w60"></div><div class="sk-line sk-w30"></div></div>
+      <div class="sk-pill"></div>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="s-table" *ngIf="!isLoading">
+    <ng-container *ngIf="existsClientsToFilter">
+      <table mat-table [dataSource]="dataSource" matSort (matSortChange)="sortChanged($event)">
+        <ng-container matColumnDef="displayName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Customer</th>
+          <td mat-cell *matCellDef="let row" [routerLink]="[row.id, 'general']">
+            <div class="s-name"><span class="s-av">{{ (row.displayName || '?')[0] }}</span> {{ row.displayName }}</div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="accountNumber">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Account No</th>
+          <td mat-cell *matCellDef="let row"><mifosx-account-number display="left" accountNo="{{ row.accountNumber }}"></mifosx-account-number></td>
+        </ng-container>
+
+        <ng-container matColumnDef="externalId">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>External ID</th>
+          <td mat-cell *matCellDef="let row"><mifosx-external-identifier display="left" externalId="{{ row.externalId }}"></mifosx-external-identifier></td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let row"><span class="s-pill" [ngClass]="row.status?.code | statusLookup">{{ row.status?.value }}</span></td>
+        </ng-container>
+
+        <ng-container matColumnDef="officeName">
+          <th mat-header-cell *matHeaderCellDef>Office</th>
+          <td mat-cell *matCellDef="let row">{{ row.officeName }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns" class="s-row"></tr>
+      </table>
+
+      <div class="s-tfoot">
+        <span class="s-count">{{ totalRows }} item{{ totalRows !== 1 ? 's' : '' }}</span>
+        <mat-paginator [pageSizeOptions]="[10, 25, 50, 100]" [pageSize]="pageSize" [length]="totalRows" [pageIndex]="currentPage" (page)="pageChanged($event)" showFirstLastButtons></mat-paginator>
+      </div>
+    </ng-container>
+
+    <div class="s-empty" *ngIf="notExistsClientsToFilter">
+      <mat-icon>people_outline</mat-icon>
+      <p>No clients found</p>
+      <span>Try adjusting your filters or create a new client</span>
+    </div>
+  </div>
+</div>

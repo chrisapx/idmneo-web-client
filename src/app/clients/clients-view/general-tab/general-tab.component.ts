@@ -20,6 +20,7 @@ import { NgClass, NgIf } from '@angular/common';
 import { AccountNumberComponent } from '../../../shared/account-number/account-number.component';
 import { LongTextComponent } from '../../../shared/long-text/long-text.component';
 import { MatTooltip } from '@angular/material/tooltip';
+import { MatIcon } from '@angular/material/icon';
 import { StatusLookupPipe } from '../../../pipes/status-lookup.pipe';
 import { AccountsFilterPipe } from '../../../pipes/accounts-filter.pipe';
 import { DateFormatPipe } from '../../../pipes/date-format.pipe';
@@ -49,6 +50,7 @@ import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
     AccountNumberComponent,
     LongTextComponent,
     MatTooltip,
+    MatIcon,
     StatusLookupPipe,
     AccountsFilterPipe,
     DateFormatPipe,
@@ -150,6 +152,29 @@ export class GeneralTabComponent {
   showClosedRecurringAccounts = false;
   /** Show Closed Fixed Deposits Accounts */
   showClosedFixedAccounts = false;
+
+  // ===== Helper getters =====
+  get hasLoanAccounts(): boolean {
+    return this.loanAccounts?.length > 0;
+  }
+  get hasSavingsAccounts(): boolean {
+    return this.savingAccounts?.some((a: any) => a.depositType?.value === 'Savings');
+  }
+  get hasFixedDeposits(): boolean {
+    return this.savingAccounts?.some((a: any) => a.depositType?.value === 'Fixed Deposit');
+  }
+  get hasRecurringDeposits(): boolean {
+    return this.savingAccounts?.some((a: any) => a.depositType?.value === 'Recurring Deposit');
+  }
+  get hasShareAccounts(): boolean {
+    return this.shareAccounts?.length > 0;
+  }
+  get totalActiveLoans(): number {
+    return this.loanAccounts?.filter((a: any) => a.status?.active).length || 0;
+  }
+  get totalActiveSavings(): number {
+    return this.savingAccounts?.filter((a: any) => a.status?.active).length || 0;
+  }
 
   /** Client Id */
   clientid: any;

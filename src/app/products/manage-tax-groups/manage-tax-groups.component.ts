@@ -21,6 +21,8 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { of } from 'rxjs';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
+import { MatIcon } from '@angular/material/icon';
+import { MatButton } from '@angular/material/button';
 
 /**
  * Manage Tax Groups component.
@@ -44,7 +46,9 @@ import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
     MatHeaderRow,
     MatRowDef,
     MatRow,
-    MatPaginator
+    MatPaginator,
+    MatIcon,
+    MatButton
   ]
 })
 export class ManageTaxGroupsComponent implements OnInit {
@@ -54,6 +58,8 @@ export class ManageTaxGroupsComponent implements OnInit {
   displayedColumns: string[] = ['name'];
   /** Data source for tax groups table. */
   dataSource: MatTableDataSource<any>;
+  filterValue = '';
+  activeChip: string | null = null;
 
   /** Paginator for tax groups table. */
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;

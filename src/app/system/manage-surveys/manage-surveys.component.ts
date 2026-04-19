@@ -21,6 +21,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { SystemService } from '../system.service';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { MatTooltip } from '@angular/material/tooltip';
+import { MatIcon } from '@angular/material/icon';
 import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
 
 /**
@@ -33,6 +34,7 @@ import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
   imports: [
     ...STANDALONE_SHARED_IMPORTS,
     FaIconComponent,
+    MatIcon,
     MatTable,
     MatSort,
     MatColumnDef,
@@ -63,6 +65,8 @@ export class ManageSurveysComponent implements OnInit {
   ];
   /* Data source for manage surveys data table */
   dataSource: MatTableDataSource<any>;
+  filterValue = '';
+  activeChip: string | null = null;
 
   /** Paginator for manage surveys table. */
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;

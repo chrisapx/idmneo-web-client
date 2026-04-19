@@ -1,39 +1,55 @@
-@use 'assets/styles/helper';
-@use 'assets/styles/colours' as *;
+// =============================
+// Stripe-inspired Breadcrumb Navigation
+// =============================
+
+$stripe-dark: #1A1F36;
+$stripe-secondary: #697386;
+$stripe-link: #635BFF;
 
 .breadcrumb-wrapper {
-  margin: 0 auto;
-  max-width: 84rem;
-  width: 90%;
+  margin: 0;
+  padding: 20px 0 4px;
   word-wrap: break-word;
 
   .breadcrumb {
     list-style: none;
     padding: 0;
-    margin: 1.5rem 0;
-    line-height: 40px;
+    margin: 0;
+    line-height: 1.4;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0;
 
+    // Page title — shown as breadcrumb path, not a huge heading
     .breadcrumb-title {
-      font-size: 1.25rem;
-      font-weight: 400;
+      font-size: 13px;
+      font-weight: 500;
+      color: $stripe-secondary;
+      display: none; // Hide the big title — pages provide their own
     }
 
-    .separator::before {
-      content: '';
-      border: 1.5px solid $mid-grey;
-      margin: 0 0.6rem;
-      font-size: 1.25rem;
-      font-weight: 400;
+    .separator {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0;
+
+      &::before {
+        content: none;
+      }
     }
 
     .breadcrumb-label {
       display: inline;
-      font-size: 1rem;
+      font-size: 13px;
+      color: $stripe-secondary;
 
       .breadcrumb-link {
         a {
           text-decoration: none;
-          color: $status-approved;
+          color: $stripe-link;
+          font-weight: 500;
 
           &:hover {
             text-decoration: underline;
@@ -42,7 +58,9 @@
 
         &::after {
           content: '/';
-          margin: 0 0.4rem;
+          margin: 0 6px;
+          color: $stripe-secondary;
+          font-weight: 400;
         }
       }
     }

@@ -1,37 +1,102 @@
-.search-bar {
-  .search {
-    max-width: 500px;
-    width: 100%;
-    font-size: 1rem;
-    color: white;
-  }
+$s-dark: #1A1F36;
+$s-grey: #697386;
+$s-border: #E3E8EE;
+$s-purple: #635BFF;
 
-  .resource {
-    min-width: 100px;
-    max-width: 100px;
-    width: 100%;
-    font-size: 1rem;
-    color: white;
-    padding-left: 5px;
+// Search bar
+.s-search-bar {
+  display: flex; align-items: center;
+  height: 36px; background: #F0F2F5;
+  border-radius: 8px; padding: 0 12px; gap: 8px;
+  cursor: text; width: 100%; border: none;
+  transition: background 0.15s, box-shadow 0.15s;
+
+  &.focused {
+    background: #fff;
+    box-shadow: 0 0 0 2px $s-purple;
   }
 }
 
-.search-icon {
-  margin-left: 1rem;
+.s-search-icon { font-size: 13px; color: $s-grey; flex-shrink: 0; }
+
+.s-search-input {
+  flex: 1; border: none; outline: none;
+  background: transparent; font-size: 14px;
+  color: $s-dark; height: 100%; min-width: 0;
+  &::placeholder { color: $s-grey; }
+}
+
+// Suggested filters dropdown
+.s-suggestions {
+  position: absolute;
+  top: 44px;
+  left: 0;
+  width: 520px;
+  max-width: 90vw;
+  background: #fff;
+  border: 1px solid $s-border;
+  border-radius: 10px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+  padding: 12px 0;
+  z-index: 1000;
+}
+
+.s-suggestions-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: $s-dark;
+  padding: 4px 16px 8px;
+}
+
+.s-suggestion {
   display: flex;
   align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background 0.1s;
+
+  &:hover { background: #F7F8FA; }
 }
 
-.mat-mdc-floating-label,
-mat-form-field input {
-  color: white !important;
-  height: 16px;
-  transition: height ease-in-out 400ms;
+.s-filter-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border: 1px solid $s-border;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: $s-dark;
+  background: #F7F8FA;
+  white-space: nowrap;
 }
 
-mat-form-field input:focus {
-  color: white !important;
-  background-color: transparent;
-  height: 16px;
-  transition: height ease-in-out 400ms;
+.s-filter-example {
+  font-size: 13px;
+  color: $s-dark;
+  flex: 1;
+}
+
+.s-filter-desc {
+  font-size: 13px;
+  color: $s-grey;
+  text-align: right;
+}
+
+.s-suggestion-link {
+  padding: 8px 16px 4px;
+  font-size: 13px;
+  font-weight: 500;
+  color: $s-purple;
+  cursor: pointer;
+  border-top: 1px solid $s-border;
+  margin-top: 4px;
+
+  &:hover { text-decoration: underline; }
+}
+
+// Position the host to allow absolute dropdown
+:host {
+  position: relative;
+  display: block;
 }

@@ -1,3 +1,224 @@
-mat-card-title {
+$s-dark: #1A1F36;
+$s-text: #3C4257;
+$s-grey: #697386;
+$s-border: #E3E8EE;
+$s-bg: #F7F8FA;
+$s-white: #fff;
+$s-purple: #635BFF;
+
+.sv-page {
+  padding-top: 16px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.sv-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  color: $s-grey;
+  text-decoration: none;
+  margin-bottom: 16px;
+  cursor: pointer;
+  &:hover { color: $s-purple; }
+  mat-icon { font-size: 16px; width: 16px; height: 16px; }
+}
+
+.sv-header {
   display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.sv-identity {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.sv-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  background: lighten($s-purple, 28%);
+  color: $s-purple;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  mat-icon {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+  }
+}
+
+.sv-name-block { min-width: 0; }
+
+.sv-name {
+  font-size: 28px;
+  font-weight: 700;
+  color: $s-dark;
+  margin: 0 0 6px;
+  letter-spacing: -0.4px;
+}
+
+.sv-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.sv-meta-text { font-size: 13px; color: $s-grey; }
+.sv-meta-sep { color: $s-border; font-size: 13px; }
+
+.sv-pill {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 12px;
+  background: lighten($s-border, 3%);
+  color: $s-grey;
+}
+
+::ng-deep .sv-pill {
+  &.status-active,
+  &.savingsAccountStatusType-active { background: #DCFCE7; color: #166534; }
+  &.status-pending,
+  &.savingsAccountStatusType-submitted-and-pending-approval { background: #FEF3C7; color: #92400E; }
+  &.status-closed,
+  &.savingsAccountStatusType-closed { background: lighten($s-border, 3%); color: $s-grey; }
+}
+
+.sv-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.sv-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 34px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 6px;
+  background: $s-purple;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  &:hover { background: darken($s-purple, 6%); }
+  mat-icon { font-size: 18px; width: 18px; height: 18px; }
+}
+
+.sv-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px 24px;
+  padding: 16px 0 24px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid $s-border;
+}
+
+.sv-info-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sv-info-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: $s-grey;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.sv-info-value {
+  font-size: 14px;
+  color: $s-dark;
+  font-weight: 500;
+}
+
+.sv-amount {
+  font-variant-numeric: tabular-nums;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+// Tabs
+.sv-tabs {
+  border-bottom: 1px solid $s-border;
+  margin-bottom: 16px;
+  background: transparent;
+}
+
+::ng-deep .sv-tabs {
+  .mat-mdc-tab-link {
+    min-width: auto !important;
+    padding: 0 16px !important;
+    height: 42px !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    color: $s-grey !important;
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+    opacity: 1 !important;
+
+    .mdc-tab__text-label { color: $s-grey !important; }
+    &:hover .mdc-tab__text-label { color: $s-dark !important; }
+
+    &.mdc-tab--active .mdc-tab__text-label,
+    &.mdc-tab-indicator--active .mdc-tab__text-label {
+      color: $s-purple !important;
+      font-weight: 600 !important;
+    }
+  }
+
+  .mdc-tab-indicator .mdc-tab-indicator__content--underline {
+    border-color: $s-purple !important;
+    border-top-width: 2px !important;
+  }
+
+  .mat-mdc-tab-link-container,
+  .mat-mdc-tab-header,
+  .mdc-tab-indicator { border-bottom: none !important; }
+}
+
+.sv-tab-content { padding-top: 8px; }
+
+::ng-deep .sv-menu {
+  border-radius: 10px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12) !important;
+  min-width: 220px !important;
+
+  .mat-mdc-menu-item {
+    font-size: 13px !important;
+    min-height: 36px !important;
+    padding: 0 14px !important;
+
+    mat-icon {
+      font-size: 18px !important;
+      width: 18px !important;
+      height: 18px !important;
+      margin-right: 8px;
+      color: $s-grey;
+    }
+    &:hover { background: $s-bg !important; }
+  }
+}
+
+@media (max-width: 768px) {
+  .sv-header { flex-direction: column; align-items: stretch; }
+  .sv-info-grid { grid-template-columns: 1fr 1fr; }
 }

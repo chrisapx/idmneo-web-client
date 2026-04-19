@@ -40,11 +40,13 @@ import { TreeControlService } from 'app/shared/common-logic/tree-control.service
 import { MatButtonToggleGroup, MatButtonToggle } from '@angular/material/button-toggle';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
 import { MatCard, MatCardContent, MatCardTitle } from '@angular/material/card';
 import { NgIf, NgFor, DatePipe } from '@angular/common';
 import { MatTabGroup, MatTab } from '@angular/material/tabs';
 import { ExternalIdentifierComponent } from '../../shared/external-identifier/external-identifier.component';
 import { DateFormatPipe } from '../../pipes/date-format.pipe';
+import { FormsModule } from '@angular/forms';
 import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
 
 /**
@@ -84,10 +86,16 @@ import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
     MatTab,
     ExternalIdentifierComponent,
     DatePipe,
-    DateFormatPipe
+    DateFormatPipe,
+    MatIcon,
+    FormsModule
   ]
 })
 export class OfficesComponent implements OnInit, AfterViewInit {
+  /** Filter chip value. */
+  filterValue = '';
+  /** Active filter chip. */
+  activeChip: string | null = null;
   /** Button toggle group form control for type of view. (list/tree) */
   viewGroup = new UntypedFormControl('listView');
 

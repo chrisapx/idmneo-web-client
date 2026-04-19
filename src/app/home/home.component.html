@@ -1,61 +1,245 @@
-<div class="layout-row align-end gap-2px responsive-column container m-b-20">
-  <div #buttonDashboard class="in-block">
-    <button mat-raised-button color="primary" [routerLink]="['/dashboard']">
-      <fa-icon icon="tachometer-alt" class="m-r-10"></fa-icon>
-      {{ 'labels.buttons.Dashboard' | translate }}
-    </button>
-  </div>
-</div>
+<div class="stripe-dashboard">
 
-<div class="container">
-  <mat-card>
-    <mat-card-header>
-      <mat-card-title class="title"> {{ 'labels.text.Welcome' | translate }}, {{ username }}! </mat-card-title>
-    </mat-card-header>
+  <!-- ==================== TODAY SECTION ==================== -->
+  <div class="dashboard-main">
+    <div class="today-section">
+      <h1 class="section-title">Today</h1>
 
-    <mat-card-content #searchActivity>
-      <div class="layout-column">
-        <mat-form-field>
-          <mat-label>{{ 'labels.placeholders.Search Activity' | translate }}</mat-label>
-          <input matInput [matAutocomplete]="activitySearch" [formControl]="searchText" />
-        </mat-form-field>
+      <!-- Top metrics row -->
+      <div class="metrics-row">
+        <div class="metric-block">
+          <div class="metric-label">
+            Total Disbursements
+            <mat-icon class="metric-dropdown" [matTooltip]="'Total amount disbursed today'">arrow_drop_down</mat-icon>
+          </div>
+          <div class="metric-value">{{ grossDisbursements | number:'1.2-2' }}</div>
+          <div class="metric-time">{{ todayDate | date:'h:mm a' }}</div>
+        </div>
+        <div class="metric-block">
+          <div class="metric-label">Pending Disbursals</div>
+          <div class="metric-value-secondary">{{ pendingDisbursements | number:'1.2-2' }}</div>
+        </div>
       </div>
 
-      <mat-autocomplete #activitySearch="matAutocomplete">
-        <mat-option *ngFor="let activity of filteredActivities | async" [routerLink]="activity.path">
-          <span>{{ activity.activity }}</span>
-        </mat-option>
-      </mat-autocomplete>
-    </mat-card-content>
+      <!-- Today chart -->
+      <div class="today-chart-container">
+        <canvas id="today-chart"></canvas>
+        <div class="chart-time-labels">
+          <span>12:00 AM</span>
+          <span>11:59 PM</span>
+        </div>
+      </div>
 
-    <!-- <img mat-card-image src="assets/images/IDM Neo logo.png" alt="IDM Neo" height="24px" width="24px"/> -->
-  </mat-card>
+      <!-- Balance & Collections row -->
+      <div class="balance-row">
+        <div class="balance-item">
+          <div class="balance-header">
+            <span class="balance-label">Portfolio Balance</span>
+            <a class="balance-link" [routerLink]="['/accounting']">View</a>
+          </div>
+          <div class="balance-value">{{ portfolioBalance | number:'1.2-2' }}</div>
+        </div>
+        <div class="balance-item">
+          <div class="balance-header">
+            <span class="balance-label">Collections</span>
+            <a class="balance-link" [routerLink]="['/accounting/journal-entries']">View</a>
+          </div>
+          <div class="balance-value">{{ totalCollections | number:'1.2-2' }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== YOUR OVERVIEW SECTION ==================== -->
+    <div class="overview-section">
+      <div class="overview-header">
+        <h2 class="section-title">Your overview</h2>
+        <div class="overview-controls">
+          <div class="control-group">
+            <span class="control-label">Date range</span>
+            <mat-button-toggle-group [formControl]="dateRangeControl" (change)="onTimescaleChange()" class="stripe-toggle">
+              <mat-button-toggle value="Day">Daily</mat-button-toggle>
+              <mat-button-toggle value="Week">Weekly</mat-button-toggle>
+              <mat-button-toggle value="Month">Monthly</mat-button-toggle>
+            </mat-button-toggle-group>
+          </div>
+
+          <div class="control-group" *ngIf="officeData?.length > 1">
+            <span class="control-label">Office</span>
+            <mat-form-field class="office-select" appearance="outline">
+              <mat-select [formControl]="officeControl" (selectionChange)="onOfficeChange()">
+                <mat-option *ngFor="let office of officeData" [value]="office.id">
+                  {{ office.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+
+      <!-- Overview cards row -->
+      <div class="overview-cards">
+        <!-- Recent Transactions card -->
+        <div class="overview-card transactions-card">
+          <div class="card-title">
+            Recent Transactions
+            <mat-icon class="info-icon" [matTooltip]="'Latest journal entries'">info_outline</mat-icon>
+          </div>
+          <div class="transactions-list" *ngIf="!loadingTransactions">
+            <div class="transaction-row" *ngFor="let txn of recentTransactions"
+                 [class.credit]="txn.entryType?.value === 'CREDIT'"
+                 [class.debit]="txn.entryType?.value === 'DEBIT'">
+              <div class="txn-left">
+                <span class="txn-type-indicator" [class.credit]="txn.entryType?.value === 'CREDIT'" [class.debit]="txn.entryType?.value === 'DEBIT'"></span>
+                <div class="txn-details">
+                  <span class="txn-account">{{ txn.glAccountName || txn.officeName || 'Transaction' }}</span>
+                  <span class="txn-meta">{{ txn.entryType?.value || '' }}</span>
+                </div>
+              </div>
+              <div class="txn-amount" [class.credit]="txn.entryType?.value === 'CREDIT'" [class.debit]="txn.entryType?.value === 'DEBIT'">
+                {{ txn.amount | number:'1.2-2' }}
+              </div>
+            </div>
+            <div class="empty-state" *ngIf="recentTransactions.length === 0">
+              <mat-icon>receipt_long</mat-icon>
+              <span>No recent transactions</span>
+            </div>
+          </div>
+          <div class="loading-state" *ngIf="loadingTransactions">
+            <div class="skeleton-line" *ngFor="let i of [1,2,3,4]"></div>
+          </div>
+          <a class="card-footer-link" [routerLink]="['/accounting/journal-entries']">More details</a>
+        </div>
+
+        <!-- Disbursement Trends card -->
+        <div class="overview-card">
+          <div class="card-title">
+            Loan Disbursements
+            <mat-icon class="info-icon" [matTooltip]="'Loans disbursed over the selected period'">info_outline</mat-icon>
+          </div>
+          <div class="card-metric">{{ grossDisbursements | number:'1.2-2' }}</div>
+          <div class="card-metric-sub">{{ pendingDisbursements | number:'1.2-2' }} pending</div>
+          <div class="mini-chart-container">
+            <canvas id="disbursement-trend-chart"></canvas>
+          </div>
+          <div class="card-footer">
+            <span class="card-updated">Updated just now</span>
+            <a class="card-footer-link" [routerLink]="['/accounting']">More details</a>
+          </div>
+        </div>
+
+        <!-- New Clients card -->
+        <div class="overview-card">
+          <div class="card-title">
+            New Clients
+            <mat-icon class="info-icon" [matTooltip]="'New clients registered over the selected period'">info_outline</mat-icon>
+          </div>
+          <div class="card-metric">{{ newClients }}</div>
+          <div class="card-metric-sub">{{ totalClients }} total clients</div>
+          <div class="mini-chart-container">
+            <canvas id="collection-trend-chart"></canvas>
+          </div>
+          <div class="card-footer">
+            <span class="card-updated">Updated just now</span>
+            <a class="card-footer-link" [routerLink]="['/clients']">More details</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom cards row -->
+      <div class="overview-cards bottom-row">
+        <!-- Overdue / Delinquent -->
+        <div class="overview-card">
+          <div class="card-title">
+            Pending Collections
+            <mat-icon class="info-icon" [matTooltip]="'Pending repayment amounts'">info_outline</mat-icon>
+          </div>
+          <div class="overdue-chart">
+            <div class="overdue-bar-container">
+              <div class="overdue-bar" [style.width.%]="pendingCollections > 0 ? (pendingCollections / (pendingCollections + totalCollections) * 100) : 0"></div>
+            </div>
+            <div class="overdue-stats">
+              <div class="overdue-stat">
+                <span class="stat-label">Pending</span>
+                <span class="stat-value">{{ pendingCollections | number:'1.2-2' }}</span>
+              </div>
+              <div class="overdue-stat">
+                <span class="stat-label">Collected</span>
+                <span class="stat-value">{{ totalCollections | number:'1.2-2' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Top Clients -->
+        <div class="overview-card">
+          <div class="card-title-row">
+            <span class="card-title">
+              Recent Clients
+              <mat-icon class="info-icon" [matTooltip]="'Recently registered clients'">info_outline</mat-icon>
+            </span>
+            <a class="card-footer-link" [routerLink]="['/clients']">All clients</a>
+          </div>
+          <div class="clients-list">
+            <div class="client-row" *ngFor="let client of recentClients" (click)="navigateTo('/clients/' + client.id)">
+              <div class="client-avatar">{{ (client.displayName || client.firstname || '?')[0] | uppercase }}</div>
+              <div class="client-info">
+                <span class="client-name">{{ client.displayName || (client.firstname + ' ' + client.lastname) }}</span>
+                <span class="client-id">#{{ client.accountNo || client.id }}</span>
+              </div>
+              <div class="client-status" [class.active]="client.status?.value === 'Active'" [class.pending]="client.status?.value !== 'Active'">
+                {{ client.status?.value || 'Pending' }}
+              </div>
+            </div>
+            <div class="empty-state" *ngIf="recentClients.length === 0">
+              <mat-icon>people_outline</mat-icon>
+              <span>No clients yet</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== RIGHT SIDEBAR ==================== -->
+  <div class="dashboard-sidebar">
+    <!-- Quick Actions card -->
+    <div class="sidebar-card">
+      <div class="sidebar-card-header">
+        <span class="sidebar-card-title">Quick Actions</span>
+        <mat-icon class="close-icon" [matTooltip]="'Dismiss'">close</mat-icon>
+      </div>
+      <div class="quick-actions-list">
+        <a *ngFor="let action of quickActions" class="quick-action-link" [routerLink]="action.path">
+          <fa-icon [icon]="action.icon" class="qa-icon"></fa-icon>
+          {{ action.label }}
+        </a>
+      </div>
+    </div>
+
+    <!-- System Info card -->
+    <div class="sidebar-card">
+      <div class="sidebar-card-header">
+        <span class="sidebar-card-title">System Info</span>
+        <a class="sidebar-link" [routerLink]="['/system']">View</a>
+      </div>
+      <div class="system-info-list">
+        <div class="system-info-row">
+          <span class="system-info-label">Tenant</span>
+          <span class="system-info-value" [matTooltip]="tenantId">{{ tenantId }}</span>
+        </div>
+        <div class="system-info-row">
+          <span class="system-info-label">Status</span>
+          <span class="system-info-status active">Active</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Placeholder for config wizard ref -->
+    <div #searchActivity style="display:none"></div>
+  </div>
 </div>
 
-<ng-template #popoverButtons let-popover="popover" let-prev="prev" let-next="next">
-  <div class="layout-row align-end gap-2px responsive-column">
-    <button mat-raised-button color="warn" (click)="popover.close(); configurationWizardService.closeConfigWizard()">
-      {{ 'labels.buttons.Close' | translate }}
-    </button>
-    <button
-      *ngIf="prev"
-      mat-raised-button
-      color="primary"
-      (click)="popover.close(); showPopover(prev.template, prev.target, 'bottom', true)"
-    >
-      {{ 'labels.buttons.Back' | translate }}
-    </button>
-    <button
-      *ngIf="next"
-      mat-raised-button
-      color="primary"
-      (click)="popover.close(); showPopover(next.template, next.target, 'bottom', true)"
-    >
-      {{ 'labels.buttons.Next' | translate }}
-    </button>
-  </div>
-</ng-template>
-
+<!-- ==================== CONFIG WIZARD TEMPLATES ==================== -->
 <ng-template #templateButtonDashboard let-popover="popover">
   <h2>{{ 'labels.heading.Dashboard' | translate }}</h2>
   <p class="mw300">{{ 'labels.text.This will navigate the user to the dashboard component.' | translate }}</p>
@@ -66,11 +250,7 @@
     <button mat-raised-button color="primary" (click)="popover.close(); previousStep()">
       {{ 'labels.buttons.Back' | translate }}
     </button>
-    <button
-      mat-raised-button
-      color="primary"
-      (click)="popover.close(); showPopover(templateSearchActivity, searchActivity, 'top', true)"
-    >
+    <button mat-raised-button color="primary" (click)="popover.close(); showPopover(templateSearchActivity, searchActivity, 'top', true)">
       {{ 'labels.buttons.Next' | translate }}
     </button>
   </div>
@@ -83,11 +263,7 @@
     <button mat-raised-button color="warn" (click)="popover.close(); configurationWizardService.closeConfigWizard()">
       {{ 'labels.buttons.Close' | translate }}
     </button>
-    <button
-      mat-raised-button
-      color="primary"
-      (click)="popover.close(); showPopover(templateButtonDashboard, buttonDashboard, 'bottom', true)"
-    >
+    <button mat-raised-button color="primary" (click)="popover.close(); showPopover(templateButtonDashboard, buttonDashboard, 'bottom', true)">
       {{ 'labels.buttons.Back' | translate }}
     </button>
     <button mat-raised-button color="primary" (click)="popover.close(); nextStep()">

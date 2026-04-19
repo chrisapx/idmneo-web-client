@@ -21,7 +21,9 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { of } from 'rxjs';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { MatTooltip } from '@angular/material/tooltip';
+import { MatIcon } from '@angular/material/icon';
 import { DateFormatPipe } from '../../pipes/date-format.pipe';
+import { FormsModule } from '@angular/forms';
 import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
 
 /**
@@ -48,10 +50,16 @@ import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
     MatRowDef,
     MatRow,
     MatPaginator,
-    DateFormatPipe
+    DateFormatPipe,
+    MatIcon,
+    FormsModule
   ]
 })
 export class TellersComponent implements OnInit {
+  /** Filter chip value. */
+  filterValue = '';
+  /** Active filter chip. */
+  activeChip: string | null = null;
   /** Tellers data. */
   tellersData: any;
   /** Columns to be displayed in tellers table. */

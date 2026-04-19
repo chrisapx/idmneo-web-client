@@ -1,1 +1,153 @@
-@use '../shared/styles/list-layout' as *;
+$s-dark: #1A1F36;
+$s-text: #3C4257;
+$s-grey: #697386;
+$s-border: #E3E8EE;
+$s-bg: #F7F8FA;
+$s-white: #fff;
+$s-purple: #635BFF;
+
+.s-page { padding-top: 12px; }
+
+// Header
+.s-head {
+  display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;
+  h1 { font-size: 26px; font-weight: 700; color: $s-dark; margin: 0; letter-spacing: -0.5px; }
+}
+.s-head-actions { display: flex; gap: 8px; }
+
+.s-primary-btn {
+  background: $s-purple !important; color: #fff !important;
+  border-radius: 20px !important; height: 34px !important;
+  font-size: 13px !important; font-weight: 600 !important;
+  text-transform: none !important; padding: 0 14px 0 10px !important;
+  letter-spacing: 0 !important; box-shadow: none !important;
+  display: flex !important; align-items: center !important; gap: 3px !important;
+  mat-icon { font-size: 16px; width: 16px; height: 16px; }
+  &:hover { background: darken($s-purple, 6%) !important; }
+}
+
+.s-outline-btn {
+  border: 1px solid $s-border !important; border-radius: 20px !important;
+  height: 34px !important; font-size: 13px !important; font-weight: 500 !important;
+  text-transform: none !important; padding: 0 14px !important;
+  color: $s-text !important; background: $s-white !important;
+  letter-spacing: 0 !important; box-shadow: none !important;
+  mat-icon { font-size: 16px; width: 16px; height: 16px; margin-right: 3px; color: $s-grey; }
+  &:hover { background: $s-bg !important; }
+}
+
+// Filter chips
+.s-filters {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 4px; gap: 8px; flex-wrap: wrap;
+}
+.s-filter-left { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.s-filter-right { display: flex; align-items: center; gap: 6px; }
+
+.s-chip-wrap { position: relative; }
+
+.s-filter-chip {
+  display: inline-flex; align-items: center; gap: 2px;
+  height: 28px; padding: 0 10px;
+  border: 1px dashed $s-border; border-radius: 16px;
+  background: $s-white; color: $s-text;
+  font-size: 13px; font-weight: 500; cursor: pointer;
+  white-space: nowrap;
+  mat-icon { font-size: 14px; width: 14px; height: 14px; color: $s-grey; }
+  .chip-x { font-size: 12px !important; width: 12px !important; height: 12px !important; margin-left: 2px; color: $s-grey !important; &:hover { color: $s-dark !important; } }
+  &:hover { background: $s-bg; border-color: darken($s-border, 10%); }
+  &.applied { border-color: $s-purple; color: $s-purple; border-style: solid; background: rgba($s-purple, 0.04);
+    mat-icon:first-child { color: $s-purple; }
+  }
+}
+
+.s-action-chip {
+  display: inline-flex; align-items: center; gap: 3px;
+  height: 28px; padding: 0 10px;
+  border: 1px solid $s-border; border-radius: 6px;
+  background: $s-white; color: $s-text;
+  font-size: 13px; font-weight: 500; cursor: pointer;
+  mat-icon { font-size: 14px; width: 14px; height: 14px; color: $s-grey; }
+  &:hover { background: $s-bg; }
+}
+
+// Filter popover card
+.s-pop {
+  position: absolute; top: 34px; left: 0; width: 260px;
+  background: $s-white; border: 1px solid $s-border; border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12); padding: 14px; z-index: 500;
+}
+.s-pop-title { font-size: 13px; font-weight: 600; color: $s-dark; margin-bottom: 8px; }
+.s-pop-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.s-pop-label { font-size: 13px; color: $s-grey; flex-shrink: 0; }
+.s-pop-input {
+  flex: 1; height: 32px; padding: 0 8px;
+  border: 1px solid $s-border; border-radius: 6px;
+  font-size: 13px; color: $s-dark; outline: none;
+  &:focus { border-color: $s-purple; box-shadow: 0 0 0 2px rgba($s-purple, 0.1); }
+}
+.s-pop-apply {
+  width: 100%; height: 34px;
+  background: $s-purple; color: #fff;
+  border: none; border-radius: 6px;
+  font-size: 14px; font-weight: 600; cursor: pointer;
+  &:hover { background: darken($s-purple, 6%); }
+}
+.s-pop-options {
+  display: flex; flex-direction: column; gap: 2px;
+  max-height: 240px; overflow-y: auto; margin: 0 -14px; padding: 0;
+}
+.s-pop-option {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 16px; font-size: 14px; color: $s-text; cursor: pointer;
+  mat-icon { font-size: 18px; width: 18px; height: 18px; color: $s-purple; }
+  &:hover { background: $s-bg; }
+  &.selected { background: rgba($s-purple, 0.06); color: $s-purple; font-weight: 600; }
+}
+
+// Table
+.s-table {
+  background: $s-white; border: 1px solid $s-border; border-radius: 8px; overflow: hidden;
+}
+
+::ng-deep .s-table {
+  .mat-mdc-table { width: 100%; background: transparent; }
+  .mat-mdc-header-row { height: 36px; }
+  .mat-mdc-header-cell {
+    font-size: 12px; font-weight: 500; color: $s-grey;
+    border-bottom: 1px solid $s-border; padding: 0 12px; background: transparent;
+  }
+  .mat-mdc-row { height: 44px; &:hover { background: $s-bg; } }
+  .mat-mdc-cell {
+    font-size: 14px; color: $s-text;
+    border-bottom: 1px solid lighten($s-border, 2%); padding: 0 12px;
+  }
+  .mat-mdc-row:last-child .mat-mdc-cell { border-bottom: none; }
+  .mat-mdc-paginator { background: transparent; border-top: 1px solid $s-border; }
+}
+
+.s-row { cursor: pointer; }
+.s-name { display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 500; color: $s-dark; }
+.s-av {
+  width: 24px; height: 24px; border-radius: 50%;
+  background: lighten($s-purple, 30%); color: $s-purple;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; text-transform: uppercase; flex-shrink: 0;
+}
+
+.s-pill {
+  display: inline-block; font-size: 12px; font-weight: 500;
+  padding: 2px 8px; border-radius: 10px;
+  background: lighten($s-border, 3%); color: $s-grey;
+}
+
+::ng-deep .s-pill {
+  &.status-active { background: #DCFCE7; color: #166534; }
+  &.status-pending { background: #FEF3C7; color: #92400E; }
+  &.status-closed { background: #FEE2E2; color: #991B1B; }
+}
+
+@media (max-width: 768px) {
+  .s-head { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .s-filters { flex-direction: column; align-items: flex-start; }
+}

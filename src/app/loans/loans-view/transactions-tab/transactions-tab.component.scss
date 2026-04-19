@@ -1,76 +1,133 @@
 @use 'assets/styles/helper';
 @use 'assets/styles/colours' as *;
 
+$s-dark: #1A1F36;
+$s-text: #3C4257;
+$s-grey: #697386;
+$s-border: #E3E8EE;
+$s-bg: #F7F8FA;
+$s-white: #fff;
+$s-purple: #635BFF;
+$s-red: #FF5A65;
+$s-green: #3ECF8E;
+
 .container {
-  padding-bottom: 2%;
+  padding: 16px 0 24px;
   max-width: 100%;
+}
 
+::ng-deep .container {
+  // Transaction action buttons row → Stripe outline
   .transaction-buttons {
-    padding-bottom: 1rem;
-    padding-top: 1rem;
+    padding: 0 0 12px;
 
-    .accruals {
-      padding-top: 1%;
+    button[mat-raised-button] {
+      background: $s-white !important;
+      color: $s-text !important;
+      border: 1px solid $s-border !important;
+      border-radius: 6px !important;
+      height: 32px !important;
+      padding: 0 14px !important;
+      font-size: 13px !important;
+      font-weight: 500 !important;
+      box-shadow: none !important;
+      text-transform: none !important;
+      margin-right: 6px;
+
+      &:hover { background: $s-bg !important; }
     }
+
+    .accruals { padding-top: 8px; }
   }
 
+  // Filter form fields → cleaner
+  .filter-box {
+    min-width: 240px;
+  }
+
+  // The transactions table → Stripe table
   table {
     width: 100%;
+    background: $s-white;
+    border: 1px solid $s-border;
+    border-radius: 8px;
+    overflow: hidden;
+    border-collapse: separate;
+    border-spacing: 0;
 
+    .mat-mdc-header-row {
+      height: 36px;
+      background: $s-bg;
+    }
+
+    .mat-mdc-header-cell {
+      font-size: 11px !important;
+      font-weight: 600 !important;
+      color: $s-grey !important;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      border-bottom: 1px solid $s-border;
+      padding: 0 14px;
+    }
+
+    .mat-mdc-row {
+      height: 44px;
+      &:hover { background: $s-bg; }
+    }
+
+    .mat-mdc-cell {
+      font-size: 13px;
+      color: $s-text;
+      border-bottom: 1px solid lighten($s-border, 2%);
+      padding: 0 14px;
+    }
+
+    .mat-mdc-row:last-child .mat-mdc-cell { border-bottom: none; }
+
+    .r-amount {
+      text-align: right !important;
+      font-variant-numeric: tabular-nums;
+    }
+
+    // Action button inside table → small icon
     .account-action-button {
-      min-width: 26px;
-      padding: 0 0 3px;
-      margin: 0 2%;
-      line-height: 25px;
-    }
+      width: 28px !important;
+      height: 28px !important;
+      padding: 0 !important;
+      margin: 0 2px !important;
+      min-width: 28px !important;
+      line-height: 28px !important;
+      border: 1px solid $s-border !important;
+      border-radius: 6px !important;
+      background: $s-white !important;
+      color: $s-grey !important;
+      box-shadow: none !important;
 
-    .strike {
-      text-decoration: line-through;
-      color: $status-active-overdue;
-    }
+      &:hover {
+        color: $s-purple !important;
+        border-color: $s-purple !important;
+        background: $s-bg !important;
+      }
 
-    .linked {
-      color: $status-approved;
-    }
-
-    .accrual {
-      color: $msg-default;
-    }
-
-    .down-payment {
-      color: $status-downpayment;
-    }
-
-    .chargeoff {
-      color: $status-chargeoff;
-    }
-
-    .reage {
-      color: $status-reage;
-    }
-
-    .reamortize {
-      color: $status-reamortize;
+      fa-icon { font-size: 12px !important; }
     }
   }
 }
+
+// Status row colors (preserve)
+.strike { text-decoration: line-through; color: $s-red; }
+.linked { color: $s-green; }
+.accrual { color: $s-grey; }
+.down-payment { color: $s-purple; }
+.chargeoff { color: $s-red; }
+.reage { color: $s-purple; }
+.reamortize { color: $s-purple; }
 
 .select-row:hover {
   cursor: pointer;
-  font-weight: 800;
 }
 
-.td-min-space {
-  min-width: 60px;
-}
-
-.filter-box {
-  min-width: 280px;
-}
-
-.transaction-button {
-  min-width: 180px;
-}
+.td-min-space { min-width: 60px; }
 
 .action-button {
   width: 100%;

@@ -1,64 +1,76 @@
-<div class="tab-container mat-typography">
-  <h3>{{ 'labels.heading.Address' | translate }}</h3>
+<div class="at-page">
 
-  <div class="layout-row align-flex-end">
-    <button mat-raised-button color="primary" (click)="addAddress()">
-      <fa-icon icon="plus" class="m-r-10"></fa-icon>{{ 'labels.buttons.Add' | translate }}
+  <div class="at-head">
+    <h2>Addresses</h2>
+    <button class="at-btn-primary" (click)="addAddress()">
+      <mat-icon>add</mat-icon> Add address
     </button>
   </div>
 
-  <mat-accordion>
-    <mat-expansion-panel *ngFor="let address of clientAddressData; index as i" class="address">
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          {{ address.addressType }}
-        </mat-panel-title>
-        <mat-panel-description>
-          {{ address.relationship }}
-        </mat-panel-description>
-      </mat-expansion-panel-header>
+  <!-- Empty state -->
+  <div class="at-empty" *ngIf="!clientAddressData?.length">
+    <mat-icon>location_on</mat-icon>
+    <p>No addresses</p>
+    <span>Add an address to keep this client's contact details up to date.</span>
+  </div>
 
-      <mat-divider [inset]="true"></mat-divider>
-
-      <div class="address-actions layout-row align-end align-items-center">
-        <button mat-button color="primary" (click)="editAddress(address, i)">
-          <fa-icon icon="edit"></fa-icon>
-        </button>
-        <mat-slide-toggle [checked]="address.isActive" (change)="toggleAddress(address)"></mat-slide-toggle>
+  <!-- Address cards grid -->
+  <div class="at-grid" *ngIf="clientAddressData?.length > 0">
+    <div class="at-card" *ngFor="let address of clientAddressData; index as i" [class.inactive]="!address.isActive">
+      <div class="at-card-head">
+        <div class="at-card-title">
+          <span class="at-type">{{ address.addressType }}</span>
+          <span class="at-pill" [class.active]="address.isActive" [class.inactive]="!address.isActive">
+            {{ address.isActive ? 'Active' : 'Inactive' }}
+          </span>
+        </div>
+        <div class="at-card-actions">
+          <button class="at-icon-btn" (click)="editAddress(address, i)" matTooltip="Edit">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button class="at-icon-btn" (click)="toggleAddress(address)" [matTooltip]="address.isActive ? 'Deactivate' : 'Activate'">
+            <mat-icon>{{ address.isActive ? 'toggle_on' : 'toggle_off' }}</mat-icon>
+          </button>
+        </div>
       </div>
-
-      <p>
-        <span *ngIf="isFieldEnabled('street')"
-          >{{ 'labels.inputs.Street' | translate }} : {{ address.street }}<br
-        /></span>
-        <span *ngIf="isFieldEnabled('addressLine1')"
-          >{{ 'labels.inputs.Address Line' | translate }} 1 : {{ address.addressLine1 }}<br
-        /></span>
-        <span *ngIf="isFieldEnabled('addressLine2')"
-          >{{ 'labels.inputs.Address Line' | translate }} 2 : {{ address.addressLine2 }}<br
-        /></span>
-        <span *ngIf="isFieldEnabled('addressLine3')"
-          >{{ 'labels.inputs.Address Line' | translate }} 3 : {{ address.addressLine3 }}<br
-        /></span>
-        <span *ngIf="isFieldEnabled('townVillage')"
-          >{{ 'labels.inputs.Town / Village' | translate }} : {{ address.townVillage }}<br
-        /></span>
-        <span *ngIf="isFieldEnabled('city')">{{ 'labels.inputs.City' | translate }} : {{ address.city }}<br /></span>
-        <span *ngIf="isFieldEnabled('stateProvinceId')"
-          >{{ 'labels.inputs.State / Province' | translate }} :
-          {{ getSelectedValue('stateProvinceIdOptions', address.stateProvinceId)?.name }}<br
-        /></span>
-        <span *ngIf="isFieldEnabled('countryId')"
-          >{{ 'labels.inputs.Country' | translate }} : {{ getSelectedValue('countryIdOptions', address.countryId)?.name
-          }}<br
-        /></span>
-        <span *ngIf="isFieldEnabled('postalCode')"
-          >{{ 'labels.inputs.Postal Code' | translate }} : {{ address.postalCode }}<br
-        /></span>
-        <span *ngIf="isFieldEnabled('isActive')"
-          >{{ 'labels.inputs.Active Status' | translate }} : {{ address.isActive }}<br
-        /></span>
-      </p>
-    </mat-expansion-panel>
-  </mat-accordion>
+      <div class="at-card-body">
+        <div class="at-row" *ngIf="isFieldEnabled('street') && address.street">
+          <span class="at-label">Street</span>
+          <span class="at-value">{{ address.street }}</span>
+        </div>
+        <div class="at-row" *ngIf="isFieldEnabled('addressLine1') && address.addressLine1">
+          <span class="at-label">Address Line 1</span>
+          <span class="at-value">{{ address.addressLine1 }}</span>
+        </div>
+        <div class="at-row" *ngIf="isFieldEnabled('addressLine2') && address.addressLine2">
+          <span class="at-label">Address Line 2</span>
+          <span class="at-value">{{ address.addressLine2 }}</span>
+        </div>
+        <div class="at-row" *ngIf="isFieldEnabled('addressLine3') && address.addressLine3">
+          <span class="at-label">Address Line 3</span>
+          <span class="at-value">{{ address.addressLine3 }}</span>
+        </div>
+        <div class="at-row" *ngIf="isFieldEnabled('townVillage') && address.townVillage">
+          <span class="at-label">Town / Village</span>
+          <span class="at-value">{{ address.townVillage }}</span>
+        </div>
+        <div class="at-row" *ngIf="isFieldEnabled('city') && address.city">
+          <span class="at-label">City</span>
+          <span class="at-value">{{ address.city }}</span>
+        </div>
+        <div class="at-row" *ngIf="isFieldEnabled('stateProvinceId') && address.stateProvinceId">
+          <span class="at-label">State / Province</span>
+          <span class="at-value">{{ getSelectedValue('stateProvinceIdOptions', address.stateProvinceId)?.name }}</span>
+        </div>
+        <div class="at-row" *ngIf="isFieldEnabled('countryId') && address.countryId">
+          <span class="at-label">Country</span>
+          <span class="at-value">{{ getSelectedValue('countryIdOptions', address.countryId)?.name }}</span>
+        </div>
+        <div class="at-row" *ngIf="isFieldEnabled('postalCode') && address.postalCode">
+          <span class="at-label">Postal Code</span>
+          <span class="at-value">{{ address.postalCode }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

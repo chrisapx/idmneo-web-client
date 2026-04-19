@@ -1,94 +1,158 @@
-#mifosx-toolbar {
-  position: relative;
-  box-shadow:
-    0 3px 1px -2px rgb(0 0 0 / 20%),
-    0 2px 2px 0 rgb(0 0 0 / 14%),
-    0 1px 5px 0 rgb(0 0 0 / 12%);
+$s-grey: #697386;
+$s-dark: #1A1F36;
+$s-border: #E3E8EE;
+$s-purple: #635BFF;
 
-  .tab-nav-bar {
-    display: flex;
-    align-items: center;
-    padding: 0 1rem;
+.s-topbar {
+  display: flex;
+  align-items: center;
+  height: 48px;
+  padding: 0 16px;
+  background: #fff;
+  border-bottom: 1px solid $s-border;
+  gap: 16px;
+}
+
+.s-spacer { flex: 1; }
+
+.s-search-wrap {
+  width: 300px;
+  flex-shrink: 1;
+  min-width: 100px;
+}
+
+.s-icon-group {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.s-btn {
+  width: 36px !important;
+  height: 36px !important;
+  line-height: 36px !important;
+  padding: 0 !important;
+  color: $s-grey !important;
+  mat-icon { font-size: 20px; width: 20px; height: 20px; }
+  &:hover { color: $s-dark !important; }
+}
+
+.s-plus mat-icon { color: $s-purple !important; }
+
+// Create menu — compact Stripe style
+::ng-deep .s-create-menu {
+  border-radius: 10px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12) !important;
+  min-width: 180px !important;
+
+  .mat-mdc-menu-content {
+    padding: 4px 0 !important;
   }
 
-  .tab-link {
-    min-width: auto;
-    padding: 15px 1rem;
-    text-decoration: none;
-    font-weight: 500;
-    font-size: 14px;
-    color: rgb(255 255 255 / 70%);
+  .mat-mdc-menu-item {
+    font-size: 13px !important;
+    min-height: 36px !important;
+    padding: 0 14px !important;
+    gap: 8px;
+
+    mat-icon {
+      font-size: 18px !important;
+      width: 18px !important;
+      height: 18px !important;
+      margin-right: 8px;
+      color: #697386;
+    }
 
     &:hover {
-      color: #fff;
-    }
-
-    cursor: pointer;
-  }
-
-  .search-bar {
-    .search {
-      max-width: 400px;
-      width: 100%;
-      font-size: 1rem;
+      background: #F7F8FA !important;
     }
   }
+}
 
-  .language {
-    min-width: 80px;
-    width: 80px;
-    font-size: 0.875rem;
-    margin-top: 0.375rem;
-  }
+// Help widget panel (slides in from right)
+.s-help-backdrop {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 999;
+}
 
-  .img-button {
-    img {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-    }
-  }
+.s-help-panel {
+  position: fixed;
+  top: 56px;
+  right: 16px;
+  width: 360px;
+  max-height: calc(100vh - 120px);
+  background: #fff;
+  border: 1px solid $s-border;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.16);
+  z-index: 1000;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
 
-  .ml-1 {
-    margin-left: 1rem;
-  }
+.s-help-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid $s-border;
+  span { font-size: 16px; font-weight: 700; color: $s-dark; }
+}
 
-  .mr-1 {
-    margin-right: 1rem;
+.s-help-body {
+  padding: 16px 20px;
+  overflow-y: auto;
+}
+
+.s-help-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 12px;
+  background: #F0F2F5;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  mat-icon { font-size: 18px; width: 18px; height: 18px; color: $s-grey; }
+  input { flex: 1; border: none; outline: none; background: transparent; font-size: 14px; color: $s-dark;
+    &::placeholder { color: $s-grey; }
   }
 }
 
-// Show icon on small screens
-.lg-icon {
-  display: none;
+.s-help-section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-@media (width <= 959px) {
-  .lg-icon {
-    display: block;
-    margin-left: 5px;
-  }
+.s-help-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.12s;
+  &:hover { background: #F7F8FA; }
+  mat-icon { font-size: 22px; width: 22px; height: 22px; color: $s-purple; margin-top: 2px; }
+  strong { font-size: 14px; color: $s-dark; display: block; }
+  span { font-size: 12px; color: $s-grey; }
 }
 
-.toolbar-spacer {
-  flex: 1 1 auto;
-}
-
-.white-text-language ::ng-deep mifosx-language-selector {
-  color: white !important;
-  /* stylelint-disable-next-line selector-max-universal */
-  * {
-    background-color: transparent !important;
-    color: white !important;
-  }
-}
-
-.white-text-search ::ng-deep mifosx-search-tool {
-  color: white !important;
-  /* stylelint-disable-next-line selector-max-universal */
-  * {
-    background-color: transparent !important;
-    color: white !important;
-    margin-bottom: 0;
-  }
+.s-guide {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px 4px 14px;
+  border: 1px solid $s-border;
+  border-radius: 20px;
+  cursor: pointer;
+  margin-left: 8px;
+  text-decoration: none;
+  transition: background 0.15s;
+  &:hover { background: #F7F8FA; }
+  span { font-size: 13px; font-weight: 500; color: $s-dark; white-space: nowrap; }
 }

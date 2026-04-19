@@ -1,243 +1,115 @@
-<div class="tab-container mat-typography">
-  <ng-container *ngIf="loanDetails.summary">
-    <h3>{{ 'labels.heading.Performance History' | translate }}</h3>
-    <div class="layout-row gap-32px performance-history-container">
-      <table>
-        <tbody>
-          <tr>
-            <td class="flex-25">
-              <b>{{ 'labels.inputs.Number of Repayments' | translate }} :</b>
-            </td>
-            <td class="flex-25 left">
-              {{ loanDetails?.numberOfRepayments | formatNumber }}
-            </td>
-            <td class="flex-25">
-              <b>{{ 'labels.inputs.Maturity Date' | translate }} :</b>
-            </td>
-            <td class="flex-25 left">
-              {{ loanDetails?.timeline.expectedMaturityDate | dateFormat }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+<div class="lgt-page">
+
+  <!-- ==== KEY METRICS ==== -->
+  <div class="lgt-stats" *ngIf="loanDetails.summary">
+    <div class="lgt-stat">
+      <span class="lgt-stat-label">Repayments</span>
+      <span class="lgt-stat-value">{{ loanDetails?.numberOfRepayments | formatNumber }}</span>
     </div>
-  </ng-container>
+    <div class="lgt-stat">
+      <span class="lgt-stat-label">Maturity Date</span>
+      <span class="lgt-stat-value lgt-date">{{ loanDetails?.timeline.expectedMaturityDate | dateFormat }}</span>
+    </div>
+    <div class="lgt-stat" *ngIf="loanDetails.summary.totalOutstanding != null">
+      <span class="lgt-stat-label">Outstanding</span>
+      <span class="lgt-stat-value">{{ loanDetails.summary.totalOutstanding | currency: currencyCode : 'symbol-narrow' : '1.2-2' }}</span>
+    </div>
+    <div class="lgt-stat" *ngIf="loanDetails.summary.totalOverdue != null">
+      <span class="lgt-stat-label">Overdue</span>
+      <span class="lgt-stat-value lgt-overdue">{{ loanDetails.summary.totalOverdue | currency: currencyCode : 'symbol-narrow' : '1.2-2' }}</span>
+    </div>
+  </div>
 
-  <div *ngIf="loanDetails.summary">
-    <h3>{{ 'labels.heading.Loan Summary' | translate }}</h3>
-
-    <table mat-table [dataSource]="dataSource">
+  <!-- ==== LOAN SUMMARY TABLE ==== -->
+  <div class="lgt-card" *ngIf="loanDetails.summary">
+    <div class="lgt-card-head">
+      <h3>Loan summary</h3>
+    </div>
+    <table mat-table [dataSource]="dataSource" class="lgt-table">
       <ng-container matColumnDef="Empty">
         <th mat-header-cell *matHeaderCellDef></th>
-        <td mat-cell *matCellDef="let ele">{{ ele.property }}</td>
+        <td mat-cell *matCellDef="let ele" class="lgt-row-label">{{ ele.property }}</td>
       </ng-container>
-
       <ng-container matColumnDef="Original">
-        <th mat-header-cell class="r-amount" *matHeaderCellDef>{{ 'labels.inputs.Original' | translate }}</th>
-        <td mat-cell class="r-amount" *matCellDef="let ele">
-          {{ ele.original | currency: currencyCode : 'symbol-narrow' : '1.2-2' }}
-        </td>
+        <th mat-header-cell class="lgt-num" *matHeaderCellDef>Original</th>
+        <td mat-cell class="lgt-num" *matCellDef="let ele">{{ ele.original | currency: currencyCode : 'symbol-narrow' : '1.2-2' }}</td>
       </ng-container>
-
       <ng-container matColumnDef="Paid">
-        <th mat-header-cell class="r-amount" *matHeaderCellDef>{{ 'labels.inputs.Paid' | translate }}</th>
-        <td mat-cell class="r-amount amount-minus" *matCellDef="let ele">
-          {{ ele.paid | currency: currencyCode : 'symbol-narrow' : '1.2-2' }}
-        </td>
+        <th mat-header-cell class="lgt-num" *matHeaderCellDef>Paid</th>
+        <td mat-cell class="lgt-num" *matCellDef="let ele">{{ ele.paid | currency: currencyCode : 'symbol-narrow' : '1.2-2' }}</td>
       </ng-container>
-
       <ng-container matColumnDef="Adjustments">
-        <th mat-header-cell class="r-amount" *matHeaderCellDef>{{ 'labels.inputs.Credit Adjustments' | translate }}</th>
-        <td mat-cell class="r-amount amount-plus" *matCellDef="let ele">
-          {{ ele.adjustment | currency: currencyCode : 'symbol-narrow' : '1.2-2' }}
-        </td>
+        <th mat-header-cell class="lgt-num" *matHeaderCellDef>Adjustments</th>
+        <td mat-cell class="lgt-num" *matCellDef="let ele">{{ ele.adjustment | currency: currencyCode : 'symbol-narrow' : '1.2-2' }}</td>
       </ng-container>
-
       <ng-container matColumnDef="Waived">
-        <th mat-header-cell class="r-amount" *matHeaderCellDef>{{ 'labels.inputs.Waived' | translate }}</th>
-        <td mat-cell class="r-amount amount-minus" *matCellDef="let ele">
-          {{ ele.waived | currency: currencyCode : 'symbol-narrow' : '1.2-2' }}
-        </td>
+        <th mat-header-cell class="lgt-num" *matHeaderCellDef>Waived</th>
+        <td mat-cell class="lgt-num" *matCellDef="let ele">{{ ele.waived | currency: currencyCode : 'symbol-narrow' : '1.2-2' }}</td>
       </ng-container>
-
       <ng-container matColumnDef="Written Off">
-        <th mat-header-cell class="r-amount" *matHeaderCellDef>{{ 'labels.inputs.Written Off' | translate }}</th>
-        <td mat-cell class="r-amount amount-minus" *matCellDef="let ele">
-          {{ ele.writtenOff | currency: currencyCode : 'symbol-narrow' : '1.2-2' }}
-        </td>
+        <th mat-header-cell class="lgt-num" *matHeaderCellDef>Written off</th>
+        <td mat-cell class="lgt-num" *matCellDef="let ele">{{ ele.writtenOff | currency: currencyCode : 'symbol-narrow' : '1.2-2' }}</td>
       </ng-container>
-
       <ng-container matColumnDef="Outstanding">
-        <th mat-header-cell class="r-amount" *matHeaderCellDef>{{ 'labels.inputs.Outstanding' | translate }}</th>
-        <td mat-cell class="r-amount" *matCellDef="let ele">
-          {{ ele.outstanding | currency: currencyCode : 'symbol-narrow' : '1.2-2' }}
-        </td>
+        <th mat-header-cell class="lgt-num" *matHeaderCellDef>Outstanding</th>
+        <td mat-cell class="lgt-num lgt-strong" *matCellDef="let ele">{{ ele.outstanding | currency: currencyCode : 'symbol-narrow' : '1.2-2' }}</td>
       </ng-container>
-
       <ng-container matColumnDef="Over Due">
-        <th mat-header-cell class="r-amount" *matHeaderCellDef>{{ 'labels.inputs.Over Due' | translate }}</th>
-        <td mat-cell class="r-amount" *matCellDef="let ele">
-          {{ ele.overdue | currency: currencyCode : 'symbol-narrow' : '1.2-2' }}
-        </td>
+        <th mat-header-cell class="lgt-num" *matHeaderCellDef>Overdue</th>
+        <td mat-cell class="lgt-num lgt-overdue" *matCellDef="let ele">{{ ele.overdue | currency: currencyCode : 'symbol-narrow' : '1.2-2' }}</td>
       </ng-container>
-
       <tr mat-header-row *matHeaderRowDef="loanSummaryColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: loanSummaryColumns"></tr>
     </table>
   </div>
 
-  <div *ngIf="loanDetails.summary">
-    <h3>{{ 'labels.heading.Loan Details' | translate }}</h3>
-    <table mat-table [dataSource]="detailsDataSource">
-      <ng-container matColumnDef="Key">
-        <td mat-cell *matCellDef="let ele">{{ 'labels.inputs.' + ele.key | translate }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="Value">
-        <td mat-cell *matCellDef="let ele">
-          <ng-container *ngIf="ele.key === 'Disbursement Date'">
-            <span *ngIf="loanDetails.timeline.actualDisbursementDate">
-              {{ loanDetails.timeline.actualDisbursementDate | dateFormat }}
-            </span>
-            <span *ngIf="!loanDetails.timeline.actualDisbursementDate">
-              {{ 'labels.inputs.Not Available' | translate }}
-            </span>
-          </ng-container>
-
-          <ng-container *ngIf="ele.key === 'Loan Purpose'">
-            <span *ngIf="loanDetails.loanPurposeName"> {{ loanDetails.loanPurposeName }} </span>
-            <span *ngIf="!loanDetails.loanPurposeName"> {{ 'labels.inputs.Not Available' | translate }} </span>
-          </ng-container>
-
-          <ng-container *ngIf="ele.key === 'Loan Officer'">
-            <span *ngIf="!loanDetails.loanOfficerName"> {{ 'labels.inputs.Unassigned' | translate }} </span>
-            <span *ngIf="loanDetails.loanOfficerName">
-              {{ loanDetails.loanOfficerName }} &nbsp;
-              <span *ngIf="loanDetails.loanOfficerName"> </span>
-            </span>
-          </ng-container>
-
-          <ng-container *ngIf="ele.key === 'Currency'">
-            <span> {{ loanDetails.currency.name }} {{ loanDetails.currency.code }} </span>
-          </ng-container>
-
-          <ng-container *ngIf="ele.key === 'External Id'">
-            <span *ngIf="loanDetails.externalId">
-              <mifosx-external-identifier
-                externalId="{{ loanDetails.externalId }}"
-                completed="true"
-              ></mifosx-external-identifier>
-            </span>
-            <span *ngIf="!loanDetails.externalId"> {{ 'labels.inputs.Not Available' | translate }} </span>
-          </ng-container>
-
-          <ng-container *ngIf="ele.key === 'Write-off Reason'">
-            <span *ngIf="ele.value">{{ ele.value }}</span>
-            <span *ngIf="!ele.value">{{ 'labels.inputs.Not Available' | translate }}</span>
-          </ng-container>
-
-          <ng-container
-            *ngIf="ele.key === 'Proposed Amount' || ele.key === 'Approved Amount' || ele.key === 'Disburse Amount'"
-          >
-            {{ ele.value }}
-          </ng-container>
-        </td>
-      </ng-container>
-
-      <tr mat-row *matRowDef="let row; columns: loanDetailsColumns"></tr>
-    </table>
-  </div>
-
-  <div *ngIf="!loanDetails.summary">
-    <h3>{{ 'labels.heading.Loan Details' | translate }}</h3>
-    <table mat-table [dataSource]="detailsDataSource">
-      <ng-container matColumnDef="Key">
-        <td mat-cell *matCellDef="let ele">{{ 'labels.inputs.' + ele.key | translate }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="Value">
-        <td mat-cell *matCellDef="let ele">
-          <ng-container *ngIf="ele.key === 'Disbursement Date'">
-            <span *ngIf="loanDetails.timeline.actualDisbursementDate">
-              {{ loanDetails.timeline.actualDisbursementDate | dateFormat }}
-            </span>
-            <span *ngIf="!loanDetails.timeline.actualDisbursementDate">
-              {{ 'labels.inputs.Not Available' | translate }}
-            </span>
-          </ng-container>
-
-          <ng-container *ngIf="ele.key === 'Loan Officer'">
-            <span *ngIf="!loanDetails.loanOfficerName"> {{ 'labels.inputs.Unassigned' | translate }} </span>
-            <span *ngIf="loanDetails.loanOfficerName">
-              {{ loanDetails.loanOfficerName }} &nbsp;
-              <span *ngIf="loanDetails.loanOfficerName"> </span>
-            </span>
-          </ng-container>
-
-          <ng-container *ngIf="ele.key === 'Currency'">
-            <span> {{ loanDetails.currency.name }} {{ loanDetails.currency.code }} </span>
-          </ng-container>
-
-          <ng-container *ngIf="ele.key === 'External Id'">
-            <span *ngIf="loanDetails.externalId">
-              <mifosx-external-identifier
-                externalId="{{ loanDetails.externalId }}"
-                completed="true"
-              ></mifosx-external-identifier>
-            </span>
-            <span *ngIf="!loanDetails.externalId"> {{ 'labels.inputs.Not Available' | translate }} </span>
-          </ng-container>
-        </td>
-      </ng-container>
-
-      <tr mat-row *matRowDef="let row; columns: loanDetailsColumns"></tr>
-    </table>
-  </div>
-
-  <div *ngIf="!loanDetails.summary">
-    <h3>{{ 'labels.heading.Loan Purpose' | translate }}</h3>
-    <div class="container">
-      <div class="layout-row-wrap responsive-column">
-        <div class="flex-contents">
-          <span class="flex-50">{{ 'labels.inputs.Loan Purpose' | translate }}:</span>
-          <span class="flex-50" *ngIf="loanDetails.loanPurposeName">
-            {{ loanDetails.loanPurposeName }}
-          </span>
-          <span class="flex-50" *ngIf="!loanDetails.loanPurposeName">
-            {{ 'labels.inputs.Not Provided' | translate }}
-          </span>
-        </div>
-
-        <div class="flex-contents">
-          <span class="flex-50">{{ 'labels.inputs.Proposed Amount' | translate }}:</span>
-          <span class="flex-50">{{
-            loanDetails.proposedPrincipal | currency: currencyCode : 'symbol-narrow' : '1.2-2'
-          }}</span>
-        </div>
-
-        <div class="flex-contents" *ngIf="showApprovedAmountBasedOnStatus()">
-          <span class="flex-50">{{ 'labels.inputs.Approved Amount' | translate }}:</span>
-          <span class="flex-50">{{
-            loanDetails.approvedPrincipal | currency: currencyCode : 'symbol-narrow' : '1.2-2'
-          }}</span>
-        </div>
-
-        <div class="flex-contents" *ngIf="showDisbursedAmountBasedOnStatus()">
-          <span class="flex-50">{{ 'labels.inputs.Disburse Amount' | translate }}:</span>
-          <span class="flex-50">{{ loanDetails.principal | currency: currencyCode : 'symbol-narrow' : '1.2-2' }}</span>
-        </div>
-
-        <div class="flex-contents" *ngIf="loanDetails.balloonRepaymentAmount > 0">
-          <span class="flex-50">{{ 'labels.inputs.Balloon Repayment Amount' | translate }}:</span>
-          <span class="flex-50">{{
-            loanDetails.balloonRepaymentAmount | currency: currencyCode : 'symbol-narrow' : '1.2-2'
-          }}</span>
-        </div>
-
-        <div class="flex-contents">
-          <span class="flex-50">{{ 'labels.inputs.Arrears By' | translate }}:</span>
-          <span class="flex-50">{{ 'labels.inputs.Not Provided' | translate }}</span>
-        </div>
+  <!-- ==== LOAN DETAILS ==== -->
+  <div class="lgt-card">
+    <div class="lgt-card-head">
+      <h3>Loan details</h3>
+    </div>
+    <div class="lgt-info-grid">
+      <div class="lgt-info-cell">
+        <span class="lgt-info-label">Disbursement Date</span>
+        <span class="lgt-info-value">
+          <ng-container *ngIf="loanDetails.timeline.actualDisbursementDate">{{ loanDetails.timeline.actualDisbursementDate | dateFormat }}</ng-container>
+          <ng-container *ngIf="!loanDetails.timeline.actualDisbursementDate">—</ng-container>
+        </span>
+      </div>
+      <div class="lgt-info-cell">
+        <span class="lgt-info-label">Loan Officer</span>
+        <span class="lgt-info-value">{{ loanDetails.loanOfficerName || 'Unassigned' }}</span>
+      </div>
+      <div class="lgt-info-cell">
+        <span class="lgt-info-label">Loan Purpose</span>
+        <span class="lgt-info-value">{{ loanDetails.loanPurposeName || '—' }}</span>
+      </div>
+      <div class="lgt-info-cell">
+        <span class="lgt-info-label">Currency</span>
+        <span class="lgt-info-value">{{ loanDetails.currency.name }} ({{ loanDetails.currency.code }})</span>
+      </div>
+      <div class="lgt-info-cell">
+        <span class="lgt-info-label">External ID</span>
+        <span class="lgt-info-value">
+          <mifosx-external-identifier *ngIf="loanDetails.externalId" externalId="{{ loanDetails.externalId }}" completed="true"></mifosx-external-identifier>
+          <ng-container *ngIf="!loanDetails.externalId">—</ng-container>
+        </span>
+      </div>
+      <div class="lgt-info-cell" *ngIf="loanDetails.proposedPrincipal">
+        <span class="lgt-info-label">Proposed Amount</span>
+        <span class="lgt-info-value">{{ loanDetails.proposedPrincipal | currency: currencyCode : 'symbol-narrow' : '1.2-2' }}</span>
+      </div>
+      <div class="lgt-info-cell" *ngIf="loanDetails.approvedPrincipal && showApprovedAmountBasedOnStatus()">
+        <span class="lgt-info-label">Approved Amount</span>
+        <span class="lgt-info-value">{{ loanDetails.approvedPrincipal | currency: currencyCode : 'symbol-narrow' : '1.2-2' }}</span>
+      </div>
+      <div class="lgt-info-cell" *ngIf="loanDetails.principal && showDisbursedAmountBasedOnStatus()">
+        <span class="lgt-info-label">Disbursed Amount</span>
+        <span class="lgt-info-value">{{ loanDetails.principal | currency: currencyCode : 'symbol-narrow' : '1.2-2' }}</span>
+      </div>
+      <div class="lgt-info-cell" *ngIf="loanDetails.balloonRepaymentAmount > 0">
+        <span class="lgt-info-label">Balloon Amount</span>
+        <span class="lgt-info-value">{{ loanDetails.balloonRepaymentAmount | currency: currencyCode : 'symbol-narrow' : '1.2-2' }}</span>
       </div>
     </div>
   </div>

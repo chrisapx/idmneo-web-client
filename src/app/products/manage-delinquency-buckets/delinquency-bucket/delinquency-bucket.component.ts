@@ -17,6 +17,8 @@ import {
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
+import { MatIcon } from '@angular/material/icon';
+import { MatButton } from '@angular/material/button';
 
 @Component({
   selector: 'mifosx-delinquency-bucket',
@@ -37,7 +39,9 @@ import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
     MatHeaderRow,
     MatRowDef,
     MatRow,
-    MatPaginator
+    MatPaginator,
+    MatIcon,
+    MatButton
   ]
 })
 export class DelinquencyBucketComponent implements OnInit {
@@ -46,6 +50,8 @@ export class DelinquencyBucketComponent implements OnInit {
   displayedColumns: string[] = ['name'];
   /** Data source for delinquency bucket table. */
   dataSource: MatTableDataSource<any>;
+  filterValue = '';
+  activeChip: string | null = null;
 
   /** Paginator for delinquency bucket table. */
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;

@@ -59,6 +59,7 @@ import { AuthService } from './zitadel/auth.service';
 import { environment } from '../environments/environment';
 import { CallbackComponent } from './zitadel/callback/callback.component';
 import { UnknownClientComponent } from './unknown-client/unknown-client.component';
+import { MAT_PAGINATOR_DEFAULT_OPTIONS } from '@angular/material/paginator';
 
 export class CustomMissingTranslationHandler implements MissingTranslationHandler {
   handle(params: MissingTranslationHandlerParams): string {
@@ -132,6 +133,10 @@ export function HttpLoaderFactory(http: HttpClient) {
       provide: HTTP_INTERCEPTORS,
       useClass: !environment.OIDC.oidcServerEnabled ? TokenInterceptor : ZitadelTokenInterceptor,
       multi: true
+    },
+    {
+      provide: MAT_PAGINATOR_DEFAULT_OPTIONS,
+      useValue: { pageSize: 10, pageSizeOptions: [10, 25, 50, 100], showFirstLastButtons: true }
     }
   ]
 })

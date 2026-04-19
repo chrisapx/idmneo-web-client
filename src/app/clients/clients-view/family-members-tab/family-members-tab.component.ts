@@ -8,15 +8,9 @@ import { DeleteDialogComponent } from '../../../shared/delete-dialog/delete-dial
 
 /** Custom Services */
 import { ClientsService } from '../../clients.service';
-import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-import {
-  MatAccordion,
-  MatExpansionPanel,
-  MatExpansionPanelHeader,
-  MatExpansionPanelTitle,
-  MatExpansionPanelDescription
-} from '@angular/material/expansion';
-import { MatDivider } from '@angular/material/divider';
+import { MatIcon } from '@angular/material/icon';
+import { MatTooltip } from '@angular/material/tooltip';
+import { UpperCasePipe } from '@angular/common';
 import { DateFormatPipe } from '../../../pipes/date-format.pipe';
 import { YesnoPipe } from '../../../pipes/yesno.pipe';
 import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
@@ -31,13 +25,9 @@ import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
   imports: [
     ...STANDALONE_SHARED_IMPORTS,
     RouterOutlet,
-    FaIconComponent,
-    MatAccordion,
-    MatExpansionPanel,
-    MatExpansionPanelHeader,
-    MatExpansionPanelTitle,
-    MatExpansionPanelDescription,
-    MatDivider,
+    MatIcon,
+    MatTooltip,
+    UpperCasePipe,
     DateFormatPipe,
     YesnoPipe
   ]

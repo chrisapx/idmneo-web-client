@@ -42,7 +42,9 @@ import { TreeControlService } from 'app/shared/common-logic/tree-control.service
 import { MatButtonToggleGroup, MatButtonToggle } from '@angular/material/button-toggle';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
+import { FormsModule } from '@angular/forms';
 import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
 
 /**
@@ -57,6 +59,7 @@ import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
     MatButtonToggleGroup,
     MatButtonToggle,
     FaIconComponent,
+    MatIcon,
     MatTable,
     MatSort,
     MatColumnDef,
@@ -77,10 +80,15 @@ import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
     MatTreeNodeToggle,
     MatIconButton,
     MatNestedTreeNode,
-    MatTreeNodeOutlet
+    MatTreeNodeOutlet,
+    FormsModule
   ]
 })
 export class ChartOfAccountsComponent implements AfterViewInit, OnInit {
+  /** Filter chip value. */
+  filterValue = '';
+  /** Active filter chip. */
+  activeChip: string | null = null;
   /** Button toggle group form control for type of view. (list/tree) */
   viewGroup = new UntypedFormControl('listView');
   /** GL Account data. */

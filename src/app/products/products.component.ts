@@ -1,239 +1,278 @@
-/** Angular Imports */
-import { AfterViewInit, Component, ElementRef, TemplateRef, ViewChild } from '@angular/core';
+import { Component, OnInit, HostListener, ViewChild } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-
-/** Custom Services */
-import { ConfigurationWizardService } from '../configuration-wizard/configuration-wizard.service';
-import { PopoverService } from '../configuration-wizard/popover/popover.service';
-import { MatNavList, MatListItem } from '@angular/material/list';
+import { MatSort, Sort, MatSortHeader } from '@angular/material/sort';
 import { MatIcon } from '@angular/material/icon';
-import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-import { MatLine } from '@angular/material/grid-list';
+import { MatMenu, MatMenuTrigger, MatMenuItem } from '@angular/material/menu';
+import { MatButton } from '@angular/material/button';
+import { NgFor, NgIf, NgClass } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import {
+  MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell,
+  MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow
+} from '@angular/material/table';
 import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
+import { ProductsService } from './products.service';
 
-/**
- * Products component.
- */
+interface ProductTab {
+  key: string;
+  label: string;
+  singular: string;
+  icon: string;
+  createLabel: string;
+  createRoute: string;
+  listRoute: string;
+  columns: string[];
+  hasStatus: boolean;
+  emptyDescription: string;
+  fetchMethod: string;
+  statusField?: string;
+}
+
 @Component({
   selector: 'mifosx-products',
   templateUrl: './products.component.html',
   styleUrls: ['./products.component.scss'],
   imports: [
     ...STANDALONE_SHARED_IMPORTS,
-    MatNavList,
-    MatListItem,
+    FormsModule,
     MatIcon,
-    FaIconComponent,
-    MatLine
+    MatButton,
+    MatMenu,
+    MatMenuTrigger,
+    MatMenuItem,
+    MatTable,
+    MatSort,
+    MatColumnDef,
+    MatHeaderCellDef,
+    MatHeaderCell,
+    MatSortHeader,
+    MatCellDef,
+    MatCell,
+    MatHeaderRowDef,
+    MatHeaderRow,
+    MatRowDef,
+    MatRow
   ]
 })
-export class ProductsComponent implements AfterViewInit {
-  /* Reference of charges */
-  @ViewChild('charges') charges: ElementRef<any>;
-  /* Template for popover on charges */
-  @ViewChild('templateCharges') templateCharges: TemplateRef<any>;
-  /* Reference of loan products */
-  @ViewChild('loanProducts') loanProducts: ElementRef<any>;
-  /* Template for popover on loan products */
-  @ViewChild('templateLoanProducts') templateLoanProducts: TemplateRef<any>;
-  /* Reference of saving products */
-  @ViewChild('savingsProducts') savingsProducts: ElementRef<any>;
-  /* Template for popover on savings products */
-  @ViewChild('templateSavingsProducts') templateSavingsProducts: TemplateRef<any>;
-  /* Reference of share products */
-  @ViewChild('shareProducts') shareProducts: ElementRef<any>;
-  /* Template for popover on share products */
-  @ViewChild('templateShareProducts') templateShareProducts: TemplateRef<any>;
-  /* Reference of fixed deposit products */
-  @ViewChild('fixedDepositProducts') fixedDepositProducts: ElementRef<any>;
-  /* Template for popover on fixed deposit products */
-  @ViewChild('templateFixedDepositProducts') templateFixedDepositProducts: TemplateRef<any>;
-  /* Reference of recurring deposit products */
-  @ViewChild('recurringDepositProducts') recurringDepositProducts: ElementRef<any>;
-  /* Template for popover on recurring deposit products */
-  @ViewChild('templateRecurringDepositProducts') templateRecurringDepositProducts: TemplateRef<any>;
-  // Initialize an array of 11 boolean values, all set to false
-  arrowBooleans: boolean[] = new Array(11).fill(false);
+export class ProductsComponent implements OnInit {
+  // Tab definitions
+  tabs: ProductTab[] = [
+    {
+      key: 'loans', label: 'Loans', singular: 'loan product', icon: 'account_balance',
+      createLabel: 'Create loan product', createRoute: '/products/loan-products/create',
+      listRoute: '/products/loan-products', columns: ['name', 'shortName', 'status'],
+      hasStatus: true, emptyDescription: 'Loan products define the rules, terms, and default settings for loan accounts.',
+      fetchMethod: 'getLoanProducts', statusField: 'status'
+    },
+    {
+      key: 'savings', label: 'Savings', singular: 'savings product', icon: 'savings',
+      createLabel: 'Create savings product', createRoute: '/products/saving-products/create',
+      listRoute: '/products/saving-products', columns: ['name', 'shortName'],
+      hasStatus: false, emptyDescription: 'Savings products define the rules and default settings for savings accounts.',
+      fetchMethod: 'getSavingProducts'
+    },
+    {
+      key: 'shares', label: 'Shares', singular: 'share product', icon: 'pie_chart',
+      createLabel: 'Create share product', createRoute: '/products/share-products/create',
+      listRoute: '/products/share-products', columns: ['name', 'shortName'],
+      hasStatus: false, emptyDescription: 'Share products define the rules for share accounts in your organization.',
+      fetchMethod: 'getShareProducts'
+    },
+    {
+      key: 'charges', label: 'Charges', singular: 'charge', icon: 'receipt_long',
+      createLabel: 'Create charge', createRoute: '/products/charges/create',
+      listRoute: '/products/charges', columns: ['name', 'status'],
+      hasStatus: true, emptyDescription: 'Define charges and penalties for loan, savings, and deposit products.',
+      fetchMethod: 'getCharges', statusField: 'active'
+    },
+    {
+      key: 'fixed-deposits', label: 'Fixed Deposits', singular: 'fixed deposit product', icon: 'lock',
+      createLabel: 'Create fixed deposit product', createRoute: '/products/fixed-deposit-products/create',
+      listRoute: '/products/fixed-deposit-products', columns: ['name', 'shortName'],
+      hasStatus: false, emptyDescription: 'Fixed deposit products define the rules for term deposit accounts.',
+      fetchMethod: 'getFixedDepositProducts'
+    },
+    {
+      key: 'recurring-deposits', label: 'Recurring Deposits', singular: 'recurring deposit product', icon: 'autorenew',
+      createLabel: 'Create recurring deposit product', createRoute: '/products/recurring-deposit-products/create',
+      listRoute: '/products/recurring-deposit-products', columns: ['name', 'shortName'],
+      hasStatus: false, emptyDescription: 'Recurring deposit products define the rules for recurring deposit accounts.',
+      fetchMethod: 'getRecurringDepositProducts'
+    },
+    {
+      key: 'floating-rates', label: 'Floating Rates', singular: 'floating rate', icon: 'trending_up',
+      createLabel: 'Create floating rate', createRoute: '/products/floating-rates/create',
+      listRoute: '/products/floating-rates', columns: ['name', 'status'],
+      hasStatus: true, emptyDescription: 'Define floating interest rate charts for loan products.',
+      fetchMethod: 'getFloatingRates', statusField: 'isActive'
+    },
+    {
+      key: 'product-mix', label: 'Product Mix', singular: 'product mix', icon: 'shuffle',
+      createLabel: 'Create product mix', createRoute: '/products/products-mix/create',
+      listRoute: '/products/products-mix', columns: ['name'],
+      hasStatus: false, emptyDescription: 'Define rules for which products can be combined together.',
+      fetchMethod: 'getProductsMix'
+    },
+    {
+      key: 'collaterals', label: 'Collaterals', singular: 'collateral', icon: 'verified_user',
+      createLabel: 'Create collateral', createRoute: '/products/collaterals/create',
+      listRoute: '/products/collaterals', columns: ['name'],
+      hasStatus: false, emptyDescription: 'Define collateral types for collateral management.',
+      fetchMethod: 'getCollaterals'
+    },
+  ];
 
-  /**
-   * @param {Router} router Router.
-   * @param {ConfigurationWizardService} configurationWizardService ConfigurationWizard Service.
-   * @param {PopoverService} popoverService PopoverService.
-   */
+  activeTab = 'loans';
+  tabData: any[] = [];
+  filteredData: any[] = [];
+  isLoading = false;
+  filterValue = '';
+  statusFilter = '';
+  activeChip: string | null = null;
+  maxVisibleTabs = 7;
+  tabCache: { [key: string]: any[] } = {};
+
+  @ViewChild(MatSort) sort: MatSort;
+
+  get activeTabDef(): ProductTab | undefined {
+    return this.tabs.find(t => t.key === this.activeTab);
+  }
+
+  get activeColumns(): string[] {
+    return this.activeTabDef?.columns || ['name'];
+  }
+
+  get visibleTabs(): ProductTab[] {
+    return this.tabs.slice(0, this.maxVisibleTabs);
+  }
+
+  get overflowTabs(): ProductTab[] {
+    return this.tabs.slice(this.maxVisibleTabs);
+  }
+
+  get isOverflowActive(): boolean {
+    return this.overflowTabs.some(t => t.key === this.activeTab);
+  }
+
   constructor(
-    private router: Router,
-    private configurationWizardService: ConfigurationWizardService,
-    private popoverService: PopoverService
+    private productsService: ProductsService,
+    private router: Router
   ) {}
 
-  /**
-   * To show popover.
-   */
-  ngAfterViewInit() {
-    if (this.configurationWizardService.showCharges === true) {
-      setTimeout(() => {
-        this.showPopover(this.templateCharges, this.charges.nativeElement, 'bottom', true);
-      });
+  ngOnInit() {
+    this.calcVisibleTabs();
+    this.loadTab(this.activeTab);
+  }
+
+  @HostListener('window:resize')
+  onResize() {
+    this.calcVisibleTabs();
+  }
+
+  calcVisibleTabs() {
+    const w = window.innerWidth;
+    if (w < 600) this.maxVisibleTabs = 3;
+    else if (w < 900) this.maxVisibleTabs = 5;
+    else if (w < 1200) this.maxVisibleTabs = 7;
+    else this.maxVisibleTabs = 9;
+  }
+
+  switchTab(key: string) {
+    if (this.activeTab === key) return;
+    this.activeTab = key;
+    this.filterValue = '';
+    this.statusFilter = '';
+    this.activeChip = null;
+    this.loadTab(key);
+  }
+
+  loadTab(key: string) {
+    if (this.tabCache[key]) {
+      this.tabData = this.tabCache[key];
+      this.applyFilter();
+      return;
     }
-    if (this.configurationWizardService.showLoanProducts === true) {
-      setTimeout(() => {
-        this.showPopover(this.templateLoanProducts, this.loanProducts.nativeElement, 'bottom', true);
-      });
+
+    const tab = this.tabs.find(t => t.key === key);
+    if (!tab) return;
+
+    this.isLoading = true;
+    this.tabData = [];
+    this.filteredData = [];
+
+    const method = (this.productsService as any)[tab.fetchMethod];
+    if (!method) {
+      this.isLoading = false;
+      return;
     }
-    if (this.configurationWizardService.showSavingsProducts === true) {
-      setTimeout(() => {
-        this.showPopover(this.templateSavingsProducts, this.savingsProducts.nativeElement, 'bottom', true);
-      });
+
+    method.call(this.productsService).subscribe(
+      (data: any) => {
+        // Some APIs return arrays directly, others return objects with pageItems
+        const items = Array.isArray(data) ? data : (data?.pageItems || data?.content || []);
+        this.tabData = items;
+        this.tabCache[key] = items;
+        this.applyFilter();
+        this.isLoading = false;
+      },
+      () => {
+        this.isLoading = false;
+        this.tabData = [];
+        this.filteredData = [];
+      }
+    );
+  }
+
+  applyFilter() {
+    let data = [...this.tabData];
+
+    if (this.filterValue) {
+      const q = this.filterValue.toLowerCase();
+      data = data.filter((row: any) => (row.name || '').toLowerCase().includes(q));
     }
-    if (this.configurationWizardService.showShareProducts === true) {
-      setTimeout(() => {
-        this.showPopover(this.templateShareProducts, this.shareProducts.nativeElement, 'bottom', true);
-      });
+
+    if (this.statusFilter && this.activeTabDef?.hasStatus) {
+      data = data.filter((row: any) => this.getStatus(row) === this.statusFilter);
     }
-    if (this.configurationWizardService.showFixedDepositProducts === true) {
-      setTimeout(() => {
-        this.showPopover(this.templateFixedDepositProducts, this.fixedDepositProducts.nativeElement, 'bottom', true);
-      });
+
+    this.filteredData = data;
+  }
+
+  getStatus(row: any): string {
+    const tab = this.activeTabDef;
+    if (!tab?.statusField) return '';
+    const val = row[tab.statusField];
+    if (typeof val === 'boolean') return val ? 'Active' : 'Inactive';
+    if (typeof val === 'string') {
+      if (val.includes('.active') || val === 'Active') return 'Active';
+      return 'Inactive';
     }
-    if (this.configurationWizardService.showRecurringDepositProducts === true) {
-      setTimeout(() => {
-        this.showPopover(
-          this.templateRecurringDepositProducts,
-          this.recurringDepositProducts.nativeElement,
-          'bottom',
-          true
-        );
-      });
+    if (val?.value) return val.value;
+    return '';
+  }
+
+  getRowLink(row: any): string[] {
+    const tab = this.activeTabDef;
+    if (!tab) return [];
+    return [tab.listRoute, String(row.id)];
+  }
+
+  createProduct() {
+    const tab = this.activeTabDef;
+    if (tab?.createRoute) {
+      this.router.navigate([tab.createRoute]);
     }
   }
 
-  /**
-   * Popover function
-   * @param template TemplateRef<any>.
-   * @param target HTMLElement | ElementRef<any>.
-   * @param position String.
-   * @param backdrop Boolean.
-   * @param arrowNumber - The index of the boolean value to toggle.
-   */
-  showPopover(
-    template: TemplateRef<any>,
-    target: HTMLElement | ElementRef<any>,
-    position: string,
-    backdrop: boolean
-  ): void {
-    setTimeout(() => this.popoverService.open(template, target, position, backdrop, {}), 200);
-  }
-
-  /**
-   * Next Step (Charges Page) Configuration Wizard.
-   */
-  nextStepCharges() {
-    this.configurationWizardService.showCharges = false;
-    this.configurationWizardService.showChargesPage = true;
-    this.router.navigate(['/products/charges']);
-  }
-
-  /**
-   * Previous Step (Create journal entry Page) Configuration Wizard.
-   */
-  previousStepCharges() {
-    this.configurationWizardService.showCharges = false;
-    this.configurationWizardService.showCreateJournalEntries = true;
-    this.router.navigate(['/accounting/journal-entries/create']);
-  }
-
-  /**
-   * Next Step (Loan Products Page) Configuration Wizard.
-   */
-  nextStepLoanProducts() {
-    this.configurationWizardService.showLoanProducts = false;
-    this.configurationWizardService.showLoanProductsPage = true;
-    this.router.navigate(['/products/loan-products']);
-  }
-
-  /**
-   * Previous Step (Charges Page) Configuration Wizard.
-   */
-  previousStepLoanProducts() {
-    this.configurationWizardService.showLoanProducts = false;
-    this.configurationWizardService.showChargesList = true;
-    this.router.navigate(['/products/charges']);
-  }
-
-  /**
-   * Next Step (Savings Products Page) Configuration Wizard.
-   */
-  nextStepSavingsProducts() {
-    this.configurationWizardService.showSavingsProducts = false;
-    this.configurationWizardService.showSavingsProductsPage = true;
-    this.router.navigate(['/products/saving-products']);
-  }
-
-  /**
-   * Previous Step (Savings Page) Configuration Wizard.
-   */
-  previousStepSavingsProducts() {
-    this.configurationWizardService.showSavingsProducts = false;
-    this.configurationWizardService.showLoanProductsList = true;
-    this.router.navigate(['/products/loan-products']);
-  }
-
-  /**
-   * Next Step (Share Products Page) Configuration Wizard.
-   */
-  nextStepShareProducts() {
-    this.configurationWizardService.showShareProducts = false;
-    this.configurationWizardService.showShareProductsPage = true;
-    this.router.navigate(['/products/share-products']);
-  }
-
-  /**
-   * Previous Step (Savings Products Page) Configuration Wizard.
-   */
-  previousStepShareProducts() {
-    this.configurationWizardService.showShareProducts = false;
-    this.configurationWizardService.showSavingsProductsList = true;
-    this.router.navigate(['/products/saving-products']);
-  }
-
-  /**
-   * Next Step (Fixed Deposit Products Page) Configuration Wizard.
-   */
-  nextStepFixedDepositProducts() {
-    this.configurationWizardService.showFixedDepositProducts = false;
-    this.configurationWizardService.showFixedDepositProductsPage = true;
-    this.router.navigate(['/products/fixed-deposit-products']);
-  }
-
-  /**
-   * Previous Step (Share Products Page) Configuration Wizard.
-   */
-  previousStepFixedDepositProducts() {
-    this.configurationWizardService.showFixedDepositProducts = false;
-    this.configurationWizardService.showShareProductsList = true;
-    this.router.navigate(['/products/share-products']);
-  }
-
-  /**
-   * Next Step (Recurring Deposit Products Page) Configuration Wizard.
-   */
-  nextStepRecurringDepositProducts() {
-    this.configurationWizardService.showRecurringDepositProducts = false;
-    this.configurationWizardService.showRecurringDepositProductsPage = true;
-    this.router.navigate(['/products/recurring-deposit-products']);
-  }
-
-  /**
-   * Previous Step (Fixed Deposit Products Page) Configuration Wizard.
-   */
-  previousStepRecurringDepositProducts() {
-    this.configurationWizardService.showRecurringDepositProducts = false;
-    this.configurationWizardService.showFixedDepositProductsList = true;
-    this.router.navigate(['/products/fixed-deposit-products']);
-  }
-
-  arrowBooleansToggle(arrowNumber: number) {
-    // Toggle the boolean value at the given index
-    this.arrowBooleans[arrowNumber] = !this.arrowBooleans[arrowNumber];
+  sortData(sort: Sort) {
+    if (!sort.active || sort.direction === '') {
+      this.applyFilter();
+      return;
+    }
+    this.filteredData = [...this.filteredData].sort((a, b) => {
+      const valA = (a[sort.active] || '').toString().toLowerCase();
+      const valB = (b[sort.active] || '').toString().toLowerCase();
+      return sort.direction === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+    });
   }
 }

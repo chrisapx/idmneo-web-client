@@ -1,5 +1,3 @@
-table {
-  .select-row {
-    cursor: pointer;
-  }
-}
+@use 'assets/styles/stripe-tab' as *;
+
+:host { display: block; @include stripe-tab; }

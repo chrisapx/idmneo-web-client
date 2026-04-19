@@ -1,89 +1,121 @@
+$s-bg: #F7F8FA;
+$s-border: #E3E8EE;
+$s-purple: #635BFF;
+$s-dark: #1A1F36;
+$s-grey: #697386;
+
 #mifosx-shell-container {
   max-width: 100%;
   height: 100vh;
 
   .sidebar-panel {
     min-height: 100vh;
-    overflow: auto;
-    box-shadow:
-      0 3px 1px -2px rgb(0 0 0 / 20%),
-      0 2px 2px 0 rgb(0 0 0 / 14%),
-      0 1px 5px 0 rgb(0 0 0 / 12%);
+    background: #fff;
+    border-right: 1px solid $s-border;
+    box-shadow: none !important;
+    overflow-x: hidden;
+    overflow-y: auto;
   }
 
-  .sidebar-full {
-    width: 15rem;
-  }
-
-  .sidebar-compact {
-    width: 4rem;
-  }
+  .sidebar-full { width: 220px; transition: width 0.2s ease; }
+  .sidebar-compact { width: 56px; transition: width 0.2s ease; }
 }
 
-$bar: 190px;
-$foo: $bar * 8;
-$color: #e2e4ec;
+::ng-deep .mat-sidenav-content { background: $s-bg !important; }
 
-.sidenav {
+.sidenav-content {
+  background: $s-bg;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  position: relative; // for absolute collapse edge
+}
+
+.fixed-header { flex-shrink: 0; z-index: 100; }
+.fixed-footer { flex-shrink: 0; z-index: 100; }
+
+.page-wrapper {
+  flex: 1;
+  overflow-y: auto;
   overflow-x: hidden;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 12px 12px;
 }
 
-@keyframes move {
-  0% {
-    left: 0;
-  }
-
-  16.7% {
-    left: 0;
-  }
-
-  33.3% {
-    left: calc($foo / 2);
-  }
-
-  50% {
-    left: $foo - $bar;
-  }
-
-  66.7% {
-    left: calc($foo / 2);
-  }
-
-  83.3% {
-    left: 0;
-  }
-
-  100% {
-    left: 0;
+.progress-line {
+  height: 2px; overflow: hidden; flex-shrink: 0;
+  .loading {
+    height: 2px; background: $s-purple;
+    animation: p 1.5s ease-in-out infinite; width: 30%;
   }
 }
 
-@keyframes grow {
-  0% {
-    width: $bar;
+@keyframes p {
+  0% { margin-left: -30%; }
+  100% { margin-left: 100%; }
+}
+
+// ===== COLLAPSE/EXPAND EDGE TRIGGER =====
+.collapse-edge {
+  position: absolute;
+  left: 0;
+  top: 48px;   // below header
+  bottom: 40px; // above footer
+  width: 12px;
+  z-index: 150;
+  cursor: pointer;
+
+  // Thin line that appears on hover
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: transparent;
+    transition: background 0.2s;
   }
 
-  16.7% {
-    width: calc($foo / 2);
+  &:hover::after {
+    background: $s-purple;
   }
 
-  33.3% {
-    width: calc($foo / 2);
+  // Pill tooltip
+  .collapse-pill {
+    position: absolute;
+    top: 50%;
+    left: 4px;
+    transform: translateY(-50%);
+    display: none;
+    align-items: center;
+    gap: 4px;
+    background: $s-dark;
+    color: #fff;
+    padding: 4px 10px 4px 4px;
+    border-radius: 14px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    z-index: 151;
+
+    mat-icon {
+      font-size: 16px;
+      width: 16px;
+      height: 16px;
+    }
   }
 
-  50% {
-    width: $bar;
+  &:hover .collapse-pill {
+    display: flex;
   }
+}
 
-  66.7% {
-    width: calc($foo / 2);
-  }
-
-  83.3% {
-    width: calc($foo / 2);
-  }
-
-  100% {
-    width: $bar;
-  }
+@media (max-width: 768px) {
+  .page-wrapper { padding: 0 8px 8px; }
+  .collapse-edge { display: none; }
 }

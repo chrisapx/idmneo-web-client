@@ -1,3 +1,193 @@
-mat-list-item {
-  height: 50px;
+@use 'assets/styles/stripe-page' as *;
+
+$pc-dark: #1A1F36;
+$pc-text: #3C4257;
+$pc-grey: #697386;
+$pc-border: #E3E8EE;
+$pc-bg: #F7F8FA;
+$pc-white: #fff;
+$pc-purple: #635BFF;
+
+.pc-page { padding-top: 12px; }
+
+// Header
+.pc-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 20px; flex-wrap: wrap; gap: 8px;
+  h1 { font-size: 28px; font-weight: 700; color: $pc-dark; margin: 0; letter-spacing: -0.5px; }
+}
+.pc-head-actions { display: flex; gap: 8px; }
+
+// Tab strip (Stripe style)
+.pc-tab-strip {
+  border-bottom: 1px solid $pc-border;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+.pc-tabs-scroll {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}
+
+.pc-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: $pc-grey;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.15s, border-color 0.15s;
+  margin-bottom: -1px;
+
+  &:hover { color: $pc-dark; }
+
+  &.active {
+    color: $pc-purple;
+    font-weight: 600;
+    border-bottom-color: $pc-purple;
+  }
+}
+
+.pc-more-wrap { position: relative; display: inline-flex; }
+
+.pc-more-btn {
+  mat-icon {
+    font-size: 18px; width: 18px; height: 18px;
+    margin-left: -2px;
+  }
+}
+
+::ng-deep .pc-menu-active {
+  color: $pc-purple !important;
+  font-weight: 600 !important;
+}
+
+// Filter chips
+.s-filters {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 12px; gap: 8px; flex-wrap: wrap;
+}
+.s-filter-left { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.s-filter-right { display: flex; align-items: center; gap: 6px; }
+
+.s-chip-wrap { position: relative; }
+
+.s-filter-chip {
+  display: inline-flex; align-items: center; gap: 2px;
+  height: 28px; padding: 0 10px;
+  border: 1px dashed $pc-border; border-radius: 16px;
+  background: $pc-white; color: $pc-text;
+  font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap;
+  mat-icon { font-size: 14px; width: 14px; height: 14px; color: $pc-grey; }
+  .chip-x { font-size: 12px !important; width: 12px !important; height: 12px !important; margin-left: 2px; color: $pc-grey !important; &:hover { color: $pc-dark !important; } }
+  &:hover { background: $pc-bg; border-color: darken($pc-border, 10%); }
+  &.applied { border-color: $pc-purple; color: $pc-purple; border-style: solid; background: rgba($pc-purple, 0.04);
+    mat-icon:first-child { color: $pc-purple; }
+  }
+}
+
+.s-action-chip {
+  display: inline-flex; align-items: center; gap: 3px;
+  height: 28px; padding: 0 10px;
+  border: 1px solid $pc-border; border-radius: 6px;
+  background: $pc-white; color: $pc-text;
+  font-size: 13px; font-weight: 500; cursor: pointer;
+  mat-icon { font-size: 14px; width: 14px; height: 14px; color: $pc-grey; }
+  &:hover { background: $pc-bg; }
+}
+
+.s-pop {
+  position: absolute; top: 34px; left: 0; width: 260px;
+  background: $pc-white; border: 1px solid $pc-border; border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12); padding: 14px; z-index: 500;
+}
+.s-pop-title { font-size: 13px; font-weight: 600; color: $pc-dark; margin-bottom: 8px; }
+.s-pop-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.s-pop-label { font-size: 13px; color: $pc-grey; flex-shrink: 0; }
+.s-pop-input {
+  flex: 1; height: 32px; padding: 0 8px;
+  border: 1px solid $pc-border; border-radius: 6px;
+  font-size: 13px; color: $pc-dark; outline: none;
+  &:focus { border-color: $pc-purple; box-shadow: 0 0 0 2px rgba($pc-purple, 0.1); }
+}
+.s-pop-apply {
+  width: 100%; height: 34px; background: $pc-purple; color: #fff;
+  border: none; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer;
+  &:hover { background: darken($pc-purple, 6%); }
+}
+.s-pop-options {
+  display: flex; flex-direction: column; gap: 2px;
+  max-height: 240px; overflow-y: auto; margin: 0 -14px;
+}
+.s-pop-option {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 16px; font-size: 14px; color: $pc-text; cursor: pointer;
+  mat-icon { font-size: 18px; width: 18px; height: 18px; color: $pc-purple; }
+  &:hover { background: $pc-bg; }
+  &.selected { background: rgba($pc-purple, 0.06); color: $pc-purple; font-weight: 600; }
+}
+
+
+// Product name cell
+.pc-product-name {
+  display: flex; align-items: center; gap: 8px; font-weight: 500; color: $pc-dark;
+}
+
+// Table footer
+.s-tfoot {
+  display: flex; align-items: center; border-top: 1px solid $pc-border; padding: 8px 14px;
+  .s-count { font-size: 13px; color: $pc-grey; }
+}
+
+// Empty state (matches Stripe screenshot)
+.pc-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 24px 80px;
+  text-align: center;
+  border: 1px solid $pc-border;
+  border-radius: 8px;
+  background: $pc-white;
+}
+
+.pc-empty-icon {
+  width: 52px; height: 52px; border-radius: 12px;
+  background: $pc-bg; border: 1px solid $pc-border;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 20px;
+  mat-icon { font-size: 24px; width: 24px; height: 24px; color: $pc-grey; }
+}
+
+.pc-empty h2 {
+  font-size: 18px; font-weight: 700; color: $pc-dark;
+  margin: 0 0 8px;
+}
+
+.pc-empty p {
+  font-size: 14px; color: $pc-grey; margin: 0 0 20px;
+  max-width: 400px; line-height: 1.5;
+}
+
+.pc-empty-btn {
+  border-radius: 6px !important;
+  height: 36px !important;
+  font-size: 14px !important;
+}
+
+@media (max-width: 768px) {
+  .pc-head { flex-direction: column; align-items: flex-start; }
+  .pc-tab { padding: 8px 12px; font-size: 13px; }
 }

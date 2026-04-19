@@ -1,0 +1,243 @@
+$s-dark: #1A1F36;
+$s-text: #3C4257;
+$s-grey: #697386;
+$s-border: #E3E8EE;
+$s-bg: #F7F8FA;
+$s-white: #fff;
+$s-purple: #635BFF;
+
+.s-dialog {
+  display: flex;
+  flex-direction: column;
+  max-height: 85vh;
+  min-width: 480px;
+}
+
+// ===== HEADER =====
+.s-dialog-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 24px 14px; flex-shrink: 0;
+  h2 { font-size: 18px; font-weight: 700; color: $s-dark; margin: 0; }
+  button { color: $s-grey !important; &:hover { color: $s-dark !important; } }
+}
+
+// ===== BODY =====
+.s-dialog-body {
+  flex: 1; overflow-y: auto;
+  border-top: 1px solid $s-border;
+  border-bottom: 1px solid $s-border;
+}
+
+// ===== SECTIONS =====
+.s-sect {
+  border-bottom: 1px solid $s-border;
+  &:last-child { border-bottom: none; }
+}
+
+.s-sect-toggle {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 24px; cursor: pointer;
+  &:hover { background: $s-bg; }
+  h3 { font-size: 14px; font-weight: 700; color: $s-dark; margin: 0; }
+  mat-icon { color: $s-grey; font-size: 20px; width: 20px; height: 20px; }
+}
+
+.s-sect-content { padding: 0 24px 20px; }
+
+// ===== FOOTER =====
+.s-dialog-foot {
+  display: flex; align-items: center; justify-content: flex-end;
+  gap: 8px; padding: 14px 24px; flex-shrink: 0;
+}
+
+.s-btn-cancel {
+  height: 36px; padding: 0 16px;
+  border: 1px solid $s-border; border-radius: 6px;
+  background: $s-white; color: $s-text;
+  font-size: 14px; font-weight: 500; cursor: pointer;
+  &:hover { background: $s-bg; }
+}
+
+.s-btn-submit {
+  height: 36px; padding: 0 20px;
+  border: none; border-radius: 6px;
+  background: $s-purple; color: #fff;
+  font-size: 14px; font-weight: 600; cursor: pointer;
+  &:hover { background: darken($s-purple, 6%); }
+  &:disabled { background: lighten($s-purple, 20%); cursor: not-allowed; }
+}
+
+// ===== SKELETON LOADING =====
+.s-skeleton-body {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sk-line {
+  height: 14px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, $s-bg 25%, lighten($s-border, 3%) 50%, $s-bg 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+
+  &.w30 { width: 30%; }
+  &.w35 { width: 35%; }
+  &.w40 { width: 40%; }
+  &.w50 { width: 50%; }
+}
+
+.sk-block {
+  height: 40px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, $s-bg 25%, lighten($s-border, 3%) 50%, $s-bg 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+// ===== STRIPE-STYLE FORM FIELDS =====
+::ng-deep .s-sect-content {
+  // Stack vertically with tight spacing
+  .layout-row-wrap,
+  .layout-row-wrap.gap-2px,
+  .layout-row-wrap.responsive-column {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0 !important;
+  }
+
+  // Name row: first + middle + last side by side
+  .name-fields-row {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 8px !important;
+    .name-field { flex: 1; min-width: 0; }
+  }
+
+  // Full width overrides
+  .flex-23, .flex-48, .flex-98, .flex-100, .flex-fill {
+    width: 100% !important;
+    max-width: 100% !important;
+    flex: none !important;
+  }
+
+  // Stripe fields using CSS variables + outline simulation
+  .mat-mdc-form-field {
+    width: 100%;
+
+    // Variables
+    --mdc-filled-text-field-container-color: transparent;
+    --mdc-filled-text-field-active-indicator-color: transparent;
+    --mdc-filled-text-field-hover-active-indicator-color: transparent;
+    --mdc-filled-text-field-focus-active-indicator-color: transparent;
+    --mdc-filled-text-field-label-text-color: #{$s-dark};
+    --mdc-filled-text-field-focus-label-text-color: #{$s-dark};
+    --mdc-filled-text-field-input-text-color: #{$s-dark};
+    --mdc-filled-text-field-disabled-active-indicator-color: transparent;
+    --mat-form-field-container-height: 44px;
+
+    // Wrapper — THE box
+    .mat-mdc-text-field-wrapper {
+      background: transparent !important;
+      border: 1px solid $s-border;
+      border-radius: 6px;
+      padding: 0 12px !important;
+
+      // Remove the filled background shape
+      .mdc-text-field__ripple { display: none !important; }
+    }
+
+    // Kill the bottom indicator line
+    .mdc-line-ripple { display: none !important; }
+
+    // On focus — purple border
+    &.mat-focused .mat-mdc-text-field-wrapper {
+      border-color: $s-purple;
+      box-shadow: 0 0 0 3px rgba($s-purple, 0.08);
+    }
+
+    // On error — red border
+    &.mat-form-field-invalid .mat-mdc-text-field-wrapper {
+      border-color: #FF5A65;
+    }
+
+    // Subscript
+    .mat-mdc-form-field-subscript-wrapper {
+      padding: 2px 0 0;
+    }
+
+    // Text
+    input, textarea { font-size: 14px !important; }
+    .mat-mdc-select-value-text { font-size: 14px !important; color: $s-dark !important; }
+    .mat-mdc-select-arrow { color: $s-grey !important; }
+    .mat-datepicker-toggle { color: $s-grey; }
+
+    // Label — dark when floating, grey when placeholder
+    .mat-mdc-floating-label {
+      color: $s-grey !important;
+      &.mdc-floating-label--float-above {
+        color: $s-dark !important;
+        font-weight: 600 !important;
+        font-size: 16px !important;
+      }
+    }
+  }
+
+  // Checkboxes
+  .mat-mdc-checkbox {
+    --mdc-checkbox-selected-icon-color: #{$s-purple};
+    --mdc-checkbox-selected-hover-icon-color: #{$s-purple};
+    --mdc-checkbox-selected-focus-icon-color: #{$s-purple};
+    --mdc-checkbox-selected-pressed-icon-color: #{$s-purple};
+    --mdc-checkbox-selected-checkmark-color: #fff;
+  }
+
+  // Hide stepper navigation
+  .layout-row.align-center.gap-2percent,
+  .layout-row.align-center {
+    display: none !important;
+  }
+
+  // Checkboxes
+  .margin-v { margin: 6px 0 !important; }
+
+  // Dividers
+  mat-divider { margin: 4px 0 !important; opacity: 0.5; }
+
+  // Expansion panels (family, address)
+  .mat-expansion-panel {
+    border: 1px solid $s-border !important;
+    border-radius: 6px !important;
+    box-shadow: none !important;
+    margin-bottom: 8px !important;
+  }
+
+  // Non-person details
+  .layout-row-wrap[formGroupName] {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0 !important;
+  }
+}
+
+// ===== DIALOG CONTAINER OVERRIDE =====
+::ng-deep .create-client-dialog {
+  .mat-mdc-dialog-container {
+    padding: 0 !important;
+    border-radius: 12px !important;
+    overflow: hidden;
+  }
+  .mat-mdc-dialog-surface {
+    border-radius: 12px !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .s-dialog { min-width: 0; width: 100%; }
+}

@@ -1,148 +1,67 @@
-<mat-toolbar class="layout-row" color="primary" id="mifosx-toolbar">
-  <button
-    mat-icon-button
-    *ngIf="!sidenavCollapsed"
-    (click)="toggleSidenav()"
-    matTooltip="{{ 'tooltips.Toggle Hide/Open' | translate }}"
-    tabindex="0"
-  >
-    <fa-icon icon="bars" size="lg"></fa-icon>
-  </button>
-
-  <button
-    mat-icon-button
-    *ngIf="sidenav.opened"
-    (click)="toggleSidenavCollapse()"
-    matTooltip="{{ 'tooltips.Toggle Collapse' | translate }}"
-    class="hide-lt-md"
-    tabindex="0"
-  >
-    <fa-icon *ngIf="!sidenavCollapsed" icon="chevron-left"></fa-icon>
-    <fa-icon *ngIf="sidenavCollapsed" icon="chevron-right"></fa-icon>
-  </button>
-
-  <div class="tab-nav-bar">
-    <a
-      #institution
-      class="tab-link"
-      [matMenuTriggerFor]="institutionMenu"
-      #institutionMenuTrigger="matMenuTrigger"
-      tabindex="0"
-    >
-      <fa-icon class="mr-05" icon="university" size="lg"></fa-icon>
-      {{ 'labels.menus.Institution' | translate }}
-    </a>
-
-    <span class="hide-lt-md">
-      <a #accounting class="tab-link accounting-link" [routerLink]="['/accounting']" tabindex="0">
-        <fa-icon class="mr-05" icon="money-bill-alt" size="lg"></fa-icon>
-        {{ 'labels.menus.Accounting' | translate }}
-      </a>
-      <a #reports class="tab-link" [matMenuTriggerFor]="reportsMenu" #reportsMenuTrigger="matMenuTrigger" tabindex="0">
-        <fa-icon class="mr-05" icon="chart-bar" size="lg"></fa-icon>
-        {{ 'labels.menus.Reports' | translate }}
-      </a>
-      <a #admin class="tab-link" [matMenuTriggerFor]="adminMenu" #adminMenuTrigger="matMenuTrigger" tabindex="0">
-        <fa-icon class="mr-05" icon="shield-alt" size="lg"></fa-icon>
-        {{ 'labels.menus.Admin' | translate }}
-      </a>
-    </span>
+<!-- Stripe top bar -->
+<div class="s-topbar" id="mifosx-toolbar">
+  <div class="s-search-wrap">
+    <mifosx-search-tool></mifosx-search-tool>
   </div>
 
-  <span class="toolbar-spacer"></span>
+  <span class="s-spacer"></span>
 
-  <div #globalSearch class="white-text-search">
-    <mifosx-search-tool tabindex="0"></mifosx-search-tool>
+  <div class="s-icon-group">
+    <button mat-icon-button class="s-btn" [routerLink]="['/home']" matTooltip="Dashboard"><mat-icon>grid_view</mat-icon></button>
+    <button mat-icon-button class="s-btn" (click)="toggleHelp()" matTooltip="Help"><mat-icon>help_outline</mat-icon></button>
+    <button mat-icon-button class="s-btn s-plus" [matMenuTriggerFor]="createMenu" matTooltip="Create new"><mat-icon>add_circle</mat-icon></button>
   </div>
 
-  <div #languageSelector class="white-text-language">
-    <mifosx-language-selector class="ml-1 language hide-lt-md" tabindex="0"></mifosx-language-selector>
-  </div>
+  <a class="s-guide" (click)="toggleHelp()">
+    <span>Help center</span>
+    <svg width="20" height="20" viewBox="0 0 20 20">
+      <circle cx="10" cy="10" r="8" stroke="#E3E8EE" stroke-width="2.5" fill="none"/>
+      <circle cx="10" cy="10" r="8" stroke="#635BFF" stroke-width="2.5" fill="none"
+              stroke-dasharray="50.26" stroke-dashoffset="25" stroke-linecap="round"
+              transform="rotate(-90 10 10)"/>
+    </svg>
+  </a>
+</div>
 
-  <button mat-icon-button [matMenuTriggerFor]="languageMenu" tabindex="0">
-    <mat-icon class="lg-icon">language</mat-icon>
-  </button>
-
-  <div #notifications>
-    <mifosx-notifications-tray #notificationsTray class="hide-lt-md" tabindex="0"></mifosx-notifications-tray>
-  </div>
-
-  <div #themeToggle>
-    <mifosx-theme-toggle tabindex="0"></mifosx-theme-toggle>
-  </div>
-
-  <div #appMenu>
-    <button mat-icon-button class="ml-1 img-button" [matMenuTriggerFor]="applicationMenu" tabindex="0">
-      <img src="assets/images/user_placeholder.png" [alt]="'labels.headings.User Profile' | translate" />
-    </button>
-  </div>
-</mat-toolbar>
-
-<!-- Language selector menu for small screen view -->
-<mat-menu #languageMenu="matMenu">
-  <mifosx-language-selector class="ml-1 language"></mifosx-language-selector>
+<!-- Create menu -->
+<mat-menu #createMenu="matMenu" class="s-create-menu">
+  <button mat-menu-item routerLink="/clients/create"><mat-icon>person_add</mat-icon>New Client</button>
+  <button mat-menu-item routerLink="/groups/create"><mat-icon>group_add</mat-icon>New Group</button>
+  <button mat-menu-item routerLink="/centers/create"><mat-icon>add_business</mat-icon>New Center</button>
+  <button mat-menu-item routerLink="/accounting/journal-entries/create"><mat-icon>post_add</mat-icon>Journal Entry</button>
+  <button mat-menu-item routerLink="/products/loan-products/create"><mat-icon>add_card</mat-icon>Loan Product</button>
+  <button mat-menu-item routerLink="/products/saving-products/create"><mat-icon>add_box</mat-icon>Saving Product</button>
 </mat-menu>
 
-<mat-menu #institutionMenu="matMenu" [overlapTrigger]="false">
-  <button mat-menu-item routerLink="/clients" tabindex="0">{{ 'labels.menus.Clients' | translate }}</button>
-  <button mat-menu-item routerLink="/groups" tabindex="0">{{ 'labels.menus.Groups' | translate }}</button>
-  <button mat-menu-item routerLink="/centers" tabindex="0">{{ 'labels.menus.Centers' | translate }}</button>
-  <span class="hide-lt-md">
-    <button mat-menu-item [routerLink]="['/accounting']" tabindex="0">
-      {{ 'labels.menus.Accounting' | translate }}
-    </button>
-    <button mat-menu-item [matMenuTriggerFor]="reportsMenu" tabindex="0">
-      {{ 'labels.menus.Reports' | translate }}
-    </button>
-    <button mat-menu-item [matMenuTriggerFor]="adminMenu" tabindex="0">{{ 'labels.menus.Admin' | translate }}</button>
-  </span>
-</mat-menu>
-
-<!-- Toolbar Menus -->
-<mat-menu #reportsMenu="matMenu" [overlapTrigger]="false">
-  <button mat-menu-item [routerLink]="['/reports']" tabindex="0">{{ 'labels.menus.All' | translate }}</button>
-  <button mat-menu-item [routerLink]="['/reports', 'Client']" tabindex="0">
-    {{ 'labels.menus.Clients' | translate }}
-  </button>
-  <button mat-menu-item [routerLink]="['/reports', 'Loan']" tabindex="0">{{ 'labels.menus.Loans' | translate }}</button>
-  <button mat-menu-item [routerLink]="['/reports', 'Savings']" tabindex="0">
-    {{ 'labels.menus.Savings' | translate }}
-  </button>
-  <button mat-menu-item [routerLink]="['/reports', 'Fund']" tabindex="0">{{ 'labels.menus.Funds' | translate }}</button>
-  <button mat-menu-item [routerLink]="['/reports', 'Accounting']" tabindex="0">
-    {{ 'labels.menus.Accounting' | translate }}
-  </button>
-</mat-menu>
-
-<mat-menu #adminMenu="matMenu" [overlapTrigger]="false">
-  <button mat-menu-item (click)="navigateMenu('/appusers')" tabindex="0">{{ 'labels.menus.Users' | translate }}</button>
-  <button mat-menu-item [routerLink]="['/organization']" tabindex="0">
-    {{ 'labels.menus.Organization' | translate }}
-  </button>
-  <button mat-menu-item [routerLink]="['/system']" tabindex="0">{{ 'labels.menus.System' | translate }}</button>
-  <button mat-menu-item [routerLink]="['/products']" tabindex="0">{{ 'labels.menus.Products' | translate }}</button>
-  <button mat-menu-item routerLink="/templates" tabindex="0">{{ 'labels.menus.Templates' | translate }}</button>
-  <button mat-menu-item [routerLink]="['/checker-inbox-and-tasks/checker-inbox']" tabindex="0">{{ 'labels.menus.Approvals' | translate }}</button>
-</mat-menu>
-
-<!-- Application User Help Menu -->
-<mat-menu #applicationMenu="matMenu" [overlapTrigger]="false">
-  <button mat-menu-item (click)="help()" tabindex="0">
-    <mat-icon matListIcon>
-      <fa-icon icon="question-circle" size="sm"></fa-icon>
-    </mat-icon>
-    <span>{{ 'labels.menus.Help' | translate }}</span>
-  </button>
-  <button mat-menu-item [routerLink]="['/profile']" tabindex="0">
-    <mat-icon>
-      <fa-icon icon="user" size="sm"></fa-icon>
-    </mat-icon>
-    <span>{{ 'labels.menus.Profile' | translate }}</span>
-  </button>
-  <button mat-menu-item (click)="logout()" id="logout" tabindex="0">
-    <mat-icon>
-      <fa-icon icon="sign-out-alt" size="sm"></fa-icon>
-    </mat-icon>
-    <span>{{ 'labels.menus.Sign Out' | translate }}</span>
-  </button>
-</mat-menu>
+<!-- Help widget panel -->
+<div class="s-help-panel" *ngIf="showHelpWidget" (click)="$event.stopPropagation()">
+  <div class="s-help-header">
+    <span>Help & Support</span>
+    <button mat-icon-button class="s-btn" (click)="toggleHelp()"><mat-icon>close</mat-icon></button>
+  </div>
+  <div class="s-help-body">
+    <div class="s-help-search">
+      <mat-icon>search</mat-icon>
+      <input placeholder="Search help articles..." />
+    </div>
+    <div class="s-help-section">
+      <div class="s-help-item" [routerLink]="['/help']" (click)="toggleHelp()">
+        <mat-icon>menu_book</mat-icon>
+        <div><strong>Getting Started</strong><br><span>Learn the basics of managing your institution</span></div>
+      </div>
+      <div class="s-help-item" (click)="openDocs()">
+        <mat-icon>description</mat-icon>
+        <div><strong>Documentation</strong><br><span>Read the full user manual</span></div>
+      </div>
+      <div class="s-help-item">
+        <mat-icon>chat_bubble_outline</mat-icon>
+        <div><strong>Chat with us</strong><br><span>Get instant help from our support team</span></div>
+      </div>
+      <div class="s-help-item">
+        <mat-icon>email</mat-icon>
+        <div><strong>Email support</strong><br><span>support&#64;idmfh.com</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="s-help-backdrop" *ngIf="showHelpWidget" (click)="toggleHelp()"></div>

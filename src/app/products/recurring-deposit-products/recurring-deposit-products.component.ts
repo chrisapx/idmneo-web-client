@@ -30,6 +30,8 @@ import { NextStepDialogComponent } from '../../configuration-wizard/next-step-di
 import { MatTooltip } from '@angular/material/tooltip';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
+import { MatIcon } from '@angular/material/icon';
+import { MatButton } from '@angular/material/button';
 
 /**
  * Recurring Deposit Products component.
@@ -54,7 +56,9 @@ import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
     MatHeaderRow,
     MatRowDef,
     MatRow,
-    MatPaginator
+    MatPaginator,
+    MatIcon,
+    MatButton
   ]
 })
 export class RecurringDepositProductsComponent implements OnInit, AfterViewInit {
@@ -67,6 +71,8 @@ export class RecurringDepositProductsComponent implements OnInit, AfterViewInit 
   ];
   /** Data source for recurring deposit products table. */
   dataSource: MatTableDataSource<any>;
+  filterValue = '';
+  activeChip: string | null = null;
 
   /** Paginator for recurring deposit products table. */
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;

@@ -26,7 +26,9 @@ import { OrganizationService } from '../organization.service';
 import { PopoverService } from '../../configuration-wizard/popover/popover.service';
 import { ConfigurationWizardService } from '../../configuration-wizard/configuration-wizard.service';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { MatIcon } from '@angular/material/icon';
 import { DateFormatPipe } from '../../pipes/date-format.pipe';
+import { FormsModule } from '@angular/forms';
 import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
 
 /**
@@ -52,10 +54,18 @@ import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
     MatRowDef,
     MatRow,
     MatPaginator,
-    DateFormatPipe
+    DateFormatPipe,
+    MatIcon,
+    FormsModule
   ]
 })
 export class HolidaysComponent implements OnInit, AfterViewInit {
+  /** Filter chip value. */
+  filterValue = '';
+  /** Active filter chip. */
+  activeChip: string | null = null;
+  /** Selected office name for chip display. */
+  selectedOfficeName = '';
   /** Office selector. */
   officeSelector = new UntypedFormControl();
   /** Holidays data. */
@@ -143,6 +153,14 @@ export class HolidaysComponent implements OnInit, AfterViewInit {
     this.dataSource = new MatTableDataSource(this.holidaysData);
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+  }
+
+  /**
+   * Updates the selected office name for chip display.
+   */
+  updateOfficeName() {
+    const selected = this.officeData.find((o: any) => o.id == this.officeSelector.value);
+    this.selectedOfficeName = selected ? selected.name : '';
   }
 
   /**

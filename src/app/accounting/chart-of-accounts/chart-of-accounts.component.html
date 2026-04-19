@@ -1,38 +1,53 @@
-<div class="container m-b-20 layout-row align-end gap-20px">
-  <div #buttonTreeView>
-    <mat-button-toggle-group [formControl]="viewGroup">
-      <mat-button-toggle value="listView">
-        <fa-icon icon="list"></fa-icon>
-      </mat-button-toggle>
-      <mat-button-toggle value="treeView">
-        <fa-icon icon="sitemap"></fa-icon>
-      </mat-button-toggle>
-    </mat-button-toggle-group>
+<div class="s-page">
+  <div class="s-head">
+    <h1>Chart of Accounts</h1>
+    <div class="s-head-actions">
+      <div #buttonTreeView>
+        <mat-button-toggle-group [formControl]="viewGroup" class="ca-toggle">
+          <mat-button-toggle value="listView">
+            <mat-icon>view_list</mat-icon>
+          </mat-button-toggle>
+          <mat-button-toggle value="treeView">
+            <mat-icon>account_tree</mat-icon>
+          </mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
+      <div #buttonAddAccount>
+        <button mat-flat-button class="s-primary-btn" [routerLink]="['gl-accounts/create']" *mifosxHasPermission="'CREATE_GLACCOUNT'">
+          <mat-icon>add</mat-icon> Add Account
+        </button>
+      </div>
+    </div>
   </div>
-  <div #buttonAddAccount>
-    <button
-      mat-raised-button
-      color="primary"
-      [routerLink]="['gl-accounts/create']"
-      *mifosxHasPermission="'CREATE_GLACCOUNT'"
-    >
-      <fa-icon icon="plus" class="m-r-10"></fa-icon>
-      {{ 'labels.buttons.Add Account' | translate }}
-    </button>
-  </div>
-</div>
 
 <!-- List View -->
 
-<div class="container" [hidden]="viewGroup.value !== 'listView'">
-  <div #filter class="layout-row gap-20px">
-    <mat-form-field class="flex-fill">
-      <mat-label>{{ 'labels.inputs.Filter' | translate }}</mat-label>
-      <input matInput (keyup)="applyFilter($event.target.value)" />
-    </mat-form-field>
+<div [hidden]="viewGroup.value !== 'listView'">
+  <!-- Filter chips row -->
+  <div class="s-filters">
+    <div class="s-filter-left">
+      <div class="s-chip-wrap" #filter>
+        <button class="s-filter-chip" [class.applied]="filterValue" (click)="activeChip = activeChip === 'filter' ? null : 'filter'">
+          <mat-icon>{{ filterValue ? 'check' : 'add' }}</mat-icon>
+          Filter{{ filterValue ? ': ' + filterValue : '' }}
+          <mat-icon class="chip-x" *ngIf="filterValue" (click)="$event.stopPropagation(); filterValue = ''; applyFilter('')">close</mat-icon>
+        </button>
+        <div class="s-pop" *ngIf="activeChip === 'filter'">
+          <div class="s-pop-title">Filter</div>
+          <div class="s-pop-row">
+            <span class="s-pop-label">contains</span>
+            <input class="s-pop-input" [(ngModel)]="filterValue" placeholder="Type to filter..." (keydown.enter)="activeChip = null; applyFilter(filterValue)" />
+          </div>
+          <button class="s-pop-apply" (click)="activeChip = null; applyFilter(filterValue)">Apply</button>
+        </div>
+      </div>
+    </div>
+    <div class="s-filter-right">
+      <button class="s-action-chip" *ngIf="filterValue" (click)="filterValue = ''; applyFilter('')"><mat-icon>close</mat-icon> Clear</button>
+    </div>
   </div>
 
-  <div #accountsTable class="mat-elevation-z8">
+  <div #accountsTable class="s-table">
     <table mat-table [dataSource]="tableDataSource" matSort>
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'labels.inputs.Account' | translate }}</th>
@@ -99,7 +114,7 @@
         mat-row
         *matRowDef="let row; columns: displayedColumns"
         [routerLink]="['gl-accounts/view', row.id]"
-        class="select-row"
+        class="s-row"
       ></tr>
     </table>
 
@@ -109,19 +124,19 @@
 
 <!-- Tree View -->
 
-<div class="container" [hidden]="viewGroup.value !== 'treeView'">
-  <div class="m-b-20 layout-row align-start gap-20px">
-    <button mat-raised-button (click)="toggleExpandCollapse()">
+<div [hidden]="viewGroup.value !== 'treeView'">
+  <div class="ca-tree-actions">
+    <button class="s-outline-btn" mat-stroked-button (click)="toggleExpandCollapse()">
       {{ (isTreeExpanded ? 'labels.buttons.Collapse All' : 'labels.buttons.Expand All') | translate }}
     </button>
   </div>
 
-  <div class="layout-row gap-4percent responsive-column">
-    <div class="mat-elevation-z8 flex">
+  <div class="ca-tree-layout">
+    <div class="ca-tree-panel">
       <mat-tree [dataSource]="nestedTreeDataSource" [treeControl]="nestedTreeControl" class="gl-account-tree">
         <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
           <li class="mat-tree-node">
-            <button mat-icon-button disabled></button>
+            <span class="ca-chevron-spacer"></span>
             <span (click)="viewGLAccountNode(node)">
               <span *ngIf="node.glCode" class="m-r-10">{{ '(' + node.glCode + ')' }}</span>
               {{ node.name }}
@@ -132,12 +147,7 @@
         <mat-nested-tree-node *matTreeNodeDef="let node; when: hasNestedChild">
           <li>
             <div class="mat-tree-node">
-              <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.name">
-                <fa-icon
-                  class="mat-icon-rtl-mirror"
-                  icon="{{ nestedTreeControl.isExpanded(node) ? 'chevron-down' : 'chevron-right' }}"
-                ></fa-icon>
-              </button>
+              <mat-icon class="ca-chevron" matTreeNodeToggle>{{ nestedTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}</mat-icon>
               <span (click)="viewGLAccountNode(node)">
                 <span *ngIf="node.glCode" class="m-r-10">{{ '(' + node.glCode + ')' }}</span>
                 {{ node.name }}
@@ -151,62 +161,37 @@
       </mat-tree>
     </div>
 
-    <div class="flex-48" *ngIf="glAccount">
-      <mat-card>
-        <mat-card-content>
-          <div class="layout-row-wrap">
-            <div class="flex-50 header">
-              {{ 'labels.inputs.Account Name' | translate }}
-            </div>
-
-            <div class="flex-50">
-              {{ glAccount.name }}
-            </div>
-
-            <div class="flex-50 header">
-              {{ 'labels.inputs.GL Code' | translate }}
-            </div>
-
-            <div class="flex-50">
-              {{ glAccount.glCode }}
-            </div>
-
-            <div class="flex-50 header">
-              {{ 'labels.inputs.Account Type' | translate }}
-            </div>
-
-            <div class="flex-50">
-              {{ 'labels.inputs.accounting.' + glAccount.type | translate }}
-            </div>
-
-            <div class="flex-50 header">
-              {{ 'labels.inputs.Account Usage' | translate }}
-            </div>
-
-            <div class="flex-50">
-              {{ glAccount.usage }}
-            </div>
-
-            <div class="flex-50 header">
-              {{ 'labels.inputs.Manual Entries Allowed' | translate }}
-            </div>
-
-            <div class="flex-50">
-              {{ glAccount.manualEntriesAllowed }}
-            </div>
-
-            <div class="flex-50 header">
-              {{ 'labels.inputs.Description' | translate }}
-            </div>
-
-            <div class="flex-50">
-              {{ glAccount.description }}
-            </div>
-          </div>
-        </mat-card-content>
-      </mat-card>
+    <div class="ca-detail-panel" *ngIf="glAccount">
+      <div class="ca-detail-card">
+        <div class="ca-detail-header">Account details</div>
+        <div class="ca-detail-row">
+          <span class="ca-detail-label">Name</span>
+          <span class="ca-detail-value">{{ glAccount.name }}</span>
+        </div>
+        <div class="ca-detail-row">
+          <span class="ca-detail-label">GL Code</span>
+          <span class="ca-detail-value">{{ glAccount.glCode }}</span>
+        </div>
+        <div class="ca-detail-row">
+          <span class="ca-detail-label">Type</span>
+          <span class="ca-detail-value">{{ 'labels.inputs.accounting.' + glAccount.type | translate }}</span>
+        </div>
+        <div class="ca-detail-row">
+          <span class="ca-detail-label">Usage</span>
+          <span class="ca-detail-value">{{ glAccount.usage }}</span>
+        </div>
+        <div class="ca-detail-row">
+          <span class="ca-detail-label">Manual Entries</span>
+          <span class="ca-detail-value">{{ glAccount.manualEntriesAllowed ? 'Yes' : 'No' }}</span>
+        </div>
+        <div class="ca-detail-row" *ngIf="glAccount.description">
+          <span class="ca-detail-label">Description</span>
+          <span class="ca-detail-value">{{ glAccount.description }}</span>
+        </div>
+      </div>
     </div>
   </div>
+</div>
 </div>
 
 <ng-template #templateButtonTreeView let-popover="popover">

@@ -1,59 +1,47 @@
-// Variables
-$bar: 150px;
-$foo: $bar * 8;
-$color: #e2e4ec;
+// Stripe-style list/table layout (imported by many pages)
+
+$s-dark: #1A1F36;
+$s-text: #3C4257;
+$s-grey: #697386;
+$s-border: #E3E8EE;
+$s-bg: #F7F8FA;
+$s-white: #fff;
+$s-purple: #635BFF;
 
 .container {
-  padding: 24px;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 8px 0 16px;
+  box-shadow: none;
 
-  // Support for existing layout classes
+  // Search + action bar
   .layout-column,
   .layout-gt-sm-row {
     display: flex;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 12px;
     flex-wrap: nowrap;
-    gap: 20px;
-
-    &.align-gt-sm-start-center {
-      align-items: center;
-      justify-content: flex-start;
-    }
+    gap: 12px;
 
     .search-box {
       display: flex;
       align-items: center;
-      gap: 15px;
+      gap: 8px;
       flex: 1;
       min-width: 0;
 
-      &.m-r-30 {
-        margin-right: 30px;
-      }
+      &.m-r-30 { margin-right: 0; }
 
-      // Handle multiple form fields in search box
       mat-form-field {
-        min-width: 200px;
+        min-width: 180px;
         flex: 1;
-
-        &.search-box {
-          width: auto;
-        }
-
-        // Ensure form fields are inline
-        + mat-form-field {
-          margin-left: 15px;
-        }
       }
 
       mat-checkbox {
         white-space: nowrap;
         flex-shrink: 0;
-        margin-left: 15px;
-
-        &.m-r-10 {
-          margin-right: 10px;
-        }
+        font-size: 13px;
       }
     }
 
@@ -62,132 +50,82 @@ $color: #e2e4ec;
       align-items: center;
       flex-shrink: 0;
       margin-left: auto;
+      gap: 8px;
 
-      &.gap-25px {
-        gap: 25px;
-      }
-
-      button {
-        white-space: nowrap;
-
-        fa-icon {
-          &.m-r-10,
-          &.m-r-20 {
-            margin-right: 10px;
-          }
-        }
-      }
+      button { white-space: nowrap; }
     }
   }
 
-  // Table styling
-  .bordered-table {
+  // Table inside container — Stripe card wrap
+  .bordered-table,
+  table.mat-mdc-table,
+  table[mat-table] {
     width: 100%;
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
+    background: $s-white;
+    border: 1px solid $s-border;
+    border-radius: 8px;
     overflow: hidden;
-    margin-top: 16px;
+    border-collapse: separate;
+    border-spacing: 0;
 
     .select-row {
       cursor: pointer;
-
-      &:hover {
-        background-color: #f5f5f5;
-      }
+      &:hover { background: $s-bg; }
     }
 
-    th,
-    td {
-      padding: 12px 16px;
-    }
+    th, td { padding: 8px 14px; }
 
     th {
-      font-weight: 500;
-      border-bottom: 1px solid #e0e0e0;
+      font-size: 11px;
+      font-weight: 600;
+      color: $s-grey;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      border-bottom: 1px solid $s-border;
+      background: $s-bg;
     }
 
-    tr {
-      border-bottom: 1px solid #f0f0f0;
-
-      &:last-child {
-        border-bottom: none;
-      }
+    td {
+      font-size: 13px;
+      color: $s-text;
+      border-bottom: 1px solid lighten($s-border, 2%);
     }
+
+    tr:last-child td { border-bottom: none; }
   }
 
-  // Paginator styling
+  // Paginator
   mat-paginator {
-    border-top: 1px solid #e0e0e0;
-    margin-top: 0;
+    border-top: 1px solid $s-border;
+    background: transparent;
+    font-size: 13px;
   }
 
   // Progress bar
-  mat-progress-bar {
-    margin: 0;
+  mat-progress-bar { height: 2px; }
+
+  // Empty state
+  .alert {
+    text-align: center;
+    padding: 48px 24px;
+    color: $s-grey;
+    font-size: 14px;
   }
 }
 
-// Responsive design
-@media (width <= 768px) {
+// Responsive
+@media (max-width: 768px) {
   .container {
-    padding: 16px;
-
     .layout-column,
     .layout-gt-sm-row {
       flex-wrap: wrap;
 
-      .search-box {
-        width: 100%;
-        margin-right: 0 !important;
-        margin-bottom: 15px;
-        flex-wrap: wrap;
-
-        mat-form-field {
-          min-width: 150px;
-          margin-bottom: 10px;
-
-          + mat-form-field {
-            margin-left: 0;
-          }
-        }
-
-        mat-checkbox {
-          margin-left: 0;
-          margin-top: 10px;
-        }
-      }
-
-      .action-button {
-        margin-left: 0;
-        width: 100%;
-        justify-content: center;
-
-        &.gap-25px {
-          gap: 15px;
-        }
-      }
+      .search-box { width: 100%; margin-right: 0 !important; }
+      .action-button { margin-left: 0; width: 100%; justify-content: flex-end; }
     }
   }
 }
 
-// Table styles
-table {
-  width: 100%;
-
-  tr.select-row:hover {
-    cursor: pointer;
-  }
-}
-
-// Utility classes
-.m-r-10 {
-  margin-right: 10px !important;
-}
-
-.m-r-20 {
-  margin-right: 20px !important;
-}
-
-.m-r-30 {
-  margin-right: 30px !important;
-}
+// Table utility
+table { width: 100%; }
+tr.select-row:hover { cursor: pointer; }

@@ -25,7 +25,10 @@ import { OrganizationService } from '../organization.service';
 import { DeleteDialogComponent } from '../../shared/delete-dialog/delete-dialog.component';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { MatTooltip } from '@angular/material/tooltip';
+import { FormsModule } from '@angular/forms';
 import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
+import { MatIcon } from '@angular/material/icon';
+import { MatButton, MatIconButton } from '@angular/material/button';
 
 /**
  * Entity Data Table Checks component.
@@ -50,10 +53,18 @@ import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
     MatHeaderRow,
     MatRowDef,
     MatRow,
-    MatPaginator
+    MatPaginator,
+    MatIcon,
+    MatButton,
+    MatIconButton,
+    FormsModule
   ]
 })
 export class EntityDataTableChecksComponent implements OnInit {
+  /** Filter chip value. */
+  filterValue = '';
+  /** Active filter chip. */
+  activeChip: string | null = null;
   /** Entity Data Table Checks data. */
   entityDataTableChecksData: any;
   /** Columns to be displayed in entity data table checks table. */

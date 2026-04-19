@@ -11,6 +11,7 @@ import { PopoverService } from '../../configuration-wizard/popover/popover.servi
 import { ConfigurationWizardService } from '../../configuration-wizard/configuration-wizard.service';
 import { STANDALONE_SHARED_IMPORTS } from 'app/standalone-shared.module';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { MatIcon } from '@angular/material/icon';
 
 /**
  * Users component.
@@ -22,6 +23,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
   imports: [
     ...STANDALONE_SHARED_IMPORTS,
     FontAwesomeModule,
+    MatIcon,
     MatPaginatorModule,
     MatSortModule,
     MatTableModule
@@ -43,6 +45,8 @@ export class UsersComponent implements OnInit, AfterViewInit {
   /** DataSources */
   dataSource = new MatTableDataSource<any>();
   dataSourceZitadel = new MatTableDataSource<any>();
+  filterValue = '';
+  activeChip: string | null = null;
 
   /** References for pagination and sorting */
   @ViewChild('paginatorUsers', { static: true }) paginatorUsers!: MatPaginator;
