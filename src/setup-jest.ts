@@ -58,7 +58,7 @@ Object.defineProperty(window, 'env', {
     oidcClientId: '',
     oidcApiUrl: '',
     apiUrl: 'http://localhost:8080',
-    tenantIdentifier: 'sandbox'
+    tenantIdentifier: ''
   },
   writable: true
 });

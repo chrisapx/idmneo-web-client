@@ -107,7 +107,6 @@ export class LoginComponent implements OnInit, OnDestroy {
   reloadSettings(): void {
     this.settingsService.setTenantIdentifier('');
     this.settingsService.setTenantIdentifier(this.settingsService.tenantIdentifier);
-    this.settingsService.setTenantIdentifiers(environment.fineractPlatformTenantIds.split(','));
     this.settingsService.setServers(environment.baseApiUrls.split(','));
     window.location.reload();
   }

@@ -4,16 +4,22 @@ import env from './.env';
 // The `window['env']` object is loaded in the `index.html` file
 const loadedEnv = window.env || {};
 
+const profile = loadedEnv.profile || 'production';
+const baseApiUrlByProfile: Record<string, string> = {
+  production: 'https://idmb-gateway.nalmart.com/core',
+  sandbox: 'https://idmb-gateway.nalmart.com/core-sandbox',
+  local: 'https://idmb-gateway.nalmart.com/core',
+};
+
 export const environment = {
   production: true,
+  profile,
   version: env.mifos_x.version,
   hash: env.mifos_x.hash,
-  // For connecting to server running elsewhere update the tenant identifier
-  fineractPlatformTenantId: loadedEnv.fineractPlatformTenantId || 'sandbox',
-  fineractPlatformTenantIds: loadedEnv.fineractPlatformTenantIds || 'sandbox',
+  fineractPlatformTenantId: loadedEnv.fineractPlatformTenantId || '',
   // For connecting to others servers running elsewhere update the base API URL
   baseApiUrls: loadedEnv.fineractApiUrls || '',
-  baseApiUrl: loadedEnv.fineractApiUrl || 'https://core-api.fifund.idmfh.com',
+  baseApiUrl: loadedEnv.fineractApiUrl || baseApiUrlByProfile[profile] || baseApiUrlByProfile['production'],
   allowServerSwitch: loadedEnv.allowServerSwitch || 'true',
   apiProvider: loadedEnv.apiProvider || '/api',
   apiVersion: loadedEnv.apiVersion || '/v1',
@@ -51,7 +57,7 @@ export const environment = {
   },
   httpCacheEnabled: loadedEnv.httpCacheEnabled || false,
 
-  vNextApiUrl: window.env.vNextApiUrl || 'https://apis.mifos.community',
+  vNextApiUrl: window.env.vNextApiUrl,
   vNextApiProvider: window.env.vNextApiProvider || '/vnext1',
   vNextApiVersion: window.env.vNextApiVersion || '/v1.0',
   interbankTransfers: window.env.interbankTransfers || true,

@@ -1,0 +1,34 @@
+<div class="unknown-client-page">
+  <div class="error-container">
+    <div class="error-illustration">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" class="error-svg">
+        <!-- Disconnected globe -->
+        <circle cx="120" cy="85" r="55" fill="none" stroke="#dadce0" stroke-width="3"/>
+        <ellipse cx="120" cy="85" rx="55" ry="20" fill="none" stroke="#dadce0" stroke-width="2"/>
+        <ellipse cx="120" cy="85" rx="20" ry="55" fill="none" stroke="#dadce0" stroke-width="2"/>
+        <line x1="65" y1="85" x2="175" y2="85" stroke="#dadce0" stroke-width="2"/>
+        <!-- X mark -->
+        <circle cx="170" cy="45" r="22" fill="#ea4335"/>
+        <line x1="160" y1="35" x2="180" y2="55" stroke="white" stroke-width="3.5" stroke-linecap="round"/>
+        <line x1="180" y1="35" x2="160" y2="55" stroke="white" stroke-width="3.5" stroke-linecap="round"/>
+        <!-- Shadow -->
+        <ellipse cx="120" cy="170" rx="70" ry="8" fill="#f1f3f4"/>
+      </svg>
+    </div>
+
+    <h1 class="error-title">Unknown client</h1>
+
+    <p class="error-message">
+      The hostname <strong>{{ hostname }}</strong> could not be resolved to a valid tenant.
+    </p>
+
+    <p class="error-detail">
+      Make sure you're accessing the application through a valid subdomain, such as
+      <strong>yourcompany.sandbox.nalmart.com</strong>
+    </p>
+
+    <div class="error-code">
+      ERR_TENANT_NOT_RESOLVED
+    </div>
+  </div>
+</div>

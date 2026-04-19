@@ -1,1 +1,6 @@
-<router-outlet></router-outlet>
+<ng-container *ngIf="tenantResolved; else unknownClient">
+  <router-outlet></router-outlet>
+</ng-container>
+<ng-template #unknownClient>
+  <mifosx-unknown-client></mifosx-unknown-client>
+</ng-template>

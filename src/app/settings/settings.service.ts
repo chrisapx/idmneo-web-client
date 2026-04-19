@@ -38,21 +38,40 @@ export class SettingsService {
   /**
    * Gets tenant identifier from subdomain.
    * The subdomain is the sole source of truth for tenant identity.
-   * Requires '.sandbox' in the hostname (e.g. fifund.sandbox.nalmart.com).
-   * Rejects hostnames without '.sandbox' (e.g. fifund.nalmart.com).
+   * Extracts the leading subdomain as the tenant identifier.
+   * In sandbox profile, requires '.sandbox' in the hostname:
+   *   calliope.sandbox.nalmart.com → calliope
+   *   sandbox.sandbox.nalmart.com → sandbox
+   * In other profiles, extracts the first subdomain from any 3+ part hostname:
+   *   calliope.nalmart.com → calliope
+   * Also handles *.localhost for local development:
+   *   sandbox.localhost → sandbox
+   * Returns empty string for bare domains or plain localhost.
    */
   getSubdomainTenant(): string {
     const host = window.location.hostname;
     const parts = host.split('.');
 
-    // Require sandbox segment: e.g. fifund.sandbox.nalmart.com
-    // parts[0] = tenant, parts[1] must be 'sandbox'
-    if (parts.length >= 3 && parts[1] === 'sandbox') {
+    // Handle *.localhost (e.g. sandbox.localhost)
+    if (parts.length === 2 && parts[1] === 'localhost') {
+      if (environment.profile === 'sandbox') {
+        return parts[0];
+      }
       return parts[0];
     }
 
-    // Reject hostnames without .sandbox (e.g. fifund.nalmart.com, localhost)
-    return '';
+    if (parts.length < 3) {
+      return '';
+    }
+
+    if (environment.profile === 'sandbox') {
+      if (parts[1] === 'sandbox') {
+        return parts[0];
+      }
+      return '';
+    }
+
+    return parts[0];
   }
 
 
@@ -96,13 +115,6 @@ export class SettingsService {
     localStorage.setItem('mifosXServers', JSON.stringify(list));
   }
 
-  /**
-   * Sets Tenant Identifiers list setting throughout the app.
-   * @param {string[]} list List of default tenants
-   */
-  setTenantIdentifiers(list: string[]) {
-    localStorage.setItem('mifosXTenantIdentifiers', JSON.stringify(list));
-  }
 
   /**
    * Sets Tenant Identifier setting throughout the app.
@@ -181,15 +193,7 @@ export class SettingsService {
    * Returns server setting
    */
   get server() {
-    // if (localStorage.getItem('mifosXServerURL')) {
-    //   return localStorage.getItem('mifosXServerURL');
-    // }
-    // if (environment.baseApiUrl && environment.baseApiUrl !== '') {
-    //   return environment.baseApiUrl;
-    // } else {
-    //   return this.servers[0];
-    // }
-    return 'https://idmb-sandbox.nalmart.com';
+    return environment.baseApiUrl;
   }
 
   /**
@@ -241,12 +245,6 @@ export class SettingsService {
     return this.maxAllowedDate;
   }
 
-  /**
-   * Returns list of Tenant Identifiers
-   */
-  get tenantIdentifiers(): any {
-    return safeParseArray<string>(localStorage.getItem('mifosXTenantIdentifiers'), []);
-  }
 
   /**
    * Returns Tenant Identifier strictly from the subdomain.

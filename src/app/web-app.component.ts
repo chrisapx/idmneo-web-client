@@ -89,6 +89,7 @@ registerLocaleData(localeSW);
   standalone: false
 })
 export class WebAppComponent implements OnInit, OnDestroy {
+  tenantResolved = false;
   buttonConfig: KeyboardShortcutsConfiguration;
 
   i18nService: I18nService;
@@ -146,6 +147,12 @@ export class WebAppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    // Check tenant resolution before anything else
+    this.tenantResolved = !!this.settingsService.tenantIdentifier;
+    if (!this.tenantResolved) {
+      return;
+    }
+
     this.themingService.theme.subscribe((value: string) => {
       this.cssClass = value;
     });
@@ -230,7 +237,6 @@ export class WebAppComponent implements OnInit, OnDestroy {
       this.settingsService.setServers(environment.baseApiUrls.split(','));
     }
     // Tenant is resolved from subdomain — no localStorage override needed
-    this.settingsService.setTenantIdentifiers(environment.fineractPlatformTenantIds.split(','));
 
     // Subscribe to session timeout If IdleTimeout is higher than 0 (zero)
     if (environment.session.timeout.idleTimeout > 0) {

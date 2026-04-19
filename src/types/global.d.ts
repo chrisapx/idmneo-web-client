@@ -1,8 +1,8 @@
 interface Window {
   env?: {
     [key: string]: any;
+    profile?: string;
     fineractPlatformTenantId?: string;
-    fineractPlatformTenantIds?: string;
     fineractApiUrls?: string;
     fineractApiUrl?: string;
     allow_switching_backend_instance?: boolean;

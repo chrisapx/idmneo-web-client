@@ -1,7 +1,7 @@
 window.env = {
-  fineractPlatformTenantId: "sandbox",
-  fineractPlatformTenantIds: "sandbox",
-  fineractApiUrl: "https://core-api.fifund.idmfh.com",
+  profile: "local",
+  fineractPlatformTenantId: "",
+  fineractApiUrl: "",
   fineractApiUrls: "",
   allowServerSwitch: "true",
   apiProvider: "/api",

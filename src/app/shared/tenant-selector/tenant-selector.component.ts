@@ -39,7 +39,8 @@ export class TenantSelectorComponent implements OnInit {
    * @return {string[]} Supported languages.
    */
   get tenants(): string[] {
-    return this.settingsService.tenantIdentifiers || [];
+    const tenant = this.settingsService.tenantIdentifier;
+    return tenant ? [tenant] : [];
   }
 
   setTenantIdentifier(): void {
